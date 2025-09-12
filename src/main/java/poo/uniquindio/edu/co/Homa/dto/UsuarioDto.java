@@ -1,5 +1,8 @@
 package poo.uniquindio.edu.co.Homa.dto;
 
-public class UsuarioDto {
-    
-}
+public record UsuarioDto(
+        Long id,
+        String nombre,
+        String email,
+        String telefono
+) {}

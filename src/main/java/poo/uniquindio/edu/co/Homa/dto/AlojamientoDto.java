@@ -1,5 +1,10 @@
 package poo.uniquindio.edu.co.Homa.dto;
 
-public class AlojamientoDto {
-    
-}
+public record AlojamientoDto(
+        Long id,
+        String nombre,
+        String descripcion,
+        String direccion,
+        Double precioPorNoche,
+        Integer capacidad
+) {}
