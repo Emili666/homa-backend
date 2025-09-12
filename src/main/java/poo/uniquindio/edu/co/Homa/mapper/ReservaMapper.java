@@ -17,7 +17,7 @@ public class ReservaMapper {
     }
 
     public static Reserva toEntity(ReservaDto dto) {
-        Reserva reserva = new Reserva();
+        Reserva reserva = new Reserva(null, null, null, null, null, null);
         reserva.setId(dto.id());
         // Ojo: usuario y alojamiento deben setearse en el Service buscando con su ID
         return reserva;

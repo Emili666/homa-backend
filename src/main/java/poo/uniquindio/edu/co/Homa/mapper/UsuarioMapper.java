@@ -15,7 +15,7 @@ public class UsuarioMapper {
     }
 
     public static Usuario toEntity(UsuarioDto dto) {
-        Usuario usuario = new Usuario();
+        Usuario usuario = new Usuario(null, null, null, null);
         usuario.setId(dto.id());
         usuario.setNombre(dto.nombre());
         usuario.setEmail(dto.email());

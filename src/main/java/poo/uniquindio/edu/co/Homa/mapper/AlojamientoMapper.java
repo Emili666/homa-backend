@@ -16,7 +16,7 @@ public class AlojamientoMapper {
     }
 
     public static Alojamiento toEntity(AlojamientoDto dto) {
-        Alojamiento alojamiento = new Alojamiento();
+        Alojamiento alojamiento = new Alojamiento(null, null, null, null, null, null);
         alojamiento.setId(dto.id());
         alojamiento.setNombre(dto.nombre());
         alojamiento.setDescripcion(dto.descripcion());

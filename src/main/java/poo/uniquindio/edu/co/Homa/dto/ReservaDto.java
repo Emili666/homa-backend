@@ -1,9 +1,9 @@
 package poo.uniquindio.edu.co.Homa.dto;
 
 public record ReservaDto(
-        Long id,
-        Long idUsuario,
-        Long idAlojamiento,
+        String id,
+        String idUsuario,
+        String idAlojamiento,
         String fechaInicio,
         String fechaFin,
         Double total
