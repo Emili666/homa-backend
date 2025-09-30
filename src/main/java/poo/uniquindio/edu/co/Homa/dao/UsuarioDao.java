@@ -1,6 +1,9 @@
 
 package poo.uniquindio.edu.co.Homa.dao;
 
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import poo.uniquindio.edu.co.Homa.model.Usuario;
@@ -14,6 +17,9 @@ import java.util.Optional;
 public class UsuarioDao {
 
     private final UsuarioRepository usuarioRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public Usuario guardar(Usuario usuario) {
         return usuarioRepository.save(usuario);
@@ -33,5 +39,13 @@ public class UsuarioDao {
 
     public void eliminar(Long id) {
         usuarioRepository.deleteById(id);
+    }
+
+    // 🔍 Consulta personalizada con JPQL
+    public List<Usuario> buscarPorNombre(String nombre) {
+        return entityManager.createQuery(
+                        "SELECT u FROM Usuario u WHERE LOWER(u.nombre) LIKE LOWER(:nombre)", Usuario.class)
+                .setParameter("nombre", "%" + nombre + "%")
+                .getResultList();
     }
 }
