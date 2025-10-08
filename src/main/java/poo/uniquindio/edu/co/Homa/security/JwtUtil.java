@@ -6,9 +6,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -20,25 +20,29 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    public String generarToken(String id, Map<String, String> claims) {
+    private static final long EXPIRATION_HOURS = 1L;
+
+    public String generarToken(String username, Map<String, Object> claims) {
         Instant now = Instant.now();
+        SecretKey key = obtenerKey();
+
         return Jwts.builder()
-                .Claims(claims)
-                .subject(id)
+                .claims(claims)
+                .subject(username)
                 .issuedAt(Date.from(now))
-                .expiration(Date.from(now.plus(1L, ChronoUnit.HOURS)))
-                .signWith(obtenerKey())
+                .expiration(Date.from(now.plus(EXPIRATION_HOURS, ChronoUnit.HOURS)))
+                .signWith(key)
                 .compact();
     }
 
-    public Jws<Claims> decodificarJwt(String jwtString) {
-        JwtParser parser = Jwts.parserBuilder()
-                .setSigningKey(obtenerKey())
+    public Jws<Claims> decodificarJwt(String token) {
+        JwtParser parser = Jwts.parser()
+                .verifyWith(obtenerKey())
                 .build();
-        return parser.parseClaimsJws(jwtString);
+        return parser.parseSignedClaims(token);
     }
 
     private SecretKey obtenerKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes());
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 }

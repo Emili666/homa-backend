@@ -1,6 +1,5 @@
 package poo.uniquindio.edu.co.Homa.security;
 
-import poo.uniquindio.edu.co.Homa.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import jakarta.servlet.FilterChain;
@@ -14,35 +13,43 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import poo.uniquindio.edu.co.Homa.service.UserDetailsServiceImpl;
+
 import java.io.IOException;
 
+/**
+ * Filtro que intercepta las peticiones HTTP y valida el token JWT.
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final JwtUtil jwtUtil; // 🔹 Usa JwtUtils, como en tu proyecto
+    private final UserDetailsServiceImpl usuarioDetallesServicio;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
         String token = obtenerToken(request);
 
         if (token == null) {
-            chain.doFilter(request, response);
+            filterChain.doFilter(request, response);
             return;
         }
 
         try {
-            Jws<Claims> payload = jwtService.decodificarJwt(token);
+            Jws<Claims> payload = jwtUtil.decodificarJwt(token);
             String username = payload.getPayload().getSubject();
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UserDetails userDetails = usuarioDetallesServicio.cargarUsuarioPorUsername(username);
 
                 UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
@@ -52,11 +59,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        chain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 
-    private String obtenerToken(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-        return header != null && header.startsWith("Bearer ") ? header.replace("Bearer ", "") : null;
+    private String obtenerToken(HttpServletRequest req) {
+        String header = req.getHeader("Authorization");
+        return (header != null && header.startsWith("Bearer ")) ? header.substring(7) : null;
     }
 }

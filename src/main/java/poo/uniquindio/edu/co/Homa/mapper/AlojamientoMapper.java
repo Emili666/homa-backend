@@ -1,29 +1,49 @@
 package poo.uniquindio.edu.co.Homa.mapper;
 import poo.uniquindio.edu.co.Homa.dto.AlojamientoDto;
+import poo.uniquindio.edu.co.Homa.dto.DireccionDto;
+import poo.uniquindio.edu.co.Homa.model.Alojamiento;
+import poo.uniquindio.edu.co.Homa.dto.AlojamientoDto;
 import poo.uniquindio.edu.co.Homa.model.Alojamiento;
 
-
+/**
+ * Mapper que convierte entre entidades Alojamiento y sus DTOs.
+ * Se utiliza para evitar exponer directamente las entidades JPA
+ * en las respuestas REST del backend.
+ */
 public class AlojamientoMapper {
 
+    // Convierte una entidad Alojamiento a su DTO correspondiente
     public static AlojamientoDto toDto(Alojamiento alojamiento) {
+        if (alojamiento == null) return null;
+
         return new AlojamientoDto(
-                alojamiento.getId() != null ? alojamiento.getId().toString() : null, // Convertimos Long → String
-                alojamiento.getNombre(),
+                alojamiento.getId(),
+                alojamiento.getTitulo(),
                 alojamiento.getDescripcion(),
                 alojamiento.getDireccion(),
-                alojamiento.getPrecioPorNoche(),
-                alojamiento.getCapacidad()
+                alojamiento.getPrecioPorNoche().floatValue(),
+                alojamiento.getMaxHuespedes(),
+                alojamiento.getServicios(),
+                alojamiento.getImagenes(),
+                alojamiento.getNombreAnfitrion()
         );
     }
 
+    // Convierte un DTO a una entidad Alojamiento lista para persistencia
     public static Alojamiento toEntity(AlojamientoDto dto) {
-        Alojamiento alojamiento = new Alojamiento(); // Constructor vacío para JPA
-        alojamiento.setId(dto.id() != null ? Long.parseLong(dto.id()) : null); // Convertimos String → Long
-        alojamiento.setNombre(dto.nombre());
+        if (dto == null) return null;
+
+        Alojamiento alojamiento = new Alojamiento();
+        alojamiento.setId(dto.id());
+        alojamiento.setTitulo(dto.titulo());
         alojamiento.setDescripcion(dto.descripcion());
         alojamiento.setDireccion(dto.direccion());
-        alojamiento.setPrecioPorNoche(dto.precioPorNoche());
-        alojamiento.setCapacidad(dto.capacidad());
+        alojamiento.setPrecioPorNoche(dto.precioPorNoche().doubleValue());
+        alojamiento.setMaxHuespedes(dto.maxHuespedes());
+        alojamiento.setServicios(dto.servicios());
+        alojamiento.setImagenes(dto.imagenes());
+        alojamiento.setNombreAnfitrion(dto.nombreAnfitrion());
+
         return alojamiento;
     }
 }

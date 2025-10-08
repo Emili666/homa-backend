@@ -5,7 +5,7 @@ import java.util.List;
 
 import poo.uniquindio.edu.co.Homa.model.Servicio;
 
-public record AlojamientoDTO(
+public record AlojamientoDto(
 
         Long id,
         
@@ -13,7 +13,7 @@ public record AlojamientoDTO(
 
         String descripcion,
 
-        DireccionDTO direccion,
+        String direccion,
 
         Float precioPorNoche,
 
@@ -24,5 +24,5 @@ public record AlojamientoDTO(
         List<String> imagenes,
 
         String nombreAnfitrion
-) {
-}
+) {}
+
