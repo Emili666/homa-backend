@@ -1,5 +1,18 @@
 package poo.uniquindio.edu.co.Homa.service;
 
-public class AlojamientoService {
-    
+import poo.uniquindio.edu.co.Homa.dto.AlojamientoDto;
+
+import java.util.List;
+
+public interface AlojamientoService {
+
+    List<AlojamientoDto> listarAlojamientos();
+
+    AlojamientoDto obtenerAlojamientoPorId(Long id);
+
+    AlojamientoDto crearAlojamiento(AlojamientoDto dto);
+
+    AlojamientoDto actualizarAlojamiento(Long id, AlojamientoDto dto);
+
+    void eliminarAlojamiento(Long id);
 }
