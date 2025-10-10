@@ -1,52 +1,107 @@
-package poo.uniquindio.edu.co.Homa.controller;
+package co.edu.uniquindio.homa.controller;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import co.edu.uniquindio.homa.dto.request.*;
+import co.edu.uniquindio.homa.dto.response.UsuarioResponse;
+import co.edu.uniquindio.homa.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import poo.uniquindio.edu.co.Homa.dto.UsuarioDto;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Usuarios", description = "Endpoints para gestión de usuarios")
 @RestController
 @RequestMapping("/api/usuarios")
-@Tag(name = "Usuarios", description = "Gestión de usuarios en el sistema")
+@RequiredArgsConstructor
 public class UsuarioController {
-    @Operation(summary = "Listar usuarios")
-    @GetMapping
-    public List<UsuarioDto> listarUsuarios() {
-        return List.of();
+
+    private final UsuarioService usuarioService;
+
+    @Operation(summary = "Registrar usuario", description = "Registra un nuevo usuario en el sistema")
+    @PostMapping("/registro")
+    public ResponseEntity<UsuarioResponse> registrar(@Valid @RequestBody UsuarioRegistroRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.registrar(request));
     }
 
-    @Operation(summary = "Obtener usuario por ID")
+    @Operation(summary = "Activar cuenta", description = "Activa la cuenta de un usuario mediante código")
+    @GetMapping("/activar/{codigo}")
+    public ResponseEntity<Void> activarCuenta(@PathVariable String codigo) {
+        usuarioService.activarCuenta(codigo);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Obtener usuario por ID", description = "Obtiene los datos de un usuario por su ID")
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{id}")
-    public UsuarioDto obtenerUsuario(@PathVariable Long id) {
-        return null;
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CLIENTE', 'ANFITRION')")
+    public ResponseEntity<UsuarioResponse> obtenerPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.obtenerPorId(id));
     }
 
-    @Operation(summary = "Crear usuario")
-    @PostMapping
-    public UsuarioDto crearUsuario(@RequestBody UsuarioDto dto) {
-        return dto;
-    }
-
-    @Operation(summary = "Actualizar usuario")
+    @Operation(summary = "Actualizar usuario", description = "Actualiza los datos de un usuario")
+    @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
-    public UsuarioDto actualizarUsuario(@PathVariable Long id, @RequestBody UsuarioDto dto) {
-        return dto;
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CLIENTE', 'ANFITRION')")
+    public ResponseEntity<UsuarioResponse> actualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody ActualizarUsuarioRequest request) {
+        return ResponseEntity.ok(usuarioService.actualizar(id, request));
     }
 
-    @Operation(summary = "Eliminar usuario")
+    @Operation(summary = "Eliminar usuario", description = "Elimina (desactiva) un usuario del sistema")
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
-    public void eliminarUsuario(@PathVariable Long id) {
-        // lógica delete
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        usuarioService.eliminar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Cambiar contraseña", description = "Cambia la contraseña de un usuario")
+    @SecurityRequirement(name = "bearerAuth")
+    @PostMapping("/{id}/cambiar-contrasena")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CLIENTE', 'ANFITRION')")
+    public ResponseEntity<Void> cambiarContrasena(
+            @PathVariable Long id,
+            @Valid @RequestBody CambiarContrasenaRequest request) {
+        usuarioService.cambiarContrasena(id, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Solicitar recuperación de contraseña", description = "Envía un código para recuperar la contraseña")
+    @PostMapping("/recuperar-contrasena")
+    public ResponseEntity<Void> solicitarRecuperacion(@Valid @RequestBody RecuperarContrasenaRequest request) {
+        usuarioService.solicitarRecuperacionContrasena(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Restablecer contraseña", description = "Restablece la contraseña usando el código enviado")
+    @PostMapping("/restablecer-contrasena")
+    public ResponseEntity<Void> restablecerContrasena(@Valid @RequestBody RestablecerContrasenaRequest request) {
+        usuarioService.restablecerContrasena(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Listar todos los usuarios", description = "Lista todos los usuarios del sistema (solo admin)")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<Page<UsuarioResponse>> listarTodos(Pageable pageable) {
+        return ResponseEntity.ok(usuarioService.listarTodos(pageable));
+    }
+
+    @Operation(summary = "Cambiar estado de usuario", description = "Cambia el estado de un usuario (solo admin)")
+    @SecurityRequirement(name = "bearerAuth")
+    @PatchMapping("/{id}/estado")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<Void> cambiarEstado(@PathVariable Long id, @RequestParam String estado) {
+        usuarioService.cambiarEstado(id, estado);
+        return ResponseEntity.ok().build();
     }
 }
-

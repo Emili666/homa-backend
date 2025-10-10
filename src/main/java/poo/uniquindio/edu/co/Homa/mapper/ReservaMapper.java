@@ -1,29 +1,26 @@
-package poo.uniquindio.edu.co.Homa.mapper;
+package co.edu.uniquindio.homa.mapper;
 
+import co.edu.uniquindio.homa.dto.request.ReservaRequest;
+import co.edu.uniquindio.homa.dto.response.ReservaResponse;
+import co.edu.uniquindio.homa.model.entity.Reserva;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-import poo.uniquindio.edu.co.Homa.dto.ReservaDto;
-import poo.uniquindio.edu.co.Homa.model.Reserva;
+@Mapper(componentModel = "spring")
+public interface ReservaMapper {
 
-public class ReservaMapper {
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "alojamiento", ignore = true)
+    @Mapping(target = "huesped", ignore = true)
+    @Mapping(target = "precio", ignore = true)
+    @Mapping(target = "estado", ignore = true)
+    @Mapping(target = "creadoEn", ignore = true)
+    Reserva toEntity(ReservaRequest request);
 
-    public static ReservaDto toDto(Reserva reserva) {
-        return new ReservaDto(
-                reserva.getId() != null ? reserva.getId().toString() : null,
-                reserva.getUsuario() != null ? reserva.getUsuario().getId().toString() : null,
-                reserva.getAlojamiento() != null ? reserva.getAlojamiento().getId().toString() : null,
-                reserva.getFechaInicio() != null ? reserva.getFechaInicio().toString() : null,
-                reserva.getFechaFin() != null ? reserva.getFechaFin().toString() : null,
-                reserva.getTotal()
-        );
-    }
-
-    public static Reserva toEntity(ReservaDto dto) {
-        Reserva reserva = new Reserva();
-        reserva.setId(dto.id() != null ? Long.valueOf(dto.id()) : null);
-        // usuario y alojamiento se deben setear en el Service buscándolos por su ID
-        reserva.setFechaInicio(dto.fechaInicio() != null ? java.time.LocalDate.parse(dto.fechaInicio()) : null);
-        reserva.setFechaFin(dto.fechaFin() != null ? java.time.LocalDate.parse(dto.fechaFin()) : null);
-        reserva.setTotal(dto.total());
-        return reserva;
-    }
+    @Mapping(source = "alojamiento.id", target = "alojamientoId")
+    @Mapping(source = "alojamiento.titulo", target = "tituloAlojamiento")
+    @Mapping(source = "alojamiento.ciudad", target = "ciudadAlojamiento")
+    @Mapping(source = "huesped.id", target = "huespedId")
+    @Mapping(source = "huesped.nombre", target = "nombreHuesped")
+    ReservaResponse toResponse(Reserva reserva);
 }

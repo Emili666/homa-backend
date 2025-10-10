@@ -1,49 +1,35 @@
-package poo.uniquindio.edu.co.Homa.mapper;
-import poo.uniquindio.edu.co.Homa.dto.AlojamientoDto;
-import poo.uniquindio.edu.co.Homa.dto.DireccionDto;
-import poo.uniquindio.edu.co.Homa.model.Alojamiento;
-import poo.uniquindio.edu.co.Homa.dto.AlojamientoDto;
-import poo.uniquindio.edu.co.Homa.model.Alojamiento;
+package co.edu.uniquindio.homa.mapper;
 
-/**
- * Mapper que convierte entre entidades Alojamiento y sus DTOs.
- * Se utiliza para evitar exponer directamente las entidades JPA
- * en las respuestas REST del backend.
- */
-public class AlojamientoMapper {
+import co.edu.uniquindio.homa.dto.request.AlojamientoRequest;
+import co.edu.uniquindio.homa.dto.response.AlojamientoResponse;
+import co.edu.uniquindio.homa.model.entity.Alojamiento;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-    // Convierte una entidad Alojamiento a su DTO correspondiente
-    public static AlojamientoDto toDto(Alojamiento alojamiento) {
-        if (alojamiento == null) return null;
+@Mapper(componentModel = "spring")
+public interface AlojamientoMapper {
 
-        return new AlojamientoDto(
-                alojamiento.getId(),
-                alojamiento.getTitulo(),
-                alojamiento.getDescripcion(),
-                alojamiento.getDireccion(),
-                alojamiento.getPrecioPorNoche().floatValue(),
-                alojamiento.getMaxHuespedes(),
-                alojamiento.getServicios(),
-                alojamiento.getImagenes(),
-                alojamiento.getNombreAnfitrion()
-        );
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "estado", ignore = true)
+    @Mapping(target = "anfitrion", ignore = true)
+    @Mapping(target = "reservas", ignore = true)
+    @Mapping(target = "resenas", ignore = true)
+    @Mapping(target = "creadoEn", ignore = true)
+    Alojamiento toEntity(AlojamientoRequest request);
 
-    // Convierte un DTO a una entidad Alojamiento lista para persistencia
-    public static Alojamiento toEntity(AlojamientoDto dto) {
-        if (dto == null) return null;
+    @Mapping(source = "anfitrion.id", target = "anfitrionId")
+    @Mapping(source = "anfitrion.nombre", target = "nombreAnfitrion")
+    @Mapping(source = "anfitrion.foto", target = "fotoAnfitrion")
+    @Mapping(target = "calificacionPromedio", ignore = true)
+    @Mapping(target = "totalResenas", ignore = true)
+    AlojamientoResponse toResponse(Alojamiento alojamiento);
 
-        Alojamiento alojamiento = new Alojamiento();
-        alojamiento.setId(dto.id());
-        alojamiento.setTitulo(dto.titulo());
-        alojamiento.setDescripcion(dto.descripcion());
-        alojamiento.setDireccion(dto.direccion());
-        alojamiento.setPrecioPorNoche(dto.precioPorNoche().doubleValue());
-        alojamiento.setMaxHuespedes(dto.maxHuespedes());
-        alojamiento.setServicios(dto.servicios());
-        alojamiento.setImagenes(dto.imagenes());
-        alojamiento.setNombreAnfitrion(dto.nombreAnfitrion());
-
-        return alojamiento;
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "estado", ignore = true)
+    @Mapping(target = "anfitrion", ignore = true)
+    @Mapping(target = "reservas", ignore = true)
+    @Mapping(target = "resenas", ignore = true)
+    @Mapping(target = "creadoEn", ignore = true)
+    void updateEntityFromRequest(AlojamientoRequest request, @MappingTarget Alojamiento alojamiento);
 }

@@ -1,0 +1,29 @@
+package co.edu.uniquindio.homa.model.enums;
+
+public enum Servicio {
+    WIFI,
+    PISCINA,
+    COCINA,
+    AIRE_ACONDICIONADO,
+    CALEFACCION,
+    ESTACIONAMIENTO,
+    TV,
+    LAVADORA,
+    SECADORA,
+    GIMNASIO,
+    JACUZZI,
+    BALCON,
+    JARDIN,
+    PARRILLA,
+    CHIMENEA,
+    ZONA_TRABAJO,
+    ALARMA,
+    CAMARAS_SEGURIDAD,
+    DETECTOR_HUMO,
+    BOTIQUIN,
+    EXTINTOR,
+    MASCOTAS_PERMITIDAS,
+    ACCESO_PLAYA,
+    VISTA_MAR,
+    VISTA_MONTANA
+}

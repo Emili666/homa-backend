@@ -1,58 +1,131 @@
-package poo.uniquindio.edu.co.Homa.controller;
+package co.edu.uniquindio.homa.controller;
 
+import co.edu.uniquindio.homa.dto.request.AlojamientoRequest;
+import co.edu.uniquindio.homa.dto.response.AlojamientoResponse;
+import co.edu.uniquindio.homa.model.enums.EstadoAlojamiento;
+import co.edu.uniquindio.homa.service.AlojamientoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.math.BigDecimal;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import poo.uniquindio.edu.co.Homa.dto.AlojamientoDto;
-
+@Tag(name = "Alojamientos", description = "Endpoints para gestión de alojamientos")
 @RestController
 @RequestMapping("/api/alojamientos")
-@Tag(name = "Alojamientos", description = "Gestión de alojamientos en la plataforma Homa")
+@RequiredArgsConstructor
 public class AlojamientoController {
-    @Operation(summary = "Listar alojamientos", description = "Obtiene todos los alojamientos disponibles")
-    @ApiResponse(responseCode = "200", description = "Lista de alojamientos obtenida")
-    @GetMapping
-    public List<AlojamientoDto> listarAlojamientos() {
-        return List.of(); // Implementación real conectará con el servicio
-    }
 
-    @Operation(summary = "Obtener alojamiento por ID")
-    @ApiResponse(responseCode = "200", description = "Alojamiento encontrado")
-    @ApiResponse(responseCode = "404", description = "Alojamiento no encontrado")
-    @GetMapping("/{id}")
-    public Object AlojamientoDtoobtenerAlojamiento(@PathVariable Long id) {
-        return null; // Implementar lógica
-    }
+    private final AlojamientoService alojamientoService;
 
-    @Operation(summary = "Crear alojamiento")
-    @ApiResponse(responseCode = "201", description = "Alojamiento creado")
+    @Operation(summary = "Crear alojamiento", description = "Crea un nuevo alojamiento (solo anfitriones)")
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
-    public AlojamientoDto crearAlojamiento(@RequestBody AlojamientoDto dto) {
-        return dto;
+    @PreAuthorize("hasRole('ANFITRION')")
+    public ResponseEntity<AlojamientoResponse> crear(
+            @Valid @RequestBody AlojamientoRequest request,
+            Authentication authentication) {
+        // En una implementación real, obtendríamos el ID del usuario autenticado
+        Long anfitrionId = 1L; // Placeholder
+        return ResponseEntity.status(HttpStatus.CREATED).body(alojamientoService.crear(request, anfitrionId));
     }
 
-    @Operation(summary = "Actualizar alojamiento")
+    @Operation(summary = "Obtener alojamiento por ID", description = "Obtiene los detalles de un alojamiento")
+    @GetMapping("/{id}")
+    public ResponseEntity<AlojamientoResponse> obtenerPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(alojamientoService.obtenerPorId(id));
+    }
+
+    @Operation(summary = "Actualizar alojamiento", description = "Actualiza un alojamiento existente")
+    @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
-    public AlojamientoDto actualizarAlojamiento(@PathVariable Long id, @RequestBody AlojamientoDto dto) {
-        return dto;
+    @PreAuthorize("hasRole('ANFITRION')")
+    public ResponseEntity<AlojamientoResponse> actualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody AlojamientoRequest request,
+            Authentication authentication) {
+        Long anfitrionId = 1L; // Placeholder
+        return ResponseEntity.ok(alojamientoService.actualizar(id, request, anfitrionId));
     }
 
-    @Operation(summary = "Eliminar alojamiento")
+    @Operation(summary = "Eliminar alojamiento", description = "Elimina un alojamiento")
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
-    public void eliminarAlojamiento(@PathVariable Long id) {
-        // lógica delete
+    @PreAuthorize("hasRole('ANFITRION')")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id, Authentication authentication) {
+        Long anfitrionId = 1L; // Placeholder
+        alojamientoService.eliminar(id, anfitrionId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Listar todos los alojamientos", description = "Lista todos los alojamientos activos")
+    @GetMapping
+    public ResponseEntity<Page<AlojamientoResponse>> listarTodos(Pageable pageable) {
+        return ResponseEntity.ok(alojamientoService.listarTodos(pageable));
+    }
+
+    @Operation(summary = "Listar alojamientos por anfitrión", description = "Lista los alojamientos de un anfitrión")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping("/anfitrion/{anfitrionId}")
+    @PreAuthorize("hasAnyRole('ANFITRION', 'ADMINISTRADOR')")
+    public ResponseEntity<Page<AlojamientoResponse>> listarPorAnfitrion(
+            @PathVariable Long anfitrionId,
+            Pageable pageable) {
+        return ResponseEntity.ok(alojamientoService.listarPorAnfitrion(anfitrionId, pageable));
+    }
+
+    @Operation(summary = "Buscar alojamientos", description = "Busca alojamientos con filtros")
+    @GetMapping("/buscar")
+    public ResponseEntity<Page<AlojamientoResponse>> buscar(
+            @RequestParam(required = false) String ciudad,
+            @RequestParam(required = false) BigDecimal precioMin,
+            @RequestParam(required = false) BigDecimal precioMax,
+            @RequestParam(required = false) Integer capacidad,
+            Pageable pageable) {
+        return ResponseEntity.ok(alojamientoService.buscar(ciudad, precioMin, precioMax, capacidad, pageable));
+    }
+
+    @Operation(summary = "Cambiar estado de alojamiento", description = "Cambia el estado de un alojamiento (solo admin)")
+    @SecurityRequirement(name = "bearerAuth")
+    @PatchMapping("/{id}/estado")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<Void> cambiarEstado(
+            @PathVariable Long id,
+            @RequestParam EstadoAlojamiento estado) {
+        alojamientoService.cambiarEstado(id, estado);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Agregar imágenes", description = "Agrega imágenes a un alojamiento")
+    @SecurityRequirement(name = "bearerAuth")
+    @PostMapping("/{id}/imagenes")
+    @PreAuthorize("hasRole('ANFITRION')")
+    public ResponseEntity<Void> agregarImagenes(
+            @PathVariable Long id,
+            @RequestParam("imagenes") List<MultipartFile> imagenes) {
+        alojamientoService.agregarImagenes(id, imagenes);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Eliminar imagen", description = "Elimina una imagen de un alojamiento")
+    @SecurityRequirement(name = "bearerAuth")
+    @DeleteMapping("/{alojamientoId}/imagenes/{imagenId}")
+    @PreAuthorize("hasRole('ANFITRION')")
+    public ResponseEntity<Void> eliminarImagen(
+            @PathVariable Long alojamientoId,
+            @PathVariable Long imagenId) {
+        alojamientoService.eliminarImagen(alojamientoId, imagenId);
+        return ResponseEntity.noContent().build();
     }
 }
-
-

@@ -1,28 +1,39 @@
-package poo.uniquindio.edu.co.Homa.controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+package co.edu.uniquindio.homa.controller;
 
+import co.edu.uniquindio.homa.dto.request.LoginRequest;
+import co.edu.uniquindio.homa.dto.response.LoginResponse;
+import co.edu.uniquindio.homa.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import poo.uniquindio.edu.co.Homa.dto.AuthRequestDto;
-import poo.uniquindio.edu.co.Homa.dto.AuthResponseDto;
-import poo.uniquindio.edu.co.Homa.dto.UsuarioDto;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@Tag(name = "Autenticación", description = "Endpoints para autenticación y autorización")
 @RestController
 @RequestMapping("/api/auth")
-@Tag(name = "Autenticación", description = "Controlador de autenticación con JWT")
+@RequiredArgsConstructor
 public class AuthController {
-     @Operation(summary = "Iniciar sesión", description = "Autentica al usuario y devuelve un token JWT")
+
+    private final AuthService authService;
+
+    @Operation(summary = "Iniciar sesión", description = "Autentica un usuario y devuelve un token JWT")
     @PostMapping("/login")
-    public AuthResponseDto login(@RequestBody AuthRequestDto request) {
-        // Implementar autenticación real
-        return new AuthResponseDto("fake-jwt-token");
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
     }
-    @Operation(summary = "Registrar usuario", description = "Permite crear un nuevo usuario con credenciales")
-    @PostMapping("/register")
-    public UsuarioDto register(@RequestBody UsuarioDto dto) {
-        return dto;
+
+    @Operation(summary = "Cerrar sesión", description = "Invalida el token JWT actual")
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String token) {
+        authService.logout(token.substring(7));
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Refrescar token", description = "Genera un nuevo token JWT")
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponse> refreshToken(@RequestHeader("Authorization") String refreshToken) {
+        return ResponseEntity.ok(authService.refreshToken(refreshToken.substring(7)));
     }
 }
-

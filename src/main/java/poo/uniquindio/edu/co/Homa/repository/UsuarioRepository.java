@@ -1,11 +1,18 @@
-package poo.uniquindio.edu.co.Homa.repository;
-import poo.uniquindio.edu.co.Homa.entity.UsuarioEntity;
+package co.edu.uniquindio.homa.repository;
+
+import co.edu.uniquindio.homa.model.entity.Usuario;
+import co.edu.uniquindio.homa.model.enums.EstadoUsuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<UsuarioEntity, String> {
-    Optional<UsuarioEntity> findByEmail(String email);
+public interface UsuarioRepository extends JpaRepository<Usuario, String> {
+    
+    Optional<Usuario> findByEmail(String email);
+    
+    Optional<Usuario> findByEmailAndEstado(String email, EstadoUsuario estado);
+    
+    boolean existsByEmail(String email);
 }
