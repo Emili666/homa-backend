@@ -1,4 +1,4 @@
-package co.edu.uniquindio.homa.controller;
+package poo.uniquindio.edu.co.homa.controller;
 
 import co.edu.uniquindio.homa.dto.request.LoginRequest;
 import co.edu.uniquindio.homa.dto.response.LoginResponse;

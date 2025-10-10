@@ -1,4 +1,4 @@
-package co.edu.uniquindio.homa.mapper;
+package poo.uniquindio.edu.co.homa.mapper;
 
 import co.edu.uniquindio.homa.dto.request.ReservaRequest;
 import co.edu.uniquindio.homa.dto.response.ReservaResponse;

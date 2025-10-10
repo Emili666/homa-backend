@@ -1,4 +1,4 @@
-package co.edu.uniquindio.Homa.dto.request;
+package poo.uniquindio.edu.co.homa.dto.request;
 
 import co.edu.uniquindio.homa.model.enums.Servicio;
 import jakarta.validation.constraints.*;

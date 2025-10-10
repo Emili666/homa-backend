@@ -1,4 +1,4 @@
-package co.edu.uniquindio.Homa.dto.response;
+package poo.uniquindio.edu.co.homa.dto.response;
 
 import co.edu.uniquindio.homa.model.enums.EstadoAlojamiento;
 import lombok.AllArgsConstructor;

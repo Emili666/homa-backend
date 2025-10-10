@@ -1,5 +1,5 @@
 
-package poo.uniquindio.edu.co.Homa;
+package poo.uniquindio.edu.co.homa;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package co.edu.uniquindio.homa.service;
+package poo.uniquindio.edu.co.homa.service;
 
 import co.edu.uniquindio.homa.dto.request.*;
 import co.edu.uniquindio.homa.dto.response.UsuarioResponse;

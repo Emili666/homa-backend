@@ -1,4 +1,4 @@
-package co.edu.uniquindio.homa.repository;
+package poo.uniquindio.edu.co.homa.repository;
 
 import co.edu.uniquindio.homa.model.entity.Resena;
 import org.springframework.data.domain.Page;

@@ -1,4 +1,4 @@
-package co.edu.uniquindio.homa.util;
+package poo.uniquindio.edu.co.homa.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

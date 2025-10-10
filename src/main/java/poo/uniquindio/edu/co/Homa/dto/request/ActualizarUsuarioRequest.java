@@ -1,4 +1,4 @@
-package co.edu.uniquindio.Homa.dto.request;
+package poo.uniquindio.edu.co.homa.dto.request;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;

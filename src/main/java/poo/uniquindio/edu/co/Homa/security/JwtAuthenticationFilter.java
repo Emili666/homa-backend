@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.Homa.security;
+package poo.uniquindio.edu.co.homa.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -7,13 +7,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import poo.uniquindio.edu.co.homa.service.UserDetailsServiceImpl;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import poo.uniquindio.edu.co.Homa.service.UserDetailsServiceImpl;
 
 import java.io.IOException;
 

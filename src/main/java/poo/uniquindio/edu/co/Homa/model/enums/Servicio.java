@@ -1,4 +1,4 @@
-package co.edu.uniquindio.homa.model.enums;
+package poo.uniquindio.edu.co.homa.model.enums;
 
 public enum Servicio {
     WIFI,

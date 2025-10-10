@@ -1,4 +1,4 @@
-package co.edu.uniquindio.homa.service.impl;
+package poo.uniquindio.edu.co.homa.service.impl;
 
 import co.edu.uniquindio.homa.dto.request.AlojamientoRequest;
 import co.edu.uniquindio.homa.dto.response.AlojamientoResponse;

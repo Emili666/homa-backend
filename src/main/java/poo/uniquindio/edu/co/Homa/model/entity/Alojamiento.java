@@ -1,4 +1,4 @@
-package co.edu.uniquindio.homa.model.entity;
+package poo.uniquindio.edu.co.homa.model.entity;
 
 import co.edu.uniquindio.homa.model.enums.EstadoAlojamiento;
 import jakarta.persistence.*;

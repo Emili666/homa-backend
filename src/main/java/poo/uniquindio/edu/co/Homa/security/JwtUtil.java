@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.Homa.security;
+package poo.uniquindio.edu.co.homa.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
