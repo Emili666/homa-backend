@@ -1,6 +1,11 @@
 package poo.uniquindio.edu.co.Homa.dto;
 
-public class DireccionDto {
-    
-    
+public record DireccionDto(
+        @NotBlank
+        String ciudad,
+        @NotBlank
+        String direccion,
+        @NotNull
+        LocalizacionDTO localizacion
+) {
 }
