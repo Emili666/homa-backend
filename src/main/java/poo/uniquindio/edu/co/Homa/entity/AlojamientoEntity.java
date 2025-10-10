@@ -1,7 +1,7 @@
 package poo.uniquindio.edu.co.Homa.entity;
 import poo.uniquindio.edu.co.Homa.enums.Estado;
 import poo.uniquindio.edu.co.Homa.enums.Servicio;
-import co.edu.uniquindio.application.models.vo.Direccion;
+import poo.uniquindio.edu.co.Homa.vo.Direccion; 
 import jakarta.persistence.*;
 import lombok.*;
 
