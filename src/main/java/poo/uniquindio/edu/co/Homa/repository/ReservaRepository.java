@@ -1,12 +1,9 @@
 package poo.uniquindio.edu.co.Homa.repository;
 
-import java.util.List;
-
+import poo.uniquindio.edu.co.Homa.entity.ReservaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import poo.uniquindio.edu.co.Homa.model.Alojamiento;
-import poo.uniquindio.edu.co.Homa.model.Reserva;
-
-public interface ReservaRepository extends JpaRepository<Reserva, Long> {
-     List<Alojamiento> findByCapacidadGreaterThanEqual(int capacidad);
+@Repository
+public interface ReservaRepository extends JpaRepository<ReservaEntity, Long> {
 }

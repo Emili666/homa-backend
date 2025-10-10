@@ -2,10 +2,10 @@ package poo.uniquindio.edu.co.Homa.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import co.edu.uniquindio.application.models.enums.ReservaEstado;
+import poo.uniquindio.edu.co.Homa.enums.ReservaEstado;
 import jakarta.persistence.*;
 import lombok.*;
-import main.java.poo.uniquindio.edu.co.Homa.entity.Alojamiento;
+import poo.uniquindio.edu.co.Homa.entity.AlojamientoEntity;
 
 @Getter
 @Setter
@@ -40,10 +40,10 @@ public class ReservaEntity {
 
     @ManyToOne
     @JoinColumn(name = "alojamiento_id", nullable = false)
-    private Alojamiento alojamiento;
+    private AlojamientoEntity alojamiento;
 
     @ManyToOne
     @JoinColumn(name = "huesped_id", nullable = false)
-    private Usuario huesped;
+    private UsuarioEntity huesped;
 
 }

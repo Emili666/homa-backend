@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import co.edu.uniquindio.application.models.vo.Respuesta;
 import jakarta.persistence.*;
 import lombok.*;
-import main.java.poo.uniquindio.edu.co.Homa.entity.Alojamiento;
+import poo.uniquindio.edu.co.Homa.AlojamientoEntity;
 
 @Getter
 @Setter
@@ -33,7 +33,7 @@ public class ComentarioEntity {
 
     @ManyToOne
     @JoinColumn(name = "alojamiento_id", nullable = false)
-    private Alojamiento alojamiento;
+    private AlojamientoEntity alojamiento;
 
     @Embedded
     private Respuesta respuesta;

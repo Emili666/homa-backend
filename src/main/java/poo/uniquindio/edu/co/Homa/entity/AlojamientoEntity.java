@@ -1,6 +1,6 @@
 package poo.uniquindio.edu.co.Homa.entity;
-import co.edu.uniquindio.application.models.enums.Estado;
-import co.edu.uniquindio.application.models.enums.Servicio;
+import poo.uniquindio.edu.co.Homa.enums.Estado;
+import poo.uniquindio.edu.co.Homa.enums.Servicio;
 import co.edu.uniquindio.application.models.vo.Direccion;
 import jakarta.persistence.*;
 import lombok.*;
@@ -52,13 +52,13 @@ public class AlojamientoEntity {
 
     @ManyToOne
     @JoinColumn(name = "anfitrion_id", nullable = false)
-    private Usuario anfitrion;
+    private UsuarioEntity anfitrion;
 
     @OneToMany(mappedBy = "alojamiento")
-    private List<Reserva> reservas;
+    private List<ReservaEntity> reservas;
 
     @OneToMany(mappedBy = "alojamiento")
-    private List<Resena> resenas;
+    private List<ComentarioEntity> comentarios;
 
     private Double promedioCalificaciones;
 
