@@ -1,58 +1,52 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.5'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '3.5.5'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
-group = 'poo.uniquindio.edu.co'
+group = 'co.edu.uniquindio'
 version = '0.0.1-SNAPSHOT'
-description = 'Proyecto HOMA - Backend Spring Boot'
+description = 'Proyecto sobre gestión de alojamientos tipo airbn con Angular, Springboot, Graddle y Java'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	// 🧱 --- DEPENDENCIAS BASE DE SPRING ---
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'com.h2database:h2'
-
-	// 🧩 --- SWAGGER / OPENAPI ---
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
-
-	// 🧰 --- LOMBOK ---
-	compileOnly 'org.projectlombok:lombok:1.18.38'
-	annotationProcessor 'org.projectlombok:lombok:1.18.38'
-
-	// 💾 --- BASE DE DATOS ---
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-
-	// 🔐 --- JWT (JSON Web Token) ---
-	implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
-runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
-runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
-
-	// 🧪 --- TESTING ---
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.3'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
+    implementation 'org.simplejavamail:simple-java-mail:8.12.6'
+    implementation 'org.simplejavamail:batch-module:8.12.6'
+    implementation 'com.cloudinary:cloudinary-http5:2.3.2'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
