@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Repository
 public interface AlojamientoRepository extends JpaRepository<Alojamiento, Long> {
-    Page<Alojamiento> findByEstado(EstadoAlojamiento estado, Pageable pageable);
+   Page<Alojamiento> findByEstado(EstadoAlojamiento estado, Pageable pageable);
     
     Page<Alojamiento> findByAnfitrionIdAndEstado(String anfitrionId, EstadoAlojamiento estado, Pageable pageable);
     
