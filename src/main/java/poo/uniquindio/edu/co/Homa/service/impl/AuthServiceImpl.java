@@ -1,6 +1,16 @@
 package poo.uniquindio.edu.co.homa.service.impl;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import poo.uniquindio.edu.co.homa.dto.request.LoginRequest;
@@ -11,13 +21,6 @@ import poo.uniquindio.edu.co.homa.model.enums.EstadoUsuario;
 import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
 import poo.uniquindio.edu.co.homa.security.JwtUtil;
 import poo.uniquindio.edu.co.homa.service.AuthService;
-
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -50,10 +53,15 @@ public class AuthServiceImpl implements AuthService {
                 )
         );
 
+       // ...existing code...
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Generar token
-        String token = jwtUtil.generarToken(authentication);
+        String email = usuario.getEmail();
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("rol", usuario.getRol().name());
+        String token = jwtUtil.generarToken(email, claims);
+// ...existing code...
 
         log.info("Login exitoso para el usuario: {}", request.getEmail());
 
