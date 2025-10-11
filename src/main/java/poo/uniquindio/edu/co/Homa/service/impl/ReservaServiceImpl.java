@@ -1,7 +1,5 @@
 package poo.uniquindio.edu.co.homa.service.impl;
 
-
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -28,6 +26,7 @@ import poo.uniquindio.edu.co.homa.repository.AlojamientoRepository;
 import poo.uniquindio.edu.co.homa.repository.ReservaRepository;
 import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
 import poo.uniquindio.edu.co.homa.service.ReservaService;
+
 @Getter
 @Setter
 @Slf4j
@@ -49,7 +48,8 @@ public class ReservaServiceImpl implements ReservaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + clienteId));
 
         Alojamiento alojamiento = alojamientoRepository.findById(request.getAlojamientoId())
-                .orElseThrow(() -> new ResourceNotFoundException("Alojamiento no encontrado con id: " + request.getAlojamientoId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Alojamiento no encontrado con id: " + request.getAlojamientoId()));
 
         // Verificar disponibilidad
         if (!verificarDisponibilidad(request.getAlojamientoId(), request.getFechaEntrada(), request.getFechaSalida())) {
@@ -58,7 +58,7 @@ public class ReservaServiceImpl implements ReservaService {
 
         // Calcular precio total
         long dias = ChronoUnit.DAYS.between(request.getFechaEntrada(), request.getFechaSalida());
-        BigDecimal precioTotal = alojamiento.getPrecioPorNoche().multiply(BigDecimal.valueOf(dias));
+        Double precioTotal = (double) (alojamiento.getPrecioPorNoche() * dias);
 
         Reserva reserva = reservaMapper.toEntity(request);
         reserva.setHuesped(cliente);
@@ -71,6 +71,7 @@ public class ReservaServiceImpl implements ReservaService {
 
         log.info("Reserva creada exitosamente con id: {}", reserva.getId());
         return reservaMapper.toResponse(reserva);
+
     }
 
     @Override
@@ -126,7 +127,7 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     @Transactional(readOnly = true)
     public Page<ReservaResponse> listarPorCliente(Long clienteId, Pageable pageable) {
-        return reservaRepository.findByUsuarioId(clienteId, pageable)
+        return reservaRepository.findByHuespedId(String.valueOf(clienteId), pageable)
                 .map(reservaMapper::toResponse);
     }
 
@@ -140,6 +141,7 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     @Transactional(readOnly = true)
     public boolean verificarDisponibilidad(Long alojamientoId, LocalDate fechaInicio, LocalDate fechaFin) {
-        return !reservaRepository.existsReservaEnFechas(alojamientoId, fechaInicio, fechaFin);
+        return reservaRepository.findReservasConflictivas(alojamientoId, fechaInicio, fechaFin).isEmpty();
     }
+
 }
