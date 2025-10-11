@@ -32,4 +32,7 @@ public class ContrasenaCodigoReinicio {
     @CreationTimestamp
     @Column(name = "creado_en", nullable = false, updatable = false)
     private LocalDateTime creadoEn;
+    private boolean usado;
+
 }
+

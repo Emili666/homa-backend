@@ -60,7 +60,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario = usuarioRepository.save(usuario);
 
         // Enviar email de activación
-        emailService.enviarEmailActivacion(usuario.getEmail(), usuario.getCodigosReinicio());
+                emailService.enviarEmailActivacion(usuario.getEmail(), usuario.getContrasena());
 
         log.info("Usuario registrado exitosamente: {}", usuario.getEmail());
         return usuarioMapper.toResponse(usuario);
@@ -146,7 +146,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         ContrasenaCodigoReinicio codigoReinicio = ContrasenaCodigoReinicio.builder()
                 .usuario(usuario)
                 .codigo(codigo)
-                .fechaExpiracion(expiracion)
+                .creadoEn(expiracion)
                 .usado(false)
                 .build();
 

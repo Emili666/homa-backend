@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface ContrasenaCodigoReinicioRepository extends JpaRepository<ContrasenaCodigoReinicio, Long> {
     
     Optional<ContrasenaCodigoReinicio> findByCodigoAndUsuarioId(String codigo, String usuarioId);
+    Optional<ContrasenaCodigoReinicio> findByCodigo(String codigo);
     
     void deleteByUsuarioId(String usuarioId);
     

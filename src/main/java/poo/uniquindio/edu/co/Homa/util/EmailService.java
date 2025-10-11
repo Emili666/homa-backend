@@ -1,5 +1,6 @@
 package poo.uniquindio.edu.co.homa.util;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 @Service
 @RequiredArgsConstructor
 public class EmailService {
+
 
     private final JavaMailSender mailSender;
 
