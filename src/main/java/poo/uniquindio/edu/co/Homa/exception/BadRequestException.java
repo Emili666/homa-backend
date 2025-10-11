@@ -1,4 +1,4 @@
-package co.edu.uniquindio.homa.exception;
+package poo.uniquindio.edu.co.homa.exception;
 
 public class BadRequestException extends RuntimeException {
     public BadRequestException(String message) {

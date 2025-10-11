@@ -1,4 +1,4 @@
-package co.edu.uniquindio.homa.util;
+package poo.uniquindio.edu.co.homa.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

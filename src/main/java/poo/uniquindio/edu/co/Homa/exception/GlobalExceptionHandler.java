@@ -1,4 +1,4 @@
-package co.edu.uniquindio.homa.exception;
+package poo.uniquindio.edu.co.homa.exception;
 
 import co.edu.uniquindio.homa.dto.response.ApiResponse;
 import org.springframework.http.HttpStatus;

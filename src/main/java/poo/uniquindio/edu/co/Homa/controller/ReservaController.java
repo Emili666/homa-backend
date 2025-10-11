@@ -1,4 +1,4 @@
-package co.edu.uniquindio.homa.controller;
+package poo.uniquindio.edu.co.homa.controller;
 
 import co.edu.uniquindio.homa.dto.request.ReservaRequest;
 import co.edu.uniquindio.homa.dto.response.ReservaResponse;

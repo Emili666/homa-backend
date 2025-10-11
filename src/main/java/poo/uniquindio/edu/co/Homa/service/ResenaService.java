@@ -1,8 +1,10 @@
-package co.edu.uniquindio.homa.service;
+package poo.uniquindio.edu.co.homa.service;
 
-import co.edu.uniquindio.homa.dto.request.ResenaRequest;
+
 import co.edu.uniquindio.homa.dto.request.ResponderResenaRequest;
 import co.edu.uniquindio.homa.dto.response.ResenaResponse;
+import poo.uniquindio.edu.co.homa.dto.request.ResenaRequest;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -1,4 +1,4 @@
-package co.edu.uniquindio.homa.repository;
+package poo.uniquindio.edu.co.homa.repository;
 
 import co.edu.uniquindio.homa.model.entity.Usuario;
 import co.edu.uniquindio.homa.model.enums.EstadoUsuario;

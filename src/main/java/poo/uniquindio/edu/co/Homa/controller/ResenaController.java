@@ -1,14 +1,16 @@
-package co.edu.uniquindio.homa.controller;
+package poo.uniquindio.edu.co.homa.controller;
 
-import co.edu.uniquindio.homa.dto.request.ResenaRequest;
-import co.edu.uniquindio.homa.dto.request.ResponderResenaRequest;
-import co.edu.uniquindio.homa.dto.response.ResenaResponse;
-import co.edu.uniquindio.homa.service.ResenaService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import poo.uniquindio.edu.co.homa.dto.request.ResenaRequest;
+import poo.uniquindio.edu.co.homa.dto.request.ResponderResenaRequest;
+import poo.uniquindio.edu.co.homa.dto.response.ResenaResponse;
+import poo.uniquindio.edu.co.homa.service.ResenaService;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

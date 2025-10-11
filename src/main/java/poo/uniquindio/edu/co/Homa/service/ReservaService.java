@@ -1,10 +1,12 @@
-package co.edu.uniquindio.homa.service;
+package poo.uniquindio.edu.co.homa.service;
 
-import co.edu.uniquindio.homa.dto.request.ReservaRequest;
-import co.edu.uniquindio.homa.dto.response.ReservaResponse;
-import co.edu.uniquindio.homa.model.enums.EstadoReserva;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import poo.uniquindio.edu.co.homa.dto.request.ReservaRequest;
+import poo.uniquindio.edu.co.homa.dto.response.ReservaResponse;
+import poo.uniquindio.edu.co.homa.model.enums.EstadoReserva;
 
 import java.time.LocalDate;
 

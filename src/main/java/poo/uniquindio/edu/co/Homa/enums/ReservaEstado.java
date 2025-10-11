@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.Homa.enums;
+package poo.uniquindio.edu.co.homa.enums;
 
 public enum ReservaEstado {
     PENDIENTE,
