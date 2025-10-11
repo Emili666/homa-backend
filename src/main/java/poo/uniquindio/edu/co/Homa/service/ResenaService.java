@@ -1,12 +1,14 @@
 package poo.uniquindio.edu.co.homa.service;
 
 
-import co.edu.uniquindio.homa.dto.request.ResponderResenaRequest;
-import co.edu.uniquindio.homa.dto.response.ResenaResponse;
-import poo.uniquindio.edu.co.homa.dto.request.ResenaRequest;
+
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import poo.uniquindio.edu.co.homa.dto.request.ResenaRequest;
+import poo.uniquindio.edu.co.homa.dto.request.ResponderResenaRequest;
+import poo.uniquindio.edu.co.homa.dto.response.ResenaResponse;
 
 public interface ResenaService {
     

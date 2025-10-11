@@ -1,8 +1,10 @@
 package poo.uniquindio.edu.co.homa.repository;
 
-import co.edu.uniquindio.homa.model.entity.ContrasenaCodigoReinicio;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import poo.uniquindio.edu.co.homa.model.entity.ContrasenaCodigoReinicio;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

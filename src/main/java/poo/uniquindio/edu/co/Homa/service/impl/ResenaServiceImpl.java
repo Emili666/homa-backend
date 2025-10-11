@@ -1,27 +1,29 @@
 package poo.uniquindio.edu.co.homa.service.impl;
 
-import co.edu.uniquindio.homa.dto.request.ResenaRequest;
-import co.edu.uniquindio.homa.dto.request.ResponderResenaRequest;
-import co.edu.uniquindio.homa.dto.response.ResenaResponse;
-import co.edu.uniquindio.homa.exception.BusinessException;
-import co.edu.uniquindio.homa.exception.ResourceNotFoundException;
-import co.edu.uniquindio.homa.mapper.ResenaMapper;
-import co.edu.uniquindio.homa.model.entity.Alojamiento;
-import co.edu.uniquindio.homa.model.entity.Resena;
-import co.edu.uniquindio.homa.model.entity.Usuario;
-import co.edu.uniquindio.homa.repository.AlojamientoRepository;
-import co.edu.uniquindio.homa.repository.ResenaRepository;
-import co.edu.uniquindio.homa.repository.ReservaRepository;
-import co.edu.uniquindio.homa.repository.UsuarioRepository;
-import co.edu.uniquindio.homa.service.ResenaService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import poo.uniquindio.edu.co.homa.dto.request.ResenaRequest;
+import poo.uniquindio.edu.co.homa.dto.request.ResponderResenaRequest;
+import poo.uniquindio.edu.co.homa.dto.response.ResenaResponse;
+import poo.uniquindio.edu.co.homa.exception.BusinessException;
+import poo.uniquindio.edu.co.homa.exception.ResourceNotFoundException;
+import poo.uniquindio.edu.co.homa.mapper.ResenaMapper;
+import poo.uniquindio.edu.co.homa.model.entity.Alojamiento;
+import poo.uniquindio.edu.co.homa.model.entity.Resena;
+import poo.uniquindio.edu.co.homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.homa.model.enums.EstadoReserva;
+import poo.uniquindio.edu.co.homa.repository.AlojamientoRepository;
+import poo.uniquindio.edu.co.homa.repository.ResenaRepository;
+import poo.uniquindio.edu.co.homa.repository.ReservaRepository;
+import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
+import poo.uniquindio.edu.co.homa.service.ResenaService;
 
 @Slf4j
 @Service
@@ -43,24 +45,30 @@ public class ResenaServiceImpl implements ResenaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + clienteId));
 
         Alojamiento alojamiento = alojamientoRepository.findById(request.getAlojamientoId())
-                .orElseThrow(() -> new ResourceNotFoundException("Alojamiento no encontrado con id: " + request.getAlojamientoId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Alojamiento no encontrado con id: " + request.getAlojamientoId()));
 
         // Verificar que el cliente haya tenido una reserva en el alojamiento
-        boolean tieneReserva = reservaRepository.existsByClienteIdAndAlojamientoId(clienteId, request.getAlojamientoId());
+        boolean tieneReserva = reservaRepository.existsByHuespedIdAndAlojamientoIdAndEstado(
+                String.valueOf(clienteId),
+                request.getAlojamientoId(),
+                EstadoReserva.CONFIRMADA);
+
         if (!tieneReserva) {
             throw new BusinessException("Solo puedes reseñar alojamientos donde hayas tenido una reserva");
         }
 
         // Verificar que no haya reseñado antes
-        boolean yaReseno = resenaRepository.existsByClienteIdAndAlojamientoId(clienteId, request.getAlojamientoId());
+        boolean yaReseno = resenaRepository.existsByUsuarioIdAndAlojamientoId(clienteId.toString(),
+                request.getAlojamientoId());
+
         if (yaReseno) {
             throw new BusinessException("Ya has reseñado este alojamiento");
         }
 
         Resena resena = resenaMapper.toEntity(request);
-        resena.setCliente(cliente);
+        resena.setUsuario(cliente);
         resena.setAlojamiento(alojamiento);
-        resena.setFechaResena(LocalDateTime.now());
 
         resena = resenaRepository.save(resena);
 
@@ -85,7 +93,7 @@ public class ResenaServiceImpl implements ResenaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Reseña no encontrada con id: " + id));
 
         // Verificar que el cliente sea el propietario
-        if (!resena.getCliente().getId().equals(clienteId)) {
+        if (!resena.getUsuario().getId().equals(clienteId)) {
             throw new BusinessException("No tienes permiso para eliminar esta reseña");
         }
 
@@ -97,7 +105,7 @@ public class ResenaServiceImpl implements ResenaService {
     @Override
     @Transactional(readOnly = true)
     public Page<ResenaResponse> listarPorAlojamiento(Long alojamientoId, Pageable pageable) {
-        return resenaRepository.findByAlojamientoId(alojamientoId, pageable)
+        return resenaRepository.findByAlojamientoIdOrderByCreadoEnDesc(alojamientoId, pageable)
                 .map(resenaMapper::toResponse);
     }
 
@@ -114,8 +122,9 @@ public class ResenaServiceImpl implements ResenaService {
             throw new BusinessException("No tienes permiso para responder esta reseña");
         }
 
-        resena.setRespuestaAnfitrion(request.getRespuesta());
-        resena.setFechaRespuesta(LocalDateTime.now());
+        resena.setComentario(request.getMensaje());
+        resena.setRespondidoEn(LocalDateTime.now());
+
         resenaRepository.save(resena);
 
         log.info("Respuesta agregada exitosamente a la reseña: {}", resena.getId());

@@ -1,11 +1,14 @@
 package poo.uniquindio.edu.co.homa.mapper;
 
-import co.edu.uniquindio.homa.dto.request.UsuarioRegistroRequest;
-import co.edu.uniquindio.homa.dto.response.UsuarioResponse;
-import co.edu.uniquindio.homa.model.entity.Usuario;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+
+import poo.uniquindio.edu.co.homa.dto.request.ActualizarUsuarioRequest;
+import poo.uniquindio.edu.co.homa.dto.request.UsuarioRegistroRequest;
+import poo.uniquindio.edu.co.homa.dto.response.UsuarioResponse;
+import poo.uniquindio.edu.co.homa.model.entity.Usuario;
 
 @Mapper(componentModel = "spring")
 public interface UsuarioMapper {
@@ -36,5 +39,5 @@ public interface UsuarioMapper {
     @Mapping(target = "reservas", ignore = true)
     @Mapping(target = "resenas", ignore = true)
     @Mapping(target = "codigosReinicio", ignore = true)
-    void updateEntityFromRequest(co.edu.uniquindio.homa.dto.request.ActualizarUsuarioRequest request, @MappingTarget Usuario usuario);
+    void updateEntityFromRequest(ActualizarUsuarioRequest request, @MappingTarget Usuario usuario);
 }

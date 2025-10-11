@@ -1,10 +1,12 @@
 package poo.uniquindio.edu.co.homa.mapper;
 
-import co.edu.uniquindio.homa.dto.request.ReservaRequest;
-import co.edu.uniquindio.homa.dto.response.ReservaResponse;
-import co.edu.uniquindio.homa.model.entity.Reserva;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import poo.uniquindio.edu.co.homa.dto.request.ReservaRequest;
+import poo.uniquindio.edu.co.homa.dto.response.ReservaResponse;
+import poo.uniquindio.edu.co.homa.model.entity.Reserva;
 
 @Mapper(componentModel = "spring")
 public interface ReservaMapper {

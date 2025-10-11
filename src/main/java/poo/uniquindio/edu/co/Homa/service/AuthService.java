@@ -1,7 +1,7 @@
 package poo.uniquindio.edu.co.homa.service;
 
-import co.edu.uniquindio.homa.dto.request.LoginRequest;
-import co.edu.uniquindio.homa.dto.response.LoginResponse;
+import poo.uniquindio.edu.co.homa.dto.request.LoginRequest;
+import poo.uniquindio.edu.co.homa.dto.response.LoginResponse;
 
 public interface AuthService {
     

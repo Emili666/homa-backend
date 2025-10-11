@@ -1,18 +1,20 @@
 package poo.uniquindio.edu.co.homa.service.impl;
 
-import co.edu.uniquindio.homa.dto.request.AlojamientoRequest;
-import co.edu.uniquindio.homa.dto.response.AlojamientoResponse;
-import co.edu.uniquindio.homa.exception.BusinessException;
-import co.edu.uniquindio.homa.exception.ResourceNotFoundException;
-import co.edu.uniquindio.homa.mapper.AlojamientoMapper;
-import co.edu.uniquindio.homa.model.entity.Alojamiento;
-import co.edu.uniquindio.homa.model.entity.Usuario;
-import co.edu.uniquindio.homa.model.enums.EstadoAlojamiento;
-import co.edu.uniquindio.homa.repository.AlojamientoRepository;
-import co.edu.uniquindio.homa.repository.UsuarioRepository;
-import co.edu.uniquindio.homa.service.AlojamientoService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import poo.uniquindio.edu.co.homa.dto.request.AlojamientoRequest;
+import poo.uniquindio.edu.co.homa.dto.response.AlojamientoResponse;
+import poo.uniquindio.edu.co.homa.exception.ResourceNotFoundException;
+import poo.uniquindio.edu.co.homa.exception.UnauthorizedException;
+import poo.uniquindio.edu.co.homa.mapper.AlojamientoMapper;
+import poo.uniquindio.edu.co.homa.model.entity.Alojamiento;
+import poo.uniquindio.edu.co.homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
+import poo.uniquindio.edu.co.homa.repository.AlojamientoRepository;
+import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
+import poo.uniquindio.edu.co.homa.service.AlojamientoService;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -43,7 +45,8 @@ public class AlojamientoServiceImpl implements AlojamientoService {
         Alojamiento alojamiento = alojamientoMapper.toEntity(request);
         alojamiento.setAnfitrion(anfitrion);
         alojamiento.setEstado(EstadoAlojamiento.PENDIENTE);
-        alojamiento.setFechaCreacion(LocalDateTime.now());
+        alojamiento.setCreadoEn(LocalDateTime.now());
+
 
         alojamiento = alojamientoRepository.save(alojamiento);
 
@@ -69,7 +72,7 @@ public class AlojamientoServiceImpl implements AlojamientoService {
 
         // Verificar que el anfitrión sea el propietario
         if (!alojamiento.getAnfitrion().getId().equals(anfitrionId)) {
-            throw new BusinessException("No tienes permiso para actualizar este alojamiento");
+            throw new UnauthorizedException("No tienes permiso para actualizar este alojamiento");
         }
 
         alojamientoMapper.updateEntityFromRequest(request, alojamiento);
@@ -89,7 +92,7 @@ public class AlojamientoServiceImpl implements AlojamientoService {
 
         // Verificar que el anfitrión sea el propietario
         if (!alojamiento.getAnfitrion().getId().equals(anfitrionId)) {
-            throw new BusinessException("No tienes permiso para eliminar este alojamiento");
+            throw new UnauthorizedException("No tienes permiso para eliminar este alojamiento");
         }
 
         alojamiento.setEstado(EstadoAlojamiento.ELIMINADO);
@@ -109,16 +112,29 @@ public class AlojamientoServiceImpl implements AlojamientoService {
     @Transactional(readOnly = true)
     public Page<AlojamientoResponse> listarPorAnfitrion(Long anfitrionId, Pageable pageable) {
         return alojamientoRepository.findByAnfitrionId(anfitrionId, pageable)
-                .map(alojamientoMapper::toResponse);
+        .map(alojamientoMapper::toResponse);
+
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<AlojamientoResponse> buscar(String ciudad, BigDecimal precioMin, BigDecimal precioMax,
-                                            Integer capacidad, Pageable pageable) {
-        return alojamientoRepository.buscarAlojamientos(ciudad, precioMin, precioMax, capacidad, pageable)
-                .map(alojamientoMapper::toResponse);
-    }
+   @Override
+@Transactional(readOnly = true)
+public Page<AlojamientoResponse> buscar(String ciudad, BigDecimal precioMin, BigDecimal precioMax,
+                                        Integer capacidad, Pageable pageable) {
+
+    Float precioMinF = precioMin != null ? precioMin.floatValue() : null;
+    Float precioMaxF = precioMax != null ? precioMax.floatValue() : null;
+
+    return alojamientoRepository.buscarAlojamientos(
+                EstadoAlojamiento.ACTIVO, 
+                ciudad,
+                precioMinF,
+                precioMaxF,
+                capacidad,
+                pageable
+            )
+            .map(alojamientoMapper::toResponse);
+}
+
 
     @Override
     @Transactional

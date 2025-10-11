@@ -1,12 +1,14 @@
 package poo.uniquindio.edu.co.homa.controller;
 
-import co.edu.uniquindio.homa.dto.request.LoginRequest;
-import co.edu.uniquindio.homa.dto.response.LoginResponse;
-import co.edu.uniquindio.homa.service.AuthService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import poo.uniquindio.edu.co.homa.dto.request.LoginRequest;
+import poo.uniquindio.edu.co.homa.dto.response.LoginResponse;
+import poo.uniquindio.edu.co.homa.service.AuthService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

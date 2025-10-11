@@ -1,11 +1,13 @@
 package poo.uniquindio.edu.co.homa.mapper;
 
-import co.edu.uniquindio.homa.dto.request.AlojamientoRequest;
-import co.edu.uniquindio.homa.dto.response.AlojamientoResponse;
-import co.edu.uniquindio.homa.model.entity.Alojamiento;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+
+import poo.uniquindio.edu.co.homa.dto.request.AlojamientoRequest;
+import poo.uniquindio.edu.co.homa.dto.response.AlojamientoResponse;
+import poo.uniquindio.edu.co.homa.model.entity.Alojamiento;
 
 @Mapper(componentModel = "spring")
 public interface AlojamientoMapper {

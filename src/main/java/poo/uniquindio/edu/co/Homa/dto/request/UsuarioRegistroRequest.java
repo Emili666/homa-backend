@@ -1,11 +1,11 @@
 package poo.uniquindio.edu.co.homa.dto.request;
 
-import co.edu.uniquindio.homa.model.enums.RolUsuario;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import poo.uniquindio.edu.co.homa.model.enums.RolUsuario;
 
 import java.time.LocalDate;
 

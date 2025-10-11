@@ -1,13 +1,19 @@
 package poo.uniquindio.edu.co.homa.controller;
 
-import co.edu.uniquindio.homa.dto.request.*;
-import co.edu.uniquindio.homa.dto.response.UsuarioResponse;
-import co.edu.uniquindio.homa.service.UsuarioService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import poo.uniquindio.edu.co.homa.dto.request.ActualizarUsuarioRequest;
+import poo.uniquindio.edu.co.homa.dto.request.CambiarContrasenaRequest;
+import poo.uniquindio.edu.co.homa.dto.request.RecuperarContrasenaRequest;
+import poo.uniquindio.edu.co.homa.dto.request.RestablecerContrasenaRequest;
+import poo.uniquindio.edu.co.homa.dto.request.UsuarioRegistroRequest;
+import poo.uniquindio.edu.co.homa.dto.response.UsuarioResponse;
+import poo.uniquindio.edu.co.homa.service.UsuarioService;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

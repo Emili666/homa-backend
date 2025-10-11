@@ -1,9 +1,10 @@
 package poo.uniquindio.edu.co.homa.model.entity;
 
-import co.edu.uniquindio.homa.model.enums.EstadoUsuario;
-import co.edu.uniquindio.homa.model.enums.RolUsuario;
 import jakarta.persistence.*;
 import lombok.*;
+import poo.uniquindio.edu.co.homa.model.enums.EstadoUsuario;
+import poo.uniquindio.edu.co.homa.model.enums.RolUsuario;
+
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;

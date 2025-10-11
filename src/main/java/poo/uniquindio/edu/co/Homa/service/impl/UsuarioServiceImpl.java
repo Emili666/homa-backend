@@ -1,27 +1,33 @@
 package poo.uniquindio.edu.co.homa.service.impl;
 
-import co.edu.uniquindio.homa.dto.request.*;
-import co.edu.uniquindio.homa.dto.response.UsuarioResponse;
-import co.edu.uniquindio.homa.exception.BusinessException;
-import co.edu.uniquindio.homa.exception.ResourceNotFoundException;
-import co.edu.uniquindio.homa.mapper.UsuarioMapper;
-import co.edu.uniquindio.homa.model.entity.ContrasenaCodigoReinicio;
-import co.edu.uniquindio.homa.model.entity.Usuario;
-import co.edu.uniquindio.homa.model.enums.EstadoUsuario;
-import co.edu.uniquindio.homa.repository.ContrasenaCodigoReinicioRepository;
-import co.edu.uniquindio.homa.repository.UsuarioRepository;
-import co.edu.uniquindio.homa.service.UsuarioService;
-import co.edu.uniquindio.homa.util.EmailService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import poo.uniquindio.edu.co.homa.dto.request.ActualizarUsuarioRequest;
+import poo.uniquindio.edu.co.homa.dto.request.CambiarContrasenaRequest;
+import poo.uniquindio.edu.co.homa.dto.request.RecuperarContrasenaRequest;
+import poo.uniquindio.edu.co.homa.dto.request.RestablecerContrasenaRequest;
+import poo.uniquindio.edu.co.homa.dto.request.UsuarioRegistroRequest;
+import poo.uniquindio.edu.co.homa.dto.response.UsuarioResponse;
+import poo.uniquindio.edu.co.homa.exception.BusinessException;
+import poo.uniquindio.edu.co.homa.exception.ResourceNotFoundException;
+import poo.uniquindio.edu.co.homa.mapper.UsuarioMapper;
+import poo.uniquindio.edu.co.homa.model.entity.ContrasenaCodigoReinicio;
+import poo.uniquindio.edu.co.homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.homa.model.enums.EstadoUsuario;
+import poo.uniquindio.edu.co.homa.repository.ContrasenaCodigoReinicioRepository;
+import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
+import poo.uniquindio.edu.co.homa.service.UsuarioService;
+import poo.uniquindio.edu.co.homa.util.EmailService;
 
 @Slf4j
 @Service
@@ -48,13 +54,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = usuarioMapper.toEntity(request);
         usuario.setContrasena(passwordEncoder.encode(request.getContrasena()));
         usuario.setEstado(EstadoUsuario.INACTIVO);
-        usuario.setCodigoActivacion(UUID.randomUUID().toString());
-        usuario.setFechaRegistro(LocalDateTime.now());
+        usuario.setContrasena(UUID.randomUUID().toString());
+        usuario.setCreadoEn(LocalDateTime.now());
 
         usuario = usuarioRepository.save(usuario);
 
         // Enviar email de activación
-        emailService.enviarEmailActivacion(usuario.getEmail(), usuario.getCodigoActivacion());
+        emailService.enviarEmailActivacion(usuario.getEmail(), usuario.getCodigosReinicio());
 
         log.info("Usuario registrado exitosamente: {}", usuario.getEmail());
         return usuarioMapper.toResponse(usuario);
@@ -119,7 +125,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
 
         // Actualizar contraseña
-        usuario.setContrasena(passwordEncoder.encode(request.getContrasenaNueva()));
+        usuario.setContrasena(passwordEncoder.encode(request.getNuevaContrasena()));
         usuarioRepository.save(usuario);
 
         log.info("Contraseña cambiada exitosamente para usuario: {}", usuario.getEmail());
@@ -166,13 +172,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
 
         // Verificar que no esté expirado
-        if (codigoReinicio.getFechaExpiracion().isBefore(LocalDateTime.now())) {
+        if (codigoReinicio.getCreadoEn().isBefore(LocalDateTime.now())) {
             throw new BusinessException("El código de reinicio ha expirado");
         }
 
         // Actualizar contraseña
         Usuario usuario = codigoReinicio.getUsuario();
-        usuario.setContrasena(passwordEncoder.encode(request.getContrasenaNueva()));
+        usuario.setContrasena(passwordEncoder.encode(request.getNuevaContrasena()));
         usuarioRepository.save(usuario);
 
         // Marcar código como usado
@@ -187,7 +193,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     public void activarCuenta(String codigo) {
         log.info("Activando cuenta con código: {}", codigo);
 
-        Usuario usuario = usuarioRepository.findByCodigoActivacion(codigo)
+        Usuario usuario = usuarioRepository.findById(codigo)
                 .orElseThrow(() -> new BusinessException("Código de activación inválido"));
 
         if (usuario.getEstado() == EstadoUsuario.ACTIVO) {
@@ -195,7 +201,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
 
         usuario.setEstado(EstadoUsuario.ACTIVO);
-        usuario.setCodigoActivacion(null);
+        usuario.setCodigosReinicio(null);
         usuarioRepository.save(usuario);
 
         log.info("Cuenta activada exitosamente: {}", usuario.getEmail());
@@ -221,4 +227,5 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         log.info("Estado cambiado exitosamente para usuario: {}", usuario.getEmail());
     }
+       
 }

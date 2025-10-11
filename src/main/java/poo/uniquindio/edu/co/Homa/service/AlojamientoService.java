@@ -1,8 +1,10 @@
 package poo.uniquindio.edu.co.homa.service;
 
-import co.edu.uniquindio.homa.dto.request.AlojamientoRequest;
-import co.edu.uniquindio.homa.dto.response.AlojamientoResponse;
-import co.edu.uniquindio.homa.model.enums.EstadoAlojamiento;
+
+import poo.uniquindio.edu.co.homa.dto.request.AlojamientoRequest;
+import poo.uniquindio.edu.co.homa.dto.response.AlojamientoResponse;
+import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;

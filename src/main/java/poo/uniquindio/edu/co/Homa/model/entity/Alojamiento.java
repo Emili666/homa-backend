@@ -1,8 +1,10 @@
 package poo.uniquindio.edu.co.homa.model.entity;
 
-import co.edu.uniquindio.homa.model.enums.EstadoAlojamiento;
+
 import jakarta.persistence.*;
 import lombok.*;
+import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
+
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -85,4 +87,9 @@ public class Alojamiento {
     @OneToMany(mappedBy = "alojamiento", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Resena> resenas = new ArrayList<>();
+
+
+    
+
+   
 }

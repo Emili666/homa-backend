@@ -7,7 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import poo.uniquindio.edu.co.homa.service.UserDetailsServiceImpl;
+import poo.uniquindio.edu.co.homa.service.impl.UsuarioServiceImpl;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,7 +25,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil; // 🔹 Usa JwtUtils, como en tu proyecto
-    private final UserDetailsServiceImpl usuarioDetallesServicio;
+    private final UsuarioServiceImpl usuarioDetallesServicio;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

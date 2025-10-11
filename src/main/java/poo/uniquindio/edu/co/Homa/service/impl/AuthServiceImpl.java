@@ -1,15 +1,17 @@
 package poo.uniquindio.edu.co.homa.service.impl;
 
-import co.edu.uniquindio.homa.dto.request.LoginRequest;
-import co.edu.uniquindio.homa.dto.response.LoginResponse;
-import co.edu.uniquindio.homa.exception.BusinessException;
-import co.edu.uniquindio.homa.model.entity.Usuario;
-import co.edu.uniquindio.homa.model.enums.EstadoUsuario;
-import co.edu.uniquindio.homa.repository.UsuarioRepository;
-import co.edu.uniquindio.homa.service.AuthService;
-import co.edu.uniquindio.homa.util.JwtUtil;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import poo.uniquindio.edu.co.homa.dto.request.LoginRequest;
+import poo.uniquindio.edu.co.homa.dto.response.LoginResponse;
+import poo.uniquindio.edu.co.homa.exception.UnauthorizedException;
+import poo.uniquindio.edu.co.homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.homa.model.enums.EstadoUsuario;
+import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
+import poo.uniquindio.edu.co.homa.security.JwtUtil;
+import poo.uniquindio.edu.co.homa.service.AuthService;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,11 +35,11 @@ public class AuthServiceImpl implements AuthService {
 
         // Verificar que el usuario existe
         Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BusinessException("Credenciales inválidas"));
+                .orElseThrow(() -> new UnauthorizedException("Credenciales inválidas"));
 
         // Verificar que la cuenta está activa
         if (usuario.getEstado() != EstadoUsuario.ACTIVO) {
-            throw new BusinessException("La cuenta no está activa. Por favor, verifica tu correo electrónico.");
+            throw new UnauthorizedException("La cuenta no está activa. Por favor, verifica tu correo electrónico.");
         }
 
         // Autenticar
@@ -51,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Generar token
-        String token = jwtUtil.generateToken(authentication);
+        String token = jwtUtil.generarToken(authentication);
 
         log.info("Login exitoso para el usuario: {}", request.getEmail());
 
@@ -76,14 +78,14 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponse refreshToken(String refreshToken) {
         // Validar el refresh token
         if (!jwtUtil.validateToken(refreshToken)) {
-            throw new BusinessException("Token de actualización inválido");
+            throw new UnauthorizedException("Token de actualización inválido");
         }
 
         String email = jwtUtil.getEmailFromToken(refreshToken);
         String newToken = jwtUtil.generateTokenFromEmail(email);
 
         Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new BusinessException("Usuario no encontrado"));
+                .orElseThrow(() -> new UnauthorizedException("Usuario no encontrado"));
 
         return LoginResponse.builder()
                 .token(newToken)

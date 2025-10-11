@@ -1,9 +1,15 @@
 package poo.uniquindio.edu.co.homa.service;
 
-import co.edu.uniquindio.homa.dto.request.*;
-import co.edu.uniquindio.homa.dto.response.UsuarioResponse;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import poo.uniquindio.edu.co.homa.dto.request.ActualizarUsuarioRequest;
+import poo.uniquindio.edu.co.homa.dto.request.CambiarContrasenaRequest;
+import poo.uniquindio.edu.co.homa.dto.request.RecuperarContrasenaRequest;
+import poo.uniquindio.edu.co.homa.dto.request.RestablecerContrasenaRequest;
+import poo.uniquindio.edu.co.homa.dto.request.UsuarioRegistroRequest;
+import poo.uniquindio.edu.co.homa.dto.response.UsuarioResponse;
 
 public interface UsuarioService {
     

@@ -1,8 +1,10 @@
 package poo.uniquindio.edu.co.homa.repository;
 
-import co.edu.uniquindio.homa.model.entity.PerfilAnfitrion;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import poo.uniquindio.edu.co.homa.model.entity.PerfilAnfitrion;
 
 import java.util.Optional;
 

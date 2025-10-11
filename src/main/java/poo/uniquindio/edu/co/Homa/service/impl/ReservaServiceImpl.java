@@ -1,30 +1,35 @@
 package poo.uniquindio.edu.co.homa.service.impl;
 
-import co.edu.uniquindio.homa.dto.request.ReservaRequest;
-import co.edu.uniquindio.homa.dto.response.ReservaResponse;
-import co.edu.uniquindio.homa.exception.BusinessException;
-import co.edu.uniquindio.homa.exception.ResourceNotFoundException;
-import co.edu.uniquindio.homa.mapper.ReservaMapper;
-import co.edu.uniquindio.homa.model.entity.Alojamiento;
-import co.edu.uniquindio.homa.model.entity.Reserva;
-import co.edu.uniquindio.homa.model.entity.Usuario;
-import co.edu.uniquindio.homa.model.enums.EstadoReserva;
-import co.edu.uniquindio.homa.repository.AlojamientoRepository;
-import co.edu.uniquindio.homa.repository.ReservaRepository;
-import co.edu.uniquindio.homa.repository.UsuarioRepository;
-import co.edu.uniquindio.homa.service.ReservaService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import poo.uniquindio.edu.co.homa.dto.request.ReservaRequest;
+import poo.uniquindio.edu.co.homa.dto.response.ReservaResponse;
+import poo.uniquindio.edu.co.homa.exception.BusinessException;
+import poo.uniquindio.edu.co.homa.exception.ResourceNotFoundException;
+import poo.uniquindio.edu.co.homa.mapper.ReservaMapper;
+import poo.uniquindio.edu.co.homa.model.entity.Alojamiento;
+import poo.uniquindio.edu.co.homa.model.entity.Reserva;
+import poo.uniquindio.edu.co.homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.homa.model.enums.EstadoReserva;
+import poo.uniquindio.edu.co.homa.repository.AlojamientoRepository;
+import poo.uniquindio.edu.co.homa.repository.ReservaRepository;
+import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
+import poo.uniquindio.edu.co.homa.service.ReservaService;
+@Getter
+@Setter
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -47,20 +52,20 @@ public class ReservaServiceImpl implements ReservaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Alojamiento no encontrado con id: " + request.getAlojamientoId()));
 
         // Verificar disponibilidad
-        if (!verificarDisponibilidad(request.getAlojamientoId(), request.getFechaInicio(), request.getFechaFin())) {
+        if (!verificarDisponibilidad(request.getAlojamientoId(), request.getFechaEntrada(), request.getFechaSalida())) {
             throw new BusinessException("El alojamiento no está disponible para las fechas seleccionadas");
         }
 
         // Calcular precio total
-        long dias = ChronoUnit.DAYS.between(request.getFechaInicio(), request.getFechaFin());
+        long dias = ChronoUnit.DAYS.between(request.getFechaEntrada(), request.getFechaSalida());
         BigDecimal precioTotal = alojamiento.getPrecioPorNoche().multiply(BigDecimal.valueOf(dias));
 
         Reserva reserva = reservaMapper.toEntity(request);
-        reserva.setCliente(cliente);
+        reserva.setHuesped(cliente);
         reserva.setAlojamiento(alojamiento);
-        reserva.setPrecioTotal(precioTotal);
+        reserva.setPrecio(precioTotal);
         reserva.setEstado(EstadoReserva.PENDIENTE);
-        reserva.setFechaReserva(LocalDateTime.now());
+        reserva.setCreadoEn(LocalDateTime.now());
 
         reserva = reservaRepository.save(reserva);
 
@@ -85,7 +90,7 @@ public class ReservaServiceImpl implements ReservaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con id: " + id));
 
         // Verificar que el cliente sea el propietario
-        if (!reserva.getCliente().getId().equals(clienteId)) {
+        if (!reserva.getHuesped().getId().equals(clienteId)) {
             throw new BusinessException("No tienes permiso para cancelar esta reserva");
         }
 
@@ -121,7 +126,7 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     @Transactional(readOnly = true)
     public Page<ReservaResponse> listarPorCliente(Long clienteId, Pageable pageable) {
-        return reservaRepository.findByClienteId(clienteId, pageable)
+        return reservaRepository.findByUsuarioId(clienteId, pageable)
                 .map(reservaMapper::toResponse);
     }
 

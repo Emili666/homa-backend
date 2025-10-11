@@ -1,11 +1,12 @@
 package poo.uniquindio.edu.co.homa.dto.request;
 
-import co.edu.uniquindio.homa.model.enums.Servicio;
+
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import poo.uniquindio.edu.co.homa.enums.Servicio;
 
 import java.util.List;
 
