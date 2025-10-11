@@ -1,8 +1,7 @@
-package co.edu.uniquindio.homa.config;
+package poo.uniquindio.edu.co.homa.config;
 
-import co.edu.uniquindio.homa.security.JwtAuthenticationEntryPoint;
-import co.edu.uniquindio.homa.security.JwtAuthenticationFilter;
-import lombok.RequiredArgsConstructor;
+
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,6 +19,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import lombok.RequiredArgsConstructor;
+import poo.uniquindio.edu.co.homa.security.JwtAuthenticationEntryPoint;
+import poo.uniquindio.edu.co.homa.security.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity

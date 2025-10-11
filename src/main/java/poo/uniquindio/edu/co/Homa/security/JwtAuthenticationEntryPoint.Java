@@ -1,36 +1,42 @@
-package poo.uniquindio.edu.co.Homa.security;
+package poo.uniquindio.edu.co.homa.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
-                         AuthenticationException authException) throws IOException {
+                         AuthenticationException authException) throws IOException, ServletException {
+        
+        log.error("Error de autenticación: {}", authException.getMessage());
 
-        // Creamos un JSON manual sin usar DTOs
-        Map<String, Object> respuesta = new HashMap<>();
-        respuesta.put("error", true);
-        respuesta.put("mensaje", "No tienes permisos para acceder a este recurso");
-        respuesta.put("path", request.getRequestURI());
-        respuesta.put("status", 403);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        // Configuración de la respuesta
-        response.setContentType("application/json");
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now().toString());
+        body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
+        body.put("error", "No autorizado");
+        body.put("message", "Se requiere autenticación para acceder a este recurso");
+        body.put("path", request.getServletPath());
 
-        // Convertir el Map a JSON y enviarlo
-        new ObjectMapper().writeValue(response.getOutputStream(), respuesta);
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(response.getOutputStream(), body);
     }
 }

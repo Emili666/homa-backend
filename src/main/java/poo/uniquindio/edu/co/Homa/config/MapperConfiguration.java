@@ -1,5 +1,4 @@
-package co.edu.uniquindio.homa.config;
-
+package poo.uniquindio.edu.co.homa.config;
 import org.mapstruct.MapperConfig;
 import org.mapstruct.ReportingPolicy;
 

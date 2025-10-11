@@ -1,11 +1,14 @@
 package poo.uniquindio.edu.co.homa.service.impl;
 
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,8 +35,7 @@ import poo.uniquindio.edu.co.homa.util.EmailService;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UsuarioServiceImpl implements UsuarioService {
-
+public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     private final UsuarioRepository usuarioRepository;
     private final ContrasenaCodigoReinicioRepository codigoReinicioRepository;
     private final UsuarioMapper usuarioMapper;
@@ -60,7 +62,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario = usuarioRepository.save(usuario);
 
         // Enviar email de activación
-                emailService.enviarEmailActivacion(usuario.getEmail(), usuario.getContrasena());
+        emailService.enviarEmailActivacion(usuario.getEmail(), usuario.getContrasena());
 
         log.info("Usuario registrado exitosamente: {}", usuario.getEmail());
         return usuarioMapper.toResponse(usuario);
@@ -137,7 +139,8 @@ public class UsuarioServiceImpl implements UsuarioService {
         log.info("Solicitud de recuperación de contraseña para: {}", request.getEmail());
 
         Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con email: " + request.getEmail()));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Usuario no encontrado con email: " + request.getEmail()));
 
         // Generar código de reinicio
         String codigo = UUID.randomUUID().toString();
@@ -227,5 +230,20 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         log.info("Estado cambiado exitosamente para usuario: {}", usuario.getEmail());
     }
-       
+
+   
+   @Override
+@Transactional(readOnly = true)
+public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    Usuario usuario = usuarioRepository.findByEmail(username)
+            .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
+
+    return User.builder()
+            .username(usuario.getEmail())
+            .password(usuario.getContrasena())
+            .roles(usuario.getRol().name()) // Asegúrate de tener el campo 'rol' en tu entidad Usuario
+            .build();
+}
+
+
 }

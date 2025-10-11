@@ -1,4 +1,4 @@
-package co.edu.uniquindio.homa.config;
+package poo.uniquindio.edu.co.homa.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
