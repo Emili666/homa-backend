@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "poo.uniquindio.edu.co.homa.repository")
-@EntityScan(basePackages = "poo.uniquindio.edu.co.homa.model")
+@EntityScan(basePackages = "poo.uniquindio.edu.co.homa.model.entity")
 @ComponentScan(basePackages = "poo.uniquindio.edu.co.homa")
 public class HomaApplication {
 

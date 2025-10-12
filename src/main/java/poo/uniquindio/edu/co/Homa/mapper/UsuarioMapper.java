@@ -1,6 +1,5 @@
 package poo.uniquindio.edu.co.homa.mapper;
 
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -21,7 +20,7 @@ public interface UsuarioMapper {
     @Mapping(target = "alojamientos", ignore = true)
     @Mapping(target = "reservas", ignore = true)
     @Mapping(target = "resenas", ignore = true)
-    @Mapping(target = "codigosReinicio", ignore = true)
+    @Mapping(target = "codigoActivacion", ignore = true)
     Usuario toEntity(UsuarioRegistroRequest request);
 
     UsuarioResponse toResponse(Usuario usuario);
@@ -38,6 +37,6 @@ public interface UsuarioMapper {
     @Mapping(target = "alojamientos", ignore = true)
     @Mapping(target = "reservas", ignore = true)
     @Mapping(target = "resenas", ignore = true)
-    @Mapping(target = "codigosReinicio", ignore = true)
+    @Mapping(target = "codigoActivacion", ignore = true)
     void updateEntityFromRequest(ActualizarUsuarioRequest request, @MappingTarget Usuario usuario);
 }

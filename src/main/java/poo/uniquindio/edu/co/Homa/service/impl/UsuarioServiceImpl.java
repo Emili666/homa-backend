@@ -43,30 +43,41 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     private final EmailService emailService;
 
     @Override
-    @Transactional
-    public UsuarioResponse registrar(UsuarioRegistroRequest request) {
-        log.info("Registrando nuevo usuario: {}", request.getEmail());
+@Transactional
+public UsuarioResponse registrar(UsuarioRegistroRequest request) {
+    log.info("Registrando nuevo usuario: {}", request.getEmail());
 
-        // Verificar que el email no esté registrado
-        if (usuarioRepository.existsByEmail(request.getEmail())) {
-            throw new BusinessException("El email ya está registrado");
-        }
-
-        // Crear usuario
-        Usuario usuario = usuarioMapper.toEntity(request);
-        usuario.setContrasena(passwordEncoder.encode(request.getContrasena()));
-        usuario.setEstado(EstadoUsuario.INACTIVO);
-        usuario.setContrasena(UUID.randomUUID().toString());
-        usuario.setCreadoEn(LocalDateTime.now());
-
-        usuario = usuarioRepository.save(usuario);
-
-        // Enviar email de activación
-        emailService.enviarEmailActivacion(usuario.getEmail(), usuario.getContrasena());
-
-        log.info("Usuario registrado exitosamente: {}", usuario.getEmail());
-        return usuarioMapper.toResponse(usuario);
+    // Verificar que el email no esté registrado
+    if (usuarioRepository.existsByEmail(request.getEmail())) {
+        throw new BusinessException("El email ya está registrado");
     }
+
+    // Crear el usuario a partir del mapper
+    Usuario usuario = usuarioMapper.toEntity(request);
+
+    // Encriptar contraseña del usuario
+    usuario.setContrasena(passwordEncoder.encode(request.getContrasena()));
+
+    // Estado inicial: INACTIVO (hasta que active la cuenta)
+    usuario.setEstado(EstadoUsuario.INACTIVO);
+
+    // Generar y asignar el código único de activación
+    String codigoActivacion = UUID.randomUUID().toString();
+    usuario.setCodigoActivacion(codigoActivacion);
+
+    // Fecha de creación
+    usuario.setCreadoEn(LocalDateTime.now());
+
+    // Guardar en base de datos
+    usuario = usuarioRepository.save(usuario);
+
+    // Enviar email de activación con el código
+    emailService.enviarEmailActivacion(usuario.getEmail(), usuario.getCodigoActivacion());
+
+    log.info("Usuario registrado exitosamente: {}", usuario.getEmail());
+    return usuarioMapper.toResponse(usuario);
+}
+
 
     @Override
     @Transactional(readOnly = true)
