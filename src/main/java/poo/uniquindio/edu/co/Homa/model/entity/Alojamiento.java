@@ -1,11 +1,10 @@
 package poo.uniquindio.edu.co.homa.model.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
-import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
-
 import org.hibernate.annotations.CreationTimestamp;
+import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
+import poo.uniquindio.edu.co.homa.model.enums.Servicio;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -65,7 +64,7 @@ public class Alojamiento {
     private LocalDateTime creadoEn;
 
     @ElementCollection
-    @CollectionTable(name = "alojamiento_imagenes", 
+    @CollectionTable(name = "alojamiento_imagenes",
         joinColumns = @JoinColumn(name = "alojamiento_id"),
         indexes = @Index(name = "idx_orden", columnList = "orden"))
     @Column(name = "imagenes", length = 255)
@@ -73,12 +72,14 @@ public class Alojamiento {
     @Builder.Default
     private List<String> imagenes = new ArrayList<>();
 
-    @ElementCollection
-    @CollectionTable(name = "alojamiento_servicios", 
+    // ✅ CAMBIO IMPORTANTE AQUÍ
+    @ElementCollection(targetClass = Servicio.class)
+    @CollectionTable(name = "alojamiento_servicios",
         joinColumns = @JoinColumn(name = "alojamiento_id"))
+    @Enumerated(EnumType.STRING)
     @Column(name = "servicio")
     @Builder.Default
-    private List<Integer> servicios = new ArrayList<>();
+    private List<Servicio> servicios = new ArrayList<>();
 
     @OneToMany(mappedBy = "alojamiento", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -87,9 +88,4 @@ public class Alojamiento {
     @OneToMany(mappedBy = "alojamiento", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Resena> resenas = new ArrayList<>();
-
-
-    
-
-   
 }

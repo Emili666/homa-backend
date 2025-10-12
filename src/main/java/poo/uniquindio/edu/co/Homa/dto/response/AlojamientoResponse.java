@@ -5,8 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import poo.uniquindio.edu.co.homa.enums.Servicio;
+
 import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
+import poo.uniquindio.edu.co.homa.model.enums.Servicio;
 
 import java.time.LocalDateTime;
 import java.util.List;

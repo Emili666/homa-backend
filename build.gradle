@@ -25,41 +25,43 @@ repositories {
 }
 
 dependencies {
-	//  --- DEPENDENCIAS BASE DE SPRING ---
+	// --- SPRING BOOT BASE ---
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-    //implementation 'com.h2database:h2'
-	implementation 'com.sun.mail:jakarta.mail:2.0.1'
-	implementation 'org.eclipse.angus:angus-mail:2.0.3'
 
-	//  --- SWAGGER / OPENAPI ---
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+	// --- BASE DE DATOS MARIADB ---
+	// Usa 'implementation' en lugar de 'runtimeOnly' para que esté disponible también en tiempo de compilación
+	implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.3'
 
-	//  --- LOMBOK ---
+	// --- LOMBOK ---
 	compileOnly 'org.projectlombok:lombok:1.18.38'
 	annotationProcessor 'org.projectlombok:lombok:1.18.38'
 
-	//  --- BASE DE DATOS ---
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	// --- MAPSTRUCT ---
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
-	//  --- JWT (JSON Web Token) ---
+	// --- JWT (JSON Web Token) ---
 	implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
-runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
-runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
 
+	// --- CORREO ---
+	implementation 'com.sun.mail:jakarta.mail:2.0.1'
+	implementation 'org.eclipse.angus:angus-mail:2.0.3'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.simplejavamail:simple-java-mail:8.12.6'
-    implementation 'org.simplejavamail:batch-module:8.12.6'
-	//  --- TESTING ---
+	implementation 'org.simplejavamail:batch-module:8.12.6'
+
+	// --- SWAGGER / OPENAPI ---
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+
+	// --- TESTS ---
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
-annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
-
-
 }
 
 tasks.named('test') {
