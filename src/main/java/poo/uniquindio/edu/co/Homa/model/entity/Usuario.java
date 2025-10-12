@@ -1,16 +1,29 @@
 package poo.uniquindio.edu.co.homa.model.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import poo.uniquindio.edu.co.homa.model.enums.EstadoUsuario;
-import poo.uniquindio.edu.co.homa.model.enums.RolUsuario;
-
-import org.hibernate.annotations.CreationTimestamp;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import poo.uniquindio.edu.co.homa.model.enums.EstadoUsuario;
+import poo.uniquindio.edu.co.homa.model.enums.RolUsuario;
 
 @Entity
 @Table(name = "usuario", indexes = {
@@ -27,7 +40,7 @@ public class Usuario {
 
     @Id
     @Column(length = 255)
-    private String id;
+    private Long id;
 
     @Column(nullable = false, length = 100)
     private String nombre;
@@ -79,14 +92,7 @@ public class Usuario {
     @Builder.Default
     private List<Resena> resenas = new ArrayList<>();
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<ContrasenaCodigoReinicio> codigosReinicio = new ArrayList<>();
+  @Column(name = "codigo_activacion", nullable = false, length = 255)
+  private String codigoActivacion;
 
-    @PrePersist
-    public void prePersist() {
-        if (this.id == null || this.id.isEmpty()) {
-            this.id = java.util.UUID.randomUUID().toString();
-        }
-    }
 }

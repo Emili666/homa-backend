@@ -1,5 +1,14 @@
 package poo.uniquindio.edu.co.homa.service.impl;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,16 +23,6 @@ import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
 import poo.uniquindio.edu.co.homa.repository.AlojamientoRepository;
 import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
 import poo.uniquindio.edu.co.homa.service.AlojamientoService;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -46,7 +45,6 @@ public class AlojamientoServiceImpl implements AlojamientoService {
         alojamiento.setAnfitrion(anfitrion);
         alojamiento.setEstado(EstadoAlojamiento.PENDIENTE);
         alojamiento.setCreadoEn(LocalDateTime.now());
-
 
         alojamiento = alojamientoRepository.save(alojamiento);
 
@@ -112,29 +110,27 @@ public class AlojamientoServiceImpl implements AlojamientoService {
     @Transactional(readOnly = true)
     public Page<AlojamientoResponse> listarPorAnfitrion(Long anfitrionId, Pageable pageable) {
         return alojamientoRepository.findByAnfitrionId(anfitrionId, pageable)
-        .map(alojamientoMapper::toResponse);
+                .map(alojamientoMapper::toResponse);
 
     }
 
-   @Override
-@Transactional(readOnly = true)
-public Page<AlojamientoResponse> buscar(String ciudad, BigDecimal precioMin, BigDecimal precioMax,
-                                        Integer capacidad, Pageable pageable) {
+    @Override
+    @Transactional(readOnly = true)
+    public Page<AlojamientoResponse> buscar(String ciudad, BigDecimal precioMin, BigDecimal precioMax,
+            Integer capacidad, Pageable pageable) {
 
-    Float precioMinF = precioMin != null ? precioMin.floatValue() : null;
-    Float precioMaxF = precioMax != null ? precioMax.floatValue() : null;
+        Float precioMinF = precioMin != null ? precioMin.floatValue() : null;
+        Float precioMaxF = precioMax != null ? precioMax.floatValue() : null;
 
-    return alojamientoRepository.buscarAlojamientos(
-                EstadoAlojamiento.ACTIVO, 
+        return alojamientoRepository.buscarAlojamientos(
+                EstadoAlojamiento.ACTIVO,
                 ciudad,
                 precioMinF,
                 precioMaxF,
                 capacidad,
-                pageable
-            )
-            .map(alojamientoMapper::toResponse);
-}
-
+                pageable)
+                .map(alojamientoMapper::toResponse);
+    }
 
     @Override
     @Transactional

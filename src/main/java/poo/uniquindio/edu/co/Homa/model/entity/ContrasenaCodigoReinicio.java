@@ -1,38 +1,42 @@
 package poo.uniquindio.edu.co.homa.model.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
-@Table(name = "contrasena_codigo_reinicio", indexes = {
-    @Index(name = "idx_codigo", columnList = "codigo"),
-    @Index(name = "idx_usuario_id", columnList = "usuario_id")
-})
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class ContrasenaCodigoReinicio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 255)
-    private String codigo;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    @CreationTimestamp
-    @Column(name = "creado_en", nullable = false, updatable = false)
+    @Column(nullable = false, unique = true, length = 100)
+    private String codigo;
+
+    @Column(nullable = false)
     private LocalDateTime creadoEn;
+
+    @Column(nullable = false)
     private boolean usado;
-
 }
-

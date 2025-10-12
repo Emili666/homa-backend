@@ -134,81 +134,84 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     @Override
-    @Transactional
-    public void solicitarRecuperacionContrasena(RecuperarContrasenaRequest request) {
-        log.info("Solicitud de recuperación de contraseña para: {}", request.getEmail());
+@Transactional
+public void solicitarRecuperacionContrasena(RecuperarContrasenaRequest request) {
+    log.info("Solicitud de recuperación de contraseña para: {}", request.getEmail());
 
-        Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("Usuario no encontrado con email: " + request.getEmail()));
+    Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
+            .orElseThrow(
+                    () -> new ResourceNotFoundException("Usuario no encontrado con email: " + request.getEmail()));
 
-        // Generar código de reinicio
-        String codigo = UUID.randomUUID().toString();
-        LocalDateTime expiracion = LocalDateTime.now().plusHours(24);
+    // Generar código de reinicio
+    String codigo = UUID.randomUUID().toString();
+    LocalDateTime expiracion = LocalDateTime.now().plusHours(24);
 
-        ContrasenaCodigoReinicio codigoReinicio = ContrasenaCodigoReinicio.builder()
-                .usuario(usuario)
-                .codigo(codigo)
-                .creadoEn(expiracion)
-                .usado(false)
-                .build();
+    // ✅ Aquí usamos la entidad correcta
+    ContrasenaCodigoReinicio codigoReinicio = ContrasenaCodigoReinicio.builder()
+            .usuario(usuario)
+            .codigo(codigo)
+            .creadoEn(expiracion)
+            .usado(false)
+            .build();
 
-        codigoReinicioRepository.save(codigoReinicio);
+    codigoReinicioRepository.save(codigoReinicio);
 
-        // Enviar email con código
-        emailService.enviarEmailRecuperacion(usuario.getEmail(), codigo);
+    // Enviar email con el código
+    emailService.enviarEmailRecuperacion(usuario.getEmail(), codigo);
 
-        log.info("Código de recuperación enviado a: {}", usuario.getEmail());
-    }
+    log.info("Código de recuperación enviado a: {}", usuario.getEmail());
+}
 
-    @Override
-    @Transactional
-    public void restablecerContrasena(RestablecerContrasenaRequest request) {
-        log.info("Restableciendo contraseña con código: {}", request.getCodigo());
-
-        ContrasenaCodigoReinicio codigoReinicio = codigoReinicioRepository.findByCodigo(request.getCodigo())
-                .orElseThrow(() -> new BusinessException("Código de reinicio inválido"));
-
-        // Verificar que no esté usado
-        if (codigoReinicio.isUsado()) {
-            throw new BusinessException("El código de reinicio ya fue utilizado");
-        }
-
-        // Verificar que no esté expirado
-        if (codigoReinicio.getCreadoEn().isBefore(LocalDateTime.now())) {
-            throw new BusinessException("El código de reinicio ha expirado");
-        }
-
-        // Actualizar contraseña
-        Usuario usuario = codigoReinicio.getUsuario();
-        usuario.setContrasena(passwordEncoder.encode(request.getNuevaContrasena()));
-        usuarioRepository.save(usuario);
-
-        // Marcar código como usado
-        codigoReinicio.setUsado(true);
-        codigoReinicioRepository.save(codigoReinicio);
-
-        log.info("Contraseña restablecida exitosamente para usuario: {}", usuario.getEmail());
-    }
 
     @Override
-    @Transactional
-    public void activarCuenta(String codigo) {
-        log.info("Activando cuenta con código: {}", codigo);
+@Transactional
+public void restablecerContrasena(RestablecerContrasenaRequest request) {
+    log.info("Restableciendo contraseña con código: {}", request.getCodigo());
 
-        Usuario usuario = usuarioRepository.findById(codigo)
-                .orElseThrow(() -> new BusinessException("Código de activación inválido"));
+    ContrasenaCodigoReinicio codigoReinicio = codigoReinicioRepository.findByCodigo(request.getCodigo())
+            .orElseThrow(() -> new BusinessException("Código de reinicio inválido"));
 
-        if (usuario.getEstado() == EstadoUsuario.ACTIVO) {
-            throw new BusinessException("La cuenta ya está activada");
-        }
-
-        usuario.setEstado(EstadoUsuario.ACTIVO);
-        usuario.setCodigosReinicio(null);
-        usuarioRepository.save(usuario);
-
-        log.info("Cuenta activada exitosamente: {}", usuario.getEmail());
+    // Verificar que no esté usado
+    if (codigoReinicio.isUsado()) {
+        throw new BusinessException("El código de reinicio ya fue utilizado");
     }
+
+    // Verificar que no esté expirado
+    if (codigoReinicio.getCreadoEn().isBefore(LocalDateTime.now())) {
+        throw new BusinessException("El código de reinicio ha expirado");
+    }
+
+    // Actualizar contraseña
+    Usuario usuario = codigoReinicio.getUsuario();
+    usuario.setContrasena(passwordEncoder.encode(request.getNuevaContrasena()));
+    usuarioRepository.save(usuario);
+
+    // Marcar código como usado
+    codigoReinicio.setUsado(true);
+    codigoReinicioRepository.save(codigoReinicio);
+
+    log.info("Contraseña restablecida exitosamente para usuario: {}", usuario.getEmail());
+}
+
+
+    @Override
+@Transactional
+public void activarCuenta(String codigo) {
+    log.info("Activando cuenta con código: {}", codigo);
+
+    Usuario usuario = usuarioRepository.findByCodigoActivacion(codigo)
+            .orElseThrow(() -> new BusinessException("Código de activación inválido"));
+
+    if (usuario.getEstado() == EstadoUsuario.ACTIVO) {
+        throw new BusinessException("La cuenta ya está activada");
+    }
+
+    usuario.setEstado(EstadoUsuario.ACTIVO);
+    usuarioRepository.save(usuario);
+
+    log.info("Cuenta activada exitosamente: {}", usuario.getEmail());
+}
+
 
     @Override
     @Transactional(readOnly = true)
