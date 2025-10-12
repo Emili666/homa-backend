@@ -1,7 +1,6 @@
 package poo.uniquindio.edu.co.homa.config;
 
-
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,8 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import lombok.RequiredArgsConstructor;
 import poo.uniquindio.edu.co.homa.security.JwtAuthenticationEntryPoint;
 import poo.uniquindio.edu.co.homa.security.JwtAuthenticationFilter;
 
@@ -31,49 +28,20 @@ import poo.uniquindio.edu.co.homa.security.JwtAuthenticationFilter;
 public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsService userDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configure(http))
+                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // Endpoints públicos
-                        .requestMatchers(
-                                "/api/auth/**",
-                                "/api/alojamientos/buscar/**",
-                                "/api/alojamientos/{id}",
-                                "/api/alojamientos/{id}/resenas",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/swagger-resources/**",
-                                "/webjars/**"
-                        ).permitAll()
-                        
-                        // Endpoints de administrador
-                        .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
-                        
-                        // Endpoints de anfitrión
-                        .requestMatchers(HttpMethod.POST, "/api/alojamientos").hasRole("ANFITRION")
-                        .requestMatchers(HttpMethod.PUT, "/api/alojamientos/**").hasRole("ANFITRION")
-                        .requestMatchers(HttpMethod.DELETE, "/api/alojamientos/**").hasRole("ANFITRION")
-                        
-                        // Endpoints de cliente
-                        .requestMatchers("/api/reservas/**").hasAnyRole("CLIENTE", "ANFITRION")
-                        .requestMatchers("/api/resenas/**").hasRole("CLIENTE")
-                        
-                        // Cualquier otra petición requiere autenticación
+                        .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authenticationProvider(authenticationProvider())
+                .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -81,10 +49,10 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
     }
 
     @Bean

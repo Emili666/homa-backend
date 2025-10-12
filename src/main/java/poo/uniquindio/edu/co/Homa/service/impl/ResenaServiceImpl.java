@@ -36,45 +36,49 @@ public class ResenaServiceImpl implements ResenaService {
     private final ReservaRepository reservaRepository;
     private final ResenaMapper resenaMapper;
 
-    @Override
-    @Transactional
-    public ResenaResponse crear(ResenaRequest request, Long clienteId) {
-        log.info("Creando nueva reseña para alojamiento: {}", request.getAlojamientoId());
+   @Override
+@Transactional
+public ResenaResponse crear(ResenaRequest request, Long clienteId) {
+    log.info("Creando nueva reseña para alojamiento con ID: {}", request.getAlojamientoId());
 
-        Usuario cliente = usuarioRepository.findById(clienteId)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + clienteId));
+    // Buscar cliente y alojamiento
+    Usuario cliente = usuarioRepository.findById(clienteId)
+            .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con ID: " + clienteId));
 
-        Alojamiento alojamiento = alojamientoRepository.findById(request.getAlojamientoId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Alojamiento no encontrado con id: " + request.getAlojamientoId()));
+    Alojamiento alojamiento = alojamientoRepository.findById(request.getAlojamientoId())
+            .orElseThrow(() -> new ResourceNotFoundException(
+                    "Alojamiento no encontrado con ID: " + request.getAlojamientoId()));
 
-        // Verificar que el cliente haya tenido una reserva en el alojamiento
-        boolean tieneReserva = reservaRepository.existsByHuespedIdAndAlojamientoIdAndEstado(
-                String.valueOf(clienteId),
-                request.getAlojamientoId(),
-                EstadoReserva.CONFIRMADA);
+    // Verificar que el cliente tenga una reserva confirmada en el alojamiento
+    boolean tieneReserva = reservaRepository.existsByHuespedIdAndAlojamientoIdAndEstado(
+            clienteId, // ← ahora se pasa como Long (no como String)
+            request.getAlojamientoId(),
+            EstadoReserva.CONFIRMADA);
 
-        if (!tieneReserva) {
-            throw new BusinessException("Solo puedes reseñar alojamientos donde hayas tenido una reserva");
-        }
-
-        // Verificar que no haya reseñado antes
-        boolean yaReseno = resenaRepository.existsByUsuarioIdAndAlojamientoId(clienteId.toString(),
-                request.getAlojamientoId());
-
-        if (yaReseno) {
-            throw new BusinessException("Ya has reseñado este alojamiento");
-        }
-
-        Resena resena = resenaMapper.toEntity(request);
-        resena.setUsuario(cliente);
-        resena.setAlojamiento(alojamiento);
-
-        resena = resenaRepository.save(resena);
-
-        log.info("Reseña creada exitosamente con id: {}", resena.getId());
-        return resenaMapper.toResponse(resena);
+    if (!tieneReserva) {
+        throw new BusinessException("Solo puedes reseñar alojamientos donde hayas tenido una reserva confirmada.");
     }
+
+    // Verificar que no haya reseñado antes
+    boolean yaReseno = resenaRepository.existsByUsuarioIdAndAlojamientoId(
+            clienteId, // ← también se pasa como Long
+            request.getAlojamientoId());
+
+    if (yaReseno) {
+        throw new BusinessException("Ya has realizado una reseña para este alojamiento.");
+    }
+
+    // Crear y guardar la reseña
+    Resena resena = resenaMapper.toEntity(request);
+    resena.setUsuario(cliente);
+    resena.setAlojamiento(alojamiento);
+
+    resena = resenaRepository.save(resena);
+
+    log.info("Reseña creada exitosamente con ID: {}", resena.getId());
+    return resenaMapper.toResponse(resena);
+}
+
 
     @Override
     @Transactional(readOnly = true)

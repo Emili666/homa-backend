@@ -15,7 +15,7 @@ public interface ResenaRepository extends JpaRepository<Resena, Long> {
     
     Page<Resena> findByAlojamientoIdOrderByCreadoEnDesc(Long alojamientoId, Pageable pageable);
     
-    boolean existsByUsuarioIdAndAlojamientoId(String usuarioId, Long alojamientoId);
+    boolean existsByUsuarioIdAndAlojamientoId(Long usuarioId, Long alojamientoId);
     
     @Query("SELECT AVG(r.calificacion) FROM Resena r WHERE r.alojamiento.id = :alojamientoId")
     Double calcularPromedioCalificacion(@Param("alojamientoId") Long alojamientoId);

@@ -41,7 +41,7 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     );
     
     boolean existsByHuespedIdAndAlojamientoIdAndEstado(
-        String huespedId, 
+        Long huespedId, 
         Long alojamientoId, 
         EstadoReserva estado
     );
