@@ -21,7 +21,7 @@ import poo.uniquindio.edu.co.homa.repository.ReservaRepository;
 import poo.uniquindio.edu.co.homa.service.impl.ReservaServiceImpl;
 
 class ReservaServiceTest {
-    /* 
+    /*
 
     @Mock
     ReservaRepository reservaRepository;
@@ -62,8 +62,7 @@ class ReservaServiceTest {
     @Test
     @DisplayName("Cancelar reserva con menos de 48h falla")
     void cancelarReserva_FueraDelLimite() {
-        // si tu servicio tiene cancelar(id, clienteId) que verifica fecha inicio...
-        // Mock repository to return reserva con fechaInicio muy cercano
+      
         Reserva r = new Reserva();
         r.setFechaEntrada(LocalDate.now().plusDays(1)); // less than 48 hours
         when(reservaRepository.findById(1L)).thenReturn(java.util.Optional.of(r));
@@ -82,5 +81,5 @@ class ReservaServiceTest {
         when(reservaRepository.save(any(Reserva.class))).thenAnswer(inv -> inv.getArgument(0));
         assertDoesNotThrow(() -> reservaService.crear(req, 1L));
     }
-        */
+     */    
 }

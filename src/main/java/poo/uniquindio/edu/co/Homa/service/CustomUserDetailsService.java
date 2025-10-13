@@ -1,17 +1,17 @@
 package poo.uniquindio.edu.co.homa.service;
 
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
-import poo.uniquindio.edu.co.homa.model.entity.Usuario;
 
-@Service("customUserDetailsService")
+import lombok.RequiredArgsConstructor;
+import poo.uniquindio.edu.co.homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
+
+@Service
 @RequiredArgsConstructor
 @Primary
 public class CustomUserDetailsService implements UserDetailsService {
@@ -25,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return User.builder()
                 .username(usuario.getEmail())
-                .password(usuario.getContrasena())
+                .password(usuario.getContrasena()) // Debe estar encriptada
                 .roles(usuario.getRol().name())
                 .build();
     }

@@ -15,7 +15,7 @@ import poo.uniquindio.edu.co.homa.model.entity.Reserva;
 import poo.uniquindio.edu.co.homa.service.impl.ResenaServiceImpl;
 
 class ComentarioServiceTest {
-    /*
+    /* 
 
     @InjectMocks
     ResenaServiceImpl resenaService;
@@ -55,5 +55,5 @@ class ComentarioServiceTest {
     void responderResena_noEncontrada() {
         assertThrows(RuntimeException.class, () -> resenaService.responder(999L, null, 1L));
     }
-         */
+        */
 }

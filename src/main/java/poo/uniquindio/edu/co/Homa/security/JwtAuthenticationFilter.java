@@ -2,11 +2,11 @@ package poo.uniquindio.edu.co.homa.security;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,16 +18,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
-/**
- * Filtro que intercepta las peticiones HTTP y valida el token JWT.
- */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil; // 🔹 Usa JwtUtils, como en tu proyecto
+    private final JwtUtil jwtUtil;
     @Qualifier("customUserDetailsService")
-    private final UserDetailsService usuarioDetallesServicio;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -37,29 +34,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = obtenerToken(request);
 
-        if (token == null) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        if (token != null) {
+            try {
+                Jws<Claims> payload = jwtUtil.decodificarJwt(token);
+                String username = payload.getPayload().getSubject();
 
-        try {
-            Jws<Claims> payload = jwtUtil.decodificarJwt(token);
-            String username = payload.getPayload().getSubject();
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-              
-                UserDetails userDetails = usuarioDetallesServicio.loadUserByUsername(username);
-
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities());
-
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            } catch (Exception e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido o expirado");
+                return;
             }
-
-        } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido o expirado");
-            return;
         }
 
         filterChain.doFilter(request, response);

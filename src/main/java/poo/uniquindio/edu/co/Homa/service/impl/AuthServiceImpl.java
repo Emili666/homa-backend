@@ -1,6 +1,5 @@
 package poo.uniquindio.edu.co.homa.service.impl;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,32 +35,24 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponse login(LoginRequest request) {
         log.info("Intento de login para el usuario: {}", request.getEmail());
 
-        // Verificar que el usuario existe
+        // Verificar usuario
         Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UnauthorizedException("Credenciales inválidas"));
 
-        // Verificar que la cuenta está activa
         if (usuario.getEstado() != EstadoUsuario.ACTIVO) {
-            throw new UnauthorizedException("La cuenta no está activa. Por favor, verifica tu correo electrónico.");
+            throw new UnauthorizedException("Cuenta no activa");
         }
 
-        // Autenticar
+        // Autenticar con Spring Security
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getContrasena()
-                )
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getContrasena())
         );
-
-       // ...existing code...
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Generar token
-        String email = usuario.getEmail();
+        // Generar token JWT
         Map<String, Object> claims = new HashMap<>();
         claims.put("rol", usuario.getRol().name());
-        String token = jwtUtil.generarToken(email, claims);
-// ...existing code...
+        String token = jwtUtil.generarToken(usuario.getEmail(), claims);
 
         log.info("Login exitoso para el usuario: {}", request.getEmail());
 
@@ -76,21 +67,19 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout(String token) {
-        // En una implementación real, aquí se invalidaría el token
-        // Por ejemplo, agregándolo a una lista negra en Redis
+        // Aquí podrías agregar el token a una blacklist si quieres invalidarlo
         SecurityContextHolder.clearContext();
         log.info("Logout exitoso");
     }
 
     @Override
     public LoginResponse refreshToken(String refreshToken) {
-        // Validar el refresh token
         if (!jwtUtil.validateToken(refreshToken)) {
             throw new UnauthorizedException("Token de actualización inválido");
         }
 
         String email = jwtUtil.getEmailFromToken(refreshToken);
-        String newToken = jwtUtil.generateTokenFromEmail(email);
+        String newToken = jwtUtil.generarToken(email, null); // Claims opcionales
 
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new UnauthorizedException("Usuario no encontrado"));

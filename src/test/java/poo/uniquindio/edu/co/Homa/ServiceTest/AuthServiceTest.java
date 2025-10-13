@@ -19,7 +19,7 @@ import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
 import poo.uniquindio.edu.co.homa.service.impl.AuthServiceImpl;
 
 class AuthServiceTest {
-/*
+/* 
     @Mock
     UsuarioRepository usuarioRepository;
 
@@ -77,5 +77,5 @@ class AuthServiceTest {
     void refreshInvalido() {
         assertThrows(RuntimeException.class, () -> authService.refreshToken("token-malo"));
     }
-         */
+    */     
 }

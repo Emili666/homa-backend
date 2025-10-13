@@ -15,12 +15,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import poo.uniquindio.edu.co.homa.dto.request.UsuarioRegistroRequest;
+import poo.uniquindio.edu.co.homa.model.entity.Usuario;
 import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
 import poo.uniquindio.edu.co.homa.service.impl.UsuarioServiceImpl;
 
 class UsuarioServiceTest {
-    /* 
-
+/* 
     @Mock
     UsuarioRepository usuarioRepository;
 
@@ -36,13 +36,16 @@ class UsuarioServiceTest {
     @DisplayName("Registrar usuario con email duplicado debe lanzar excepción")
     void registrarUsuario_EmailDuplicado() {
         UsuarioRegistroRequest dto = UsuarioRegistroRequest.builder()
-
                 .nombre("Juan")
                 .email("exists@example.com")
                 .contrasena("Segura123!")
                 .build();
 
-        when(usuarioRepository.findByEmail("exists@example.com")).thenReturn(Optional.ofNullable(new Object()));
+        Usuario usuarioExistente = new Usuario();
+        usuarioExistente.setEmail("exists@example.com");
+
+        when(usuarioRepository.findByEmail("exists@example.com"))
+                .thenReturn(Optional.of(usuarioExistente));
 
         assertThrows(RuntimeException.class, () -> usuarioService.registrar(dto));
     }
@@ -78,13 +81,12 @@ class UsuarioServiceTest {
     @Test
     @DisplayName("Generar código recuperación (smoke)")
     void generarCodigoRecuperacion() {
-        // If UsuarioServiceImpl has a method solicitarRecuperacionContrasena / generarCodigo...
-        // this is a placeholder to call it and assert
+
         try {
             usuarioService.solicitarRecuperacionContrasena(null);
         } catch (Exception e) {
             assertNotNull(e.getMessage());
         }
     }
-        */
+*/
 }
