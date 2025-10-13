@@ -21,7 +21,7 @@ import poo.uniquindio.edu.co.homa.dto.request.ReservaRequest;
 @SpringBootTest
 @AutoConfigureMockMvc
 class ReservaControllerTest {
-/* 
+
     @Autowired
     MockMvc mockMvc;
 
@@ -101,5 +101,5 @@ class ReservaControllerTest {
         }
 
     }
-        */
+        
 }

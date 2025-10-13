@@ -1,7 +1,29 @@
 package poo.uniquindio.edu.co.Homa.ServiceTest;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
+import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import poo.uniquindio.edu.co.homa.exception.ResourceNotFoundException;
+import poo.uniquindio.edu.co.homa.model.entity.Alojamiento;
+import poo.uniquindio.edu.co.homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.homa.repository.AlojamientoRepository;
+import poo.uniquindio.edu.co.homa.service.impl.AlojamientoServiceImpl;
+
 class AlojamientoServiceTest {
-    /* 
+    
     @Mock
     private AlojamientoRepository alojamientoRepository;
 
@@ -62,6 +84,6 @@ class AlojamientoServiceTest {
         RuntimeException ex = assertThrows(RuntimeException.class, () -> alojamientoService.eliminar(1L, 1L));
         assertNotNull(ex.getMessage());
     }
-        */
+        
 
 }

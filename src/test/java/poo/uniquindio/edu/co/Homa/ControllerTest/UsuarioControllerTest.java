@@ -19,7 +19,7 @@ import poo.uniquindio.edu.co.homa.dto.request.RegistroUsuarioDTO;
 @SpringBootTest
 @AutoConfigureMockMvc
 class UsuarioControllerTest {
-/* 
+
     @Autowired
     MockMvc mockMvc;
 
@@ -91,6 +91,6 @@ class UsuarioControllerTest {
                     .andExpect(status().isBadRequest());
         }
     }
-        */
+        
 }
 

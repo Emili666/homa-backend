@@ -21,7 +21,7 @@ import poo.uniquindio.edu.co.homa.repository.ReservaRepository;
 import poo.uniquindio.edu.co.homa.service.impl.ReservaServiceImpl;
 
 class ReservaServiceTest {
-    /*
+    
 
     @Mock
     ReservaRepository reservaRepository;
@@ -81,5 +81,4 @@ class ReservaServiceTest {
         when(reservaRepository.save(any(Reserva.class))).thenAnswer(inv -> inv.getArgument(0));
         assertDoesNotThrow(() -> reservaService.crear(req, 1L));
     }
-     */    
 }

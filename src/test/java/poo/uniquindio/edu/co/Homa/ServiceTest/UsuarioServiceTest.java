@@ -20,7 +20,7 @@ import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
 import poo.uniquindio.edu.co.homa.service.impl.UsuarioServiceImpl;
 
 class UsuarioServiceTest {
-/* 
+
     @Mock
     UsuarioRepository usuarioRepository;
 
@@ -88,5 +88,5 @@ class UsuarioServiceTest {
             assertNotNull(e.getMessage());
         }
     }
-*/
+
 }

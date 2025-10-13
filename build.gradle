@@ -2,6 +2,10 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.5'
 	id 'io.spring.dependency-management' version '1.1.7'
+
+	// 🧪 --- Plugins de pruebas y calidad ---
+    id 'jacoco' // Generar reportes de cobertura
+    id "org.sonarqube" version "4.4.1.3373" // Análisis de SonarQube
 }
 
 group = 'poo.uniquindio.edu.co'
@@ -70,9 +74,41 @@ dependencies {
 	testImplementation 'org.testcontainers:mariadb:1.19.7'
 	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
 
+	// --- JWT ---
+    implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
 
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport // Generar reportes automáticamente después del test
+}
+
+jacoco {
+    toolVersion = "0.8.10"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir("reports/jacoco/test/html")
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "HOMA"
+        property "sonar.projectName", "Proyecto HOMA - Backend"
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.login", "sqa_72d0ad502d23fe2edb6d0c7c725c0555ab420f87"
+        property "sonar.language", "java"
+        property "sonar.sources", "src/main/java"
+        property "sonar.tests", "src/test/java"
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
+    }
 }
