@@ -1,6 +1,5 @@
 package poo.uniquindio.edu.co.homa.repository;
 
-
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -15,25 +14,24 @@ import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
 
 @Repository
 public interface AlojamientoRepository extends JpaRepository<Alojamiento, Long> {
-   Page<Alojamiento> findByEstado(EstadoAlojamiento estado, Pageable pageable);
-    
+    Page<Alojamiento> findByEstado(EstadoAlojamiento estado, Pageable pageable);
+
     Page<Alojamiento> findByAnfitrionIdAndEstado(String anfitrionId, EstadoAlojamiento estado, Pageable pageable);
-    
+
     Optional<Alojamiento> findByIdAndEstado(Long id, EstadoAlojamiento estado);
-    
+
     @Query("SELECT a FROM Alojamiento a WHERE a.estado = :estado " +
-           "AND (:ciudad IS NULL OR LOWER(a.ciudad) LIKE LOWER(CONCAT('%', :ciudad, '%'))) " +
-           "AND (:precioMin IS NULL OR a.precioPorNoche >= :precioMin) " +
-           "AND (:precioMax IS NULL OR a.precioPorNoche <= :precioMax) " +
-           "AND (:maxHuespedes IS NULL OR a.maxHuespedes >= :maxHuespedes)")
+            "AND (:ciudad IS NULL OR LOWER(a.ciudad) LIKE LOWER(CONCAT('%', :ciudad, '%'))) " +
+            "AND (:precioMin IS NULL OR a.precioPorNoche >= :precioMin) " +
+            "AND (:precioMax IS NULL OR a.precioPorNoche <= :precioMax) " +
+            "AND (:maxHuespedes IS NULL OR a.maxHuespedes >= :maxHuespedes)")
     Page<Alojamiento> buscarAlojamientos(
-        @Param("estado") EstadoAlojamiento estado,
-        @Param("ciudad") String ciudad,
-        @Param("precioMin") Float precioMin,
-        @Param("precioMax") Float precioMax,
-        @Param("maxHuespedes") Integer maxHuespedes,
-        Pageable pageable
-    );
+            @Param("estado") EstadoAlojamiento estado,
+            @Param("ciudad") String ciudad,
+            @Param("precioMin") Float precioMin,
+            @Param("precioMax") Float precioMax,
+            @Param("maxHuespedes") Integer maxHuespedes,
+            Pageable pageable);
 
     Page<Alojamiento> findByAnfitrionId(Long anfitrionId, Pageable pageable);
 }
