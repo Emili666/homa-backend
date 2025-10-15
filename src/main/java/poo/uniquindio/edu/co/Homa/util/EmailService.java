@@ -1,13 +1,19 @@
 package poo.uniquindio.edu.co.homa.util;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Properties;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import jakarta.mail.*;
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import java.util.Properties;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -23,7 +29,7 @@ public class EmailService {
     private String frontendUrl;
 
     /**
-     * Configura la sesión SMTP (por ejemplo, para Gmail).
+     * Configura la sesion SMTP (por ejemplo, para Gmail).
      */
     private Session getMailSession() {
         Properties props = new Properties();
@@ -41,7 +47,7 @@ public class EmailService {
     }
 
     /**
-     * Método genérico para enviar correos.
+     * Envia un correo simple en texto plano.
      */
     private void enviarCorreo(String destinatario, String asunto, String contenido) {
         try {
@@ -52,62 +58,64 @@ public class EmailService {
             message.setText(contenido);
 
             Transport.send(message);
-            log.info("✅ Correo enviado correctamente a {}", destinatario);
-
+            log.info("Correo enviado correctamente a {}", destinatario);
         } catch (MessagingException e) {
-            log.error("❌ Error al enviar correo: {}", e.getMessage());
+            log.error("Error al enviar correo: {}", e.getMessage());
         }
     }
 
     /**
-     * Enviar correo de activación de cuenta.
+     * Envia el correo con el enlace y el codigo de activacion.
      */
     public void enviarEmailActivacion(String email, String codigoActivacion) {
         String asunto = "Activa tu cuenta en HOMA";
         String cuerpo = String.format("""
-                ¡Bienvenido a HOMA!
+                Bienvenido a HOMA!
 
-                Para activar tu cuenta, haz clic en el siguiente enlace:
+                Para activar tu cuenta, visita:
                 %s/activar-cuenta?codigo=%s
+
+                Si prefieres activarla manualmente, usa este codigo:
+                %s
 
                 Si no solicitaste esta cuenta, ignora este mensaje.
 
                 Saludos,
-                El equipo de HOMA
-                """, frontendUrl, codigoActivacion);
+                Equipo HOMA
+                """, frontendUrl, codigoActivacion, codigoActivacion);
 
         enviarCorreo(email, asunto, cuerpo);
     }
 
     /**
-     * Enviar correo de recuperación de contraseña.
+     * Envia el correo con el enlace para recuperar la contrasena.
      */
     public void enviarEmailRecuperacion(String email, String codigo) {
-        String asunto = "Recuperación de contraseña - HOMA";
+        String asunto = "Recuperacion de contrasena - HOMA";
         String cuerpo = String.format("""
                 Hola,
 
-                Recibimos una solicitud para restablecer tu contraseña.
+                Recibimos una solicitud para restablecer tu contrasena.
 
-                Para restablecerla, haz clic en el siguiente enlace:
+                Para restablecerla, visita:
                 %s/restablecer-contrasena?codigo=%s
 
-                Este enlace expirará en 24 horas.
+                Este enlace expira en 24 horas.
 
                 Si no solicitaste este cambio, ignora este mensaje.
 
                 Saludos,
-                El equipo de HOMA
+                Equipo HOMA
                 """, frontendUrl, codigo);
 
         enviarCorreo(email, asunto, cuerpo);
     }
 
     /**
-     * Enviar correo de confirmación de reserva.
+     * Envia la confirmacion de una reserva.
      */
     public void enviarEmailConfirmacionReserva(String email, String nombreAlojamiento, String fechas) {
-        String asunto = "Confirmación de reserva - HOMA";
+        String asunto = "Confirmacion de reserva - HOMA";
         String cuerpo = String.format("""
                 Hola,
 
@@ -116,10 +124,10 @@ public class EmailService {
                 Alojamiento: %s
                 Fechas: %s
 
-                Puedes ver los detalles en tu perfil.
+                Puedes ver los detalles completos en tu perfil.
 
                 Saludos,
-                El equipo de HOMA
+                Equipo HOMA
                 """, nombreAlojamiento, fechas);
 
         enviarCorreo(email, asunto, cuerpo);

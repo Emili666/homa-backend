@@ -39,7 +39,9 @@ public class SecurityConfig {
             .cors(cors -> cors.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                        "/api/auth/**",   // Endpoints públicos
+                        "/api/auth/**",          // Endpoints públicos
+                        "/api/usuarios/registro",
+                        "/api/usuarios/activar/**",
                         "/swagger-ui/**", 
                         "/v3/api-docs/**"
                 ).permitAll()
