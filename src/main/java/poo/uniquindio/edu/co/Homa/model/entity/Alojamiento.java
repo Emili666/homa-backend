@@ -88,4 +88,8 @@ public class Alojamiento {
     @OneToMany(mappedBy = "alojamiento", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Resena> resenas = new ArrayList<>();
+
+    @OneToMany(mappedBy = "alojamiento", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Favorito> favoritos = new ArrayList<>();
 }

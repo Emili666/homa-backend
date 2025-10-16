@@ -26,6 +26,7 @@ import poo.uniquindio.edu.co.homa.repository.AlojamientoRepository;
 import poo.uniquindio.edu.co.homa.repository.ReservaRepository;
 import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
 import poo.uniquindio.edu.co.homa.service.ReservaService;
+import poo.uniquindio.edu.co.homa.util.EmailService;
 
 @Getter
 @Setter
@@ -38,6 +39,7 @@ public class ReservaServiceImpl implements ReservaService {
     private final AlojamientoRepository alojamientoRepository;
     private final UsuarioRepository usuarioRepository;
     private final ReservaMapper reservaMapper;
+    private final EmailService emailService;
 
     @Override
     @Transactional
@@ -68,6 +70,8 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setCreadoEn(LocalDateTime.now());
 
         reserva = reservaRepository.save(reserva);
+
+        notificarAnfitrionNuevaReserva(reserva);
 
         log.info("Reserva creada exitosamente con id: {}", reserva.getId());
         return reservaMapper.toResponse(reserva);
@@ -107,6 +111,7 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setEstado(EstadoReserva.CANCELADA);
         reservaRepository.save(reserva);
 
+        notificarCambioEstado(reserva, EstadoReserva.CANCELADA);
         log.info("Reserva cancelada exitosamente: {}", reserva.getId());
     }
 
@@ -121,6 +126,7 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setEstado(estado);
         reservaRepository.save(reserva);
 
+        notificarCambioEstado(reserva, estado);
         log.info("Estado cambiado exitosamente para reserva: {}", reserva.getId());
     }
 
@@ -142,6 +148,27 @@ public class ReservaServiceImpl implements ReservaService {
     @Transactional(readOnly = true)
     public boolean verificarDisponibilidad(Long alojamientoId, LocalDate fechaInicio, LocalDate fechaFin) {
         return reservaRepository.findReservasConflictivas(alojamientoId, fechaInicio, fechaFin).isEmpty();
+    }
+
+    private void notificarAnfitrionNuevaReserva(Reserva reserva) {
+        String emailAnfitrion = reserva.getAlojamiento().getAnfitrion().getEmail();
+        String nombreHuesped = reserva.getHuesped().getNombre();
+        String nombreAlojamiento = reserva.getAlojamiento().getTitulo();
+        String rangoFechas = String.format("%s al %s", reserva.getFechaEntrada(), reserva.getFechaSalida());
+
+        emailService.enviarEmailNuevaReservaAnfitrion(emailAnfitrion, nombreAlojamiento, nombreHuesped, rangoFechas);
+    }
+
+    private void notificarCambioEstado(Reserva reserva, EstadoReserva estado) {
+        String emailHuesped = reserva.getHuesped().getEmail();
+        String nombreAlojamiento = reserva.getAlojamiento().getTitulo();
+        String rangoFechas = String.format("%s al %s", reserva.getFechaEntrada(), reserva.getFechaSalida());
+
+        if (estado == EstadoReserva.CONFIRMADA) {
+            emailService.enviarEmailConfirmacionReserva(emailHuesped, nombreAlojamiento, rangoFechas);
+        } else if (estado == EstadoReserva.CANCELADA) {
+            emailService.enviarEmailCancelacionReserva(emailHuesped, nombreAlojamiento, rangoFechas);
+        }
     }
 
 }

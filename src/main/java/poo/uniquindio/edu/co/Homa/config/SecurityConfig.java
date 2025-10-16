@@ -42,6 +42,8 @@ public class SecurityConfig {
                         "/api/auth/**",          // Endpoints públicos
                         "/api/usuarios/registro",
                         "/api/usuarios/activar/**",
+                        "/api/usuarios/recuperar-contrasena",
+                        "/api/usuarios/restablecer-contrasena",
                         "/swagger-ui/**", 
                         "/v3/api-docs/**"
                 ).permitAll()

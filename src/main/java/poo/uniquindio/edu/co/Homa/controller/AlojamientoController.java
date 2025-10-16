@@ -10,6 +10,7 @@ import poo.uniquindio.edu.co.homa.dto.request.AlojamientoRequest;
 import poo.uniquindio.edu.co.homa.dto.response.AlojamientoResponse;
 import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
 import poo.uniquindio.edu.co.homa.service.AlojamientoService;
+import poo.uniquindio.edu.co.homa.service.UsuarioService;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ import java.util.List;
 public class AlojamientoController {
 
     private final AlojamientoService alojamientoService;
+    private final UsuarioService usuarioService;
 
     @Operation(summary = "Crear alojamiento", description = "Crea un nuevo alojamiento (solo anfitriones)")
     @SecurityRequirement(name = "bearerAuth")
@@ -75,6 +77,18 @@ public class AlojamientoController {
     @GetMapping
     public ResponseEntity<Page<AlojamientoResponse>> listarTodos(Pageable pageable) {
         return ResponseEntity.ok(alojamientoService.listarTodos(pageable));
+    }
+
+    @Operation(summary = "Listar alojamientos propios", description = "Lista los alojamientos del anfitrión autenticado")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping("/mios")
+    @PreAuthorize("hasRole('ANFITRION')")
+    public ResponseEntity<Page<AlojamientoResponse>> listarMisAlojamientos(
+            Pageable pageable,
+            Authentication authentication) {
+        String email = authentication.getName();
+        Long anfitrionId = Long.parseLong(usuarioService.obtenerPorEmail(email).getId());
+        return ResponseEntity.ok(alojamientoService.listarPorAnfitrion(anfitrionId, pageable));
     }
 
     @Operation(summary = "Listar alojamientos por anfitrión", description = "Lista los alojamientos de un anfitrión")

@@ -255,7 +255,7 @@ public UserDetails loadUserByUsername(String username) throws UsernameNotFoundEx
     return User.builder()
             .username(usuario.getEmail())
             .password(usuario.getContrasena())
-            .roles(usuario.getRol().name()) // Asegúrate de tener el campo 'rol' en tu entidad Usuario
+            .roles(usuario.getRol().name().toUpperCase()) // Asegúrate de tener el campo 'rol' en tu entidad Usuario
             .build();
 }
 

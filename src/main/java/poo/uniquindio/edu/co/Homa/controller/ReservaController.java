@@ -25,8 +25,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import poo.uniquindio.edu.co.homa.dto.request.ReservaRequest;
 import poo.uniquindio.edu.co.homa.dto.response.ReservaResponse;
+import poo.uniquindio.edu.co.homa.dto.response.UsuarioResponse;
 import poo.uniquindio.edu.co.homa.model.enums.EstadoReserva;
 import poo.uniquindio.edu.co.homa.service.ReservaService;
+import poo.uniquindio.edu.co.homa.service.UsuarioService;
 
 @Tag(name = "Reservas", description = "Endpoints para gestión de reservas")
 @RestController
@@ -36,36 +38,37 @@ import poo.uniquindio.edu.co.homa.service.ReservaService;
 public class ReservaController {
 
     private final ReservaService reservaService;
+    private final UsuarioService usuarioService;
 
     @Operation(summary = "Crear reserva", description = "Crea una nueva reserva")
     @PostMapping
-    @PreAuthorize("hasRole('CLIENTE')")
+    @PreAuthorize("hasRole('HUESPED')")
     public ResponseEntity<ReservaResponse> crear(
             @Valid @RequestBody ReservaRequest request,
             Authentication authentication) {
-        Long clienteId = 1L; // Placeholder
+        Long clienteId = obtenerIdCliente(authentication);
         return ResponseEntity.status(HttpStatus.CREATED).body(reservaService.crear(request, clienteId));
     }
 
     @Operation(summary = "Obtener reserva por ID", description = "Obtiene los detalles de una reserva")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('CLIENTE', 'ANFITRION', 'ADMINISTRADOR')")
+    @PreAuthorize("hasAnyRole('HUESPED', 'ANFITRION', 'ADMINISTRADOR')")
     public ResponseEntity<ReservaResponse> obtenerPorId(@PathVariable Long id) {
         return ResponseEntity.ok(reservaService.obtenerPorId(id));
     }
 
     @Operation(summary = "Cancelar reserva", description = "Cancela una reserva existente")
     @PatchMapping("/{id}/cancelar")
-    @PreAuthorize("hasRole('CLIENTE')")
+    @PreAuthorize("hasRole('HUESPED')")
     public ResponseEntity<Void> cancelar(@PathVariable Long id, Authentication authentication) {
-        Long clienteId = 1L; // Placeholder
+        Long clienteId = obtenerIdCliente(authentication);
         reservaService.cancelar(id, clienteId);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Cambiar estado de reserva", description = "Cambia el estado de una reserva (solo admin)")
     @PatchMapping("/{id}/estado")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ANFITRION')")
     public ResponseEntity<Void> cambiarEstado(
             @PathVariable Long id,
             @RequestParam EstadoReserva estado) {
@@ -75,7 +78,7 @@ public class ReservaController {
 
     @Operation(summary = "Listar reservas por cliente", description = "Lista todas las reservas de un cliente")
     @GetMapping("/cliente/{clienteId}")
-    @PreAuthorize("hasAnyRole('CLIENTE', 'ADMINISTRADOR')")
+    @PreAuthorize("hasAnyRole('HUESPED', 'ADMINISTRADOR')")
     public ResponseEntity<Page<ReservaResponse>> listarPorCliente(
             @PathVariable Long clienteId,
             Pageable pageable) {
@@ -98,5 +101,11 @@ public class ReservaController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
         return ResponseEntity.ok(reservaService.verificarDisponibilidad(alojamientoId, fechaInicio, fechaFin));
+    }
+
+    private Long obtenerIdCliente(Authentication authentication) {
+        String email = authentication.getName();
+        UsuarioResponse usuario = usuarioService.obtenerPorEmail(email);
+        return Long.parseLong(usuario.getId());
     }
 }

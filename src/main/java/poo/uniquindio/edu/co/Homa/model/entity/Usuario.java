@@ -94,6 +94,10 @@ private Long id;
     @Builder.Default
     private List<Resena> resenas = new ArrayList<>();
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Favorito> favoritos = new ArrayList<>();
+
   @Column(name = "codigo_activacion", nullable = false, length = 255)
   private String codigoActivacion;
 

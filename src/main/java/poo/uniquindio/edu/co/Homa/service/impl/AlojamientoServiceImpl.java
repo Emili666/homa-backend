@@ -21,6 +21,7 @@ import poo.uniquindio.edu.co.homa.model.entity.Alojamiento;
 import poo.uniquindio.edu.co.homa.model.entity.Usuario;
 import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
 import poo.uniquindio.edu.co.homa.repository.AlojamientoRepository;
+import poo.uniquindio.edu.co.homa.repository.FavoritoRepository;
 import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
 import poo.uniquindio.edu.co.homa.service.AlojamientoService;
 
@@ -32,6 +33,7 @@ public class AlojamientoServiceImpl implements AlojamientoService {
     private final AlojamientoRepository alojamientoRepository;
     private final UsuarioRepository usuarioRepository;
     private final AlojamientoMapper alojamientoMapper;
+    private final FavoritoRepository favoritoRepository;
 
     @Override
     @Transactional
@@ -49,7 +51,7 @@ public class AlojamientoServiceImpl implements AlojamientoService {
         alojamiento = alojamientoRepository.save(alojamiento);
 
         log.info("Alojamiento creado exitosamente con id: {}", alojamiento.getId());
-        return alojamientoMapper.toResponse(alojamiento);
+        return mapearConMetadatos(alojamiento);
     }
 
     @Override
@@ -57,7 +59,7 @@ public class AlojamientoServiceImpl implements AlojamientoService {
     public AlojamientoResponse obtenerPorId(Long id) {
         Alojamiento alojamiento = alojamientoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Alojamiento no encontrado con id: " + id));
-        return alojamientoMapper.toResponse(alojamiento);
+        return mapearConMetadatos(alojamiento);
     }
 
     @Override
@@ -77,7 +79,7 @@ public class AlojamientoServiceImpl implements AlojamientoService {
         alojamiento = alojamientoRepository.save(alojamiento);
 
         log.info("Alojamiento actualizado exitosamente: {}", alojamiento.getId());
-        return alojamientoMapper.toResponse(alojamiento);
+        return mapearConMetadatos(alojamiento);
     }
 
     @Override
@@ -103,14 +105,14 @@ public class AlojamientoServiceImpl implements AlojamientoService {
     @Transactional(readOnly = true)
     public Page<AlojamientoResponse> listarTodos(Pageable pageable) {
         return alojamientoRepository.findByEstado(EstadoAlojamiento.ACTIVO, pageable)
-                .map(alojamientoMapper::toResponse);
+                .map(this::mapearConMetadatos);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<AlojamientoResponse> listarPorAnfitrion(Long anfitrionId, Pageable pageable) {
         return alojamientoRepository.findByAnfitrionId(anfitrionId, pageable)
-                .map(alojamientoMapper::toResponse);
+                .map(this::mapearConMetadatos);
 
     }
 
@@ -129,7 +131,7 @@ public class AlojamientoServiceImpl implements AlojamientoService {
                 precioMaxF,
                 capacidad,
                 pageable)
-                .map(alojamientoMapper::toResponse);
+                .map(this::mapearConMetadatos);
     }
 
     @Override
@@ -160,4 +162,15 @@ public class AlojamientoServiceImpl implements AlojamientoService {
         log.info("Eliminando imagen {} del alojamiento {}", imagenId, alojamientoId);
         // TODO: Implementar lógica de eliminación de imágenes
     }
+
+    private AlojamientoResponse mapearConMetadatos(Alojamiento alojamiento) {
+        AlojamientoResponse response = alojamientoMapper.toResponse(alojamiento);
+        response.setTotalFavoritos(favoritoRepository.countByAlojamientoId(alojamiento.getId()));
+        if (response.getEsFavorito() == null) {
+            response.setEsFavorito(Boolean.FALSE);
+        }
+        return response;
+    }
 }
+
+

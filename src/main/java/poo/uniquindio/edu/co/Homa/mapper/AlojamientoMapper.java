@@ -25,6 +25,8 @@ public interface AlojamientoMapper {
     @Mapping(source = "anfitrion.foto", target = "fotoAnfitrion")
     @Mapping(target = "calificacionPromedio", ignore = true)
     @Mapping(target = "totalResenas", ignore = true)
+    @Mapping(target = "totalFavoritos", ignore = true)
+    @Mapping(target = "esFavorito", ignore = true)
     AlojamientoResponse toResponse(Alojamiento alojamiento);
 
     @Mapping(target = "id", ignore = true)

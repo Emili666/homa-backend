@@ -34,5 +34,7 @@ public class AlojamientoResponse {
     private String fotoAnfitrion;
     private Double calificacionPromedio;
     private Integer totalResenas;
+    private Long totalFavoritos;
+    private Boolean esFavorito;
     private LocalDateTime creadoEn;
 }

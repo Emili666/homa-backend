@@ -100,7 +100,7 @@ public class EmailService {
                 Para restablecerla, visita:
                 %s/restablecer-contrasena?codigo=%s
 
-                Este enlace expira en 24 horas.
+                Este enlace expira en 15 minutos.
 
                 Si no solicitaste este cambio, ignora este mensaje.
 
@@ -129,6 +129,51 @@ public class EmailService {
                 Saludos,
                 Equipo HOMA
                 """, nombreAlojamiento, fechas);
+
+        enviarCorreo(email, asunto, cuerpo);
+    }
+
+    /**
+     * Envía la cancelación de una reserva.
+     */
+    public void enviarEmailCancelacionReserva(String email, String nombreAlojamiento, String fechas) {
+        String asunto = "Cancelacion de reserva - HOMA";
+        String cuerpo = String.format("""
+                Hola,
+
+                Tu reserva ha sido cancelada.
+
+                Alojamiento: %s
+                Fechas: %s
+
+                Si tienes dudas contacta al anfitrion desde la plataforma.
+
+                Saludos,
+                Equipo HOMA
+                """, nombreAlojamiento, fechas);
+
+        enviarCorreo(email, asunto, cuerpo);
+    }
+
+    /**
+     * Notifica al anfitrión que recibió una nueva reserva.
+     */
+    public void enviarEmailNuevaReservaAnfitrion(String email, String nombreAlojamiento, String nombreHuesped, String fechas) {
+        String asunto = "Nueva reserva recibida - HOMA";
+        String cuerpo = String.format("""
+                Hola,
+
+                Has recibido una nueva solicitud de reserva.
+
+                Alojamiento: %s
+                Huesped: %s
+                Fechas: %s
+
+                Ingresa a la plataforma para gestionarla.
+
+                Saludos,
+                Equipo HOMA
+                """, nombreAlojamiento, nombreHuesped, fechas);
 
         enviarCorreo(email, asunto, cuerpo);
     }
