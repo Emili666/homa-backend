@@ -50,13 +50,14 @@ public ResenaResponse crear(ResenaRequest request, Long clienteId) {
                     "Alojamiento no encontrado con ID: " + request.getAlojamientoId()));
 
     // Verificar que el cliente tenga una reserva confirmada en el alojamiento
-    boolean tieneReserva = reservaRepository.existsByHuespedIdAndAlojamientoIdAndEstado(
+    boolean tieneReserva = reservaRepository.existsByHuesped_IdAndAlojamiento_IdAndEstado(
             clienteId, // ← ahora se pasa como Long (no como String)
             request.getAlojamientoId(),
-            EstadoReserva.CONFIRMADA);
+            EstadoReserva.COMPLETADA
+            );
 
     if (!tieneReserva) {
-        throw new BusinessException("Solo puedes reseñar alojamientos donde hayas tenido una reserva confirmada.");
+        throw new BusinessException("Solo puedes reseñar alojamientos donde hayas tenido una reserva completada.");
     }
 
     // Verificar que no haya reseñado antes

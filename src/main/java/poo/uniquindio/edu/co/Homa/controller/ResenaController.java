@@ -1,6 +1,20 @@
 package poo.uniquindio.edu.co.homa.controller;
 
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,14 +24,6 @@ import poo.uniquindio.edu.co.homa.dto.request.ResenaRequest;
 import poo.uniquindio.edu.co.homa.dto.request.ResponderResenaRequest;
 import poo.uniquindio.edu.co.homa.dto.response.ResenaResponse;
 import poo.uniquindio.edu.co.homa.service.ResenaService;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Reseñas", description = "Endpoints para gestión de reseñas y calificaciones")
 @RestController
@@ -30,7 +36,7 @@ public class ResenaController {
     @Operation(summary = "Crear reseña", description = "Crea una nueva reseña para un alojamiento")
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping
-    @PreAuthorize("hasRole('CLIENTE')")
+    @PreAuthorize("hasRole('HUESPED')")
     public ResponseEntity<ResenaResponse> crear(
             @Valid @RequestBody ResenaRequest request,
             Authentication authentication) {
@@ -47,7 +53,7 @@ public class ResenaController {
     @Operation(summary = "Eliminar reseña", description = "Elimina una reseña")
     @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('CLIENTE')")
+    @PreAuthorize("hasRole('HUESPED')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id, Authentication authentication) {
         Long clienteId = 1L; // Placeholder
         resenaService.eliminar(id, clienteId);

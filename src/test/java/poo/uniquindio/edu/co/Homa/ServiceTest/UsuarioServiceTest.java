@@ -13,16 +13,32 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import poo.uniquindio.edu.co.homa.dto.request.UsuarioRegistroRequest;
+import poo.uniquindio.edu.co.homa.mapper.UsuarioMapper;
 import poo.uniquindio.edu.co.homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.homa.repository.ContrasenaCodigoReinicioRepository;
 import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
 import poo.uniquindio.edu.co.homa.service.impl.UsuarioServiceImpl;
+import poo.uniquindio.edu.co.homa.util.EmailService;
 
 class UsuarioServiceTest {
 
     @Mock
     UsuarioRepository usuarioRepository;
+
+    @Mock
+    ContrasenaCodigoReinicioRepository codigoReinicioRepository;
+
+    @Mock
+    UsuarioMapper usuarioMapper;
+
+    @Mock
+    PasswordEncoder passwordEncoder;
+
+    @Mock
+    EmailService emailService;
 
     @InjectMocks
     UsuarioServiceImpl usuarioService;
@@ -67,14 +83,20 @@ class UsuarioServiceTest {
     @DisplayName("Registro exitoso (smoke)")
     void registrarUsuario_Exitoso() {
         UsuarioRegistroRequest dto = UsuarioRegistroRequest.builder()
-
                 .nombre("Juan")
                 .email("nuevo@example.com")
                 .contrasena("Segura123!")
                 .build();
 
-        when(usuarioRepository.findByEmail("nuevo@example.com")).thenReturn(Optional.empty());
-        // repository save can be mocked if necessary
+        Usuario usuario = new Usuario();
+        usuario.setEmail(dto.getEmail());
+
+        when(usuarioRepository.existsByEmail(dto.getEmail())).thenReturn(false);
+        when(usuarioMapper.toEntity(dto)).thenReturn(usuario);
+        when(passwordEncoder.encode("Segura123!")).thenReturn("hashed");
+        when(usuarioRepository.save(usuario)).thenReturn(usuario);
+        when(usuarioMapper.toResponse(usuario)).thenReturn(null);
+
         assertDoesNotThrow(() -> usuarioService.registrar(dto));
     }
 

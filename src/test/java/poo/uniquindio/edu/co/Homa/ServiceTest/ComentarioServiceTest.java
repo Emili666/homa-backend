@@ -5,24 +5,29 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import poo.uniquindio.edu.co.homa.model.entity.Reserva;
+import poo.uniquindio.edu.co.homa.repository.ResenaRepository;
+import poo.uniquindio.edu.co.homa.repository.ReservaRepository;
 import poo.uniquindio.edu.co.homa.service.impl.ResenaServiceImpl;
 
-class ComentarioServiceTest { 
+@ExtendWith(MockitoExtension.class)
+class ComentarioServiceTest {
+
+    @Mock
+    private ResenaRepository resenaRepository;
+
+    @Mock
+    private ReservaRepository reservaRepository;
 
     @InjectMocks
-    ResenaServiceImpl resenaService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+    private ResenaServiceImpl resenaService;
 
     @Test
     @DisplayName("No permite crear reseña si reserva no finalizada")
@@ -35,7 +40,6 @@ class ComentarioServiceTest {
     @Test
     @DisplayName("Crear reseña con comentario vacío debe fallar")
     void crearResena_comentarioVacio() {
-        // este test asume que el método valida comentario; adaptarlo a tu firma
         assertThrows(RuntimeException.class, () -> resenaService.crear(null, 1L));
     }
 
@@ -50,9 +54,8 @@ class ComentarioServiceTest {
     }
 
     @Test
-    @DisplayName("Responder reseña no encontrada debe lanzar")
+    @DisplayName("Responder reseña no encontrada debe lanzar excepción")
     void responderResena_noEncontrada() {
         assertThrows(RuntimeException.class, () -> resenaService.responder(999L, null, 1L));
     }
-    
 }

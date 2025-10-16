@@ -94,7 +94,7 @@ public class AlojamientoController {
     @Operation(summary = "Listar alojamientos por anfitrión", description = "Lista los alojamientos de un anfitrión")
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/anfitrion/{anfitrionId}")
-    @PreAuthorize("hasAnyRole('ANFITRION', 'ADMINISTRADOR')")
+    @PreAuthorize("hasAnyRole('ANFITRION', 'HUESPED')")
     public ResponseEntity<Page<AlojamientoResponse>> listarPorAnfitrion(
             @PathVariable Long anfitrionId,
             Pageable pageable) {
@@ -115,7 +115,7 @@ public class AlojamientoController {
     @Operation(summary = "Cambiar estado de alojamiento", description = "Cambia el estado de un alojamiento (solo admin)")
     @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{id}/estado")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ANFITRION')")
     public ResponseEntity<Void> cambiarEstado(
             @PathVariable Long id,
             @RequestParam EstadoAlojamiento estado) {

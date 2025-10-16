@@ -37,4 +37,7 @@ public interface AlojamientoRepository extends JpaRepository<Alojamiento, Long> 
             Pageable pageable);
 
     Page<Alojamiento> findByAnfitrionId(Long anfitrionId, Pageable pageable);
+
+    @Query("SELECT COUNT(r) > 0 FROM Reserva r WHERE r.alojamiento.id = :id AND r.fechaEntrada > CURRENT_DATE")
+    boolean tieneReservasFuturas(@Param("id") Long id);
 }

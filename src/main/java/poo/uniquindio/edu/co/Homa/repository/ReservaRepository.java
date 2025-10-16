@@ -1,5 +1,8 @@
 package poo.uniquindio.edu.co.homa.repository;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,9 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import poo.uniquindio.edu.co.homa.model.entity.Reserva;
 import poo.uniquindio.edu.co.homa.model.enums.EstadoReserva;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Repository
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
@@ -38,9 +38,10 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
         @Param("alojamientoId") Long alojamientoId,
         @Param("fechaInicio") LocalDate fechaInicio,
         @Param("fechaFin") LocalDate fechaFin
+        
     );
     
-    boolean existsByHuespedIdAndAlojamientoIdAndEstado(
+    boolean existsByHuesped_IdAndAlojamiento_IdAndEstado(
         Long huespedId, 
         Long alojamientoId, 
         EstadoReserva estado

@@ -99,6 +99,10 @@ public class AlojamientoServiceImpl implements AlojamientoService {
         if (!alojamiento.getAnfitrion().getId().equals(anfitrionId)) {
             throw new UnauthorizedException("No tienes permiso para eliminar este alojamiento");
         }
+        // Verificar si el alojamiento tiene reservas futuras
+        if (alojamientoRepository.tieneReservasFuturas(id)) {
+            throw new RuntimeException("No se puede eliminar el alojamiento porque tiene reservas futuras");
+        }
 
         alojamiento.setEstado(EstadoAlojamiento.ELIMINADO);
         alojamientoRepository.save(alojamiento);

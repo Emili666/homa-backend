@@ -108,6 +108,14 @@ public class ReservaServiceImpl implements ReservaService {
             throw new BusinessException("No se puede cancelar una reserva completada");
         }
 
+        LocalDateTime ahora = LocalDateTime.now();
+        LocalDateTime fechaCheckIn = reserva.getFechaEntrada().atStartOfDay();
+        long horasHastaCheckIn = ChronoUnit.HOURS.between(ahora, fechaCheckIn);
+
+        if (horasHastaCheckIn < 48) {
+            throw new BusinessException("No puedes cancelar la reserva con menos de 48 horas de anticipacion");
+        }
+
         reserva.setEstado(EstadoReserva.CANCELADA);
         reservaRepository.save(reserva);
 
