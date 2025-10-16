@@ -63,6 +63,9 @@ dependencies {
 	//implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
 
+	// --- CLOUDINARY (gestión de imágenes) ---
+	implementation 'com.cloudinary:cloudinary-http44:1.39.0'
+
 
 	// --- TESTS ---
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

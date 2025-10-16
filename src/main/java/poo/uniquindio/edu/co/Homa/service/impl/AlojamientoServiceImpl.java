@@ -3,6 +3,7 @@ package poo.uniquindio.edu.co.homa.service.impl;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import poo.uniquindio.edu.co.homa.dto.request.AlojamientoRequest;
 import poo.uniquindio.edu.co.homa.dto.response.AlojamientoResponse;
+import poo.uniquindio.edu.co.homa.exception.BusinessException;
 import poo.uniquindio.edu.co.homa.exception.ResourceNotFoundException;
 import poo.uniquindio.edu.co.homa.exception.UnauthorizedException;
 import poo.uniquindio.edu.co.homa.mapper.AlojamientoMapper;
@@ -24,6 +26,8 @@ import poo.uniquindio.edu.co.homa.repository.AlojamientoRepository;
 import poo.uniquindio.edu.co.homa.repository.FavoritoRepository;
 import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
 import poo.uniquindio.edu.co.homa.service.AlojamientoService;
+import poo.uniquindio.edu.co.homa.service.ImageStorageService;
+import poo.uniquindio.edu.co.homa.service.ImageStorageService.UploadResult;
 
 @Slf4j
 @Service
@@ -34,6 +38,7 @@ public class AlojamientoServiceImpl implements AlojamientoService {
     private final UsuarioRepository usuarioRepository;
     private final AlojamientoMapper alojamientoMapper;
     private final FavoritoRepository favoritoRepository;
+    private final ImageStorageService imageStorageService;
 
     @Override
     @Transactional
@@ -148,19 +153,60 @@ public class AlojamientoServiceImpl implements AlojamientoService {
         log.info("Estado cambiado exitosamente para alojamiento: {}", alojamiento.getId());
     }
 
-    @Override
+            @Override
     @Transactional
     public void agregarImagenes(Long id, List<MultipartFile> imagenes) {
-        // Implementación de carga de imágenes
-        log.info("Agregando {} imágenes al alojamiento {}", imagenes.size(), id);
-        // TODO: Implementar lógica de almacenamiento de imágenes
+        log.info("Agregando {} imagenes al alojamiento {}", imagenes != null ? imagenes.size() : 0, id);
+
+        Alojamiento alojamiento = alojamientoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Alojamiento no encontrado con id: " + id));
+
+        if (imagenes == null || imagenes.isEmpty()) {
+            throw new BusinessException("Debes adjuntar al menos una imagen");
+        }
+
+        List<MultipartFile> archivosValidos = imagenes.stream()
+                .filter(Objects::nonNull)
+                .filter(archivo -> !archivo.isEmpty())
+                .toList();
+
+        if (archivosValidos.isEmpty()) {
+            throw new BusinessException("Todas las imagenes adjuntas estan vacias");
+        }
+
+        int espacioDisponible = 10 - alojamiento.getImagenes().size();
+        if (archivosValidos.size() > espacioDisponible) {
+            throw new BusinessException("Solo puedes almacenar hasta 10 imagenes por alojamiento");
+        }
+
+        List<UploadResult> resultados = imageStorageService.subirImagenes(archivosValidos);
+        resultados.forEach(resultado -> alojamiento.getImagenes().add(resultado.url()));
+
+        alojamientoRepository.save(alojamiento);
+        log.info("Se agregaron {} imagenes al alojamiento {}", resultados.size(), id);
     }
 
     @Override
     @Transactional
     public void eliminarImagen(Long alojamientoId, Long imagenId) {
         log.info("Eliminando imagen {} del alojamiento {}", imagenId, alojamientoId);
-        // TODO: Implementar lógica de eliminación de imágenes
+
+        Alojamiento alojamiento = alojamientoRepository.findById(alojamientoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Alojamiento no encontrado con id: " + alojamientoId));
+
+        if (imagenId == null || imagenId < 0 || imagenId >= alojamiento.getImagenes().size()) {
+            throw new ResourceNotFoundException("Imagen no encontrada para el alojamiento indicado");
+        }
+
+        int index = Math.toIntExact(imagenId);
+        String urlImagen = alojamiento.getImagenes().get(index);
+        String publicId = extraerPublicIdDesdeUrl(urlImagen);
+
+        imageStorageService.eliminarImagen(publicId);
+        alojamiento.getImagenes().remove(index);
+        alojamientoRepository.save(alojamiento);
+
+        log.info("Imagen eliminada correctamente del alojamiento {}", alojamientoId);
     }
 
     private AlojamientoResponse mapearConMetadatos(Alojamiento alojamiento) {
@@ -171,6 +217,28 @@ public class AlojamientoServiceImpl implements AlojamientoService {
         }
         return response;
     }
+
+    private String extraerPublicIdDesdeUrl(String urlImagen) {
+        if (urlImagen == null || urlImagen.isBlank()) {
+            throw new BusinessException("La URL de la imagen es invalida");
+        }
+
+        int uploadIndex = urlImagen.indexOf("/upload/");
+        if (uploadIndex == -1) {
+            throw new BusinessException("No se pudo extraer el identificador de la imagen");
+        }
+
+        String path = urlImagen.substring(uploadIndex + "/upload/".length());
+        int queryIndex = path.indexOf('?');
+        if (queryIndex != -1) {
+            path = path.substring(0, queryIndex);
+        }
+
+        int extensionIndex = path.lastIndexOf('.');
+        if (extensionIndex != -1) {
+            path = path.substring(0, extensionIndex);
+        }
+
+        return path;
+    }
 }
-
-

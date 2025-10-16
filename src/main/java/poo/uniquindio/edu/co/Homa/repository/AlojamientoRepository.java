@@ -1,5 +1,6 @@
 package poo.uniquindio.edu.co.homa.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -15,6 +16,8 @@ import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
 @Repository
 public interface AlojamientoRepository extends JpaRepository<Alojamiento, Long> {
     Page<Alojamiento> findByEstado(EstadoAlojamiento estado, Pageable pageable);
+
+    List<Alojamiento> findByEstado(EstadoAlojamiento estado);
 
     Page<Alojamiento> findByAnfitrionIdAndEstado(String anfitrionId, EstadoAlojamiento estado, Pageable pageable);
 

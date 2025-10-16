@@ -44,6 +44,7 @@ public class SecurityConfig {
                         "/api/usuarios/activar/**",
                         "/api/usuarios/recuperar-contrasena",
                         "/api/usuarios/restablecer-contrasena",
+                        "/api/mapas/alojamientos",
                         "/swagger-ui/**", 
                         "/v3/api-docs/**"
                 ).permitAll()
