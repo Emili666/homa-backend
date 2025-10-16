@@ -24,6 +24,7 @@ import poo.uniquindio.edu.co.homa.dto.request.ResenaRequest;
 import poo.uniquindio.edu.co.homa.dto.request.ResponderResenaRequest;
 import poo.uniquindio.edu.co.homa.dto.response.ResenaResponse;
 import poo.uniquindio.edu.co.homa.service.ResenaService;
+import poo.uniquindio.edu.co.homa.service.UsuarioService;
 
 @Tag(name = "Reseñas", description = "Endpoints para gestión de reseñas y calificaciones")
 @RestController
@@ -32,6 +33,7 @@ import poo.uniquindio.edu.co.homa.service.ResenaService;
 public class ResenaController {
 
     private final ResenaService resenaService;
+    private final UsuarioService usuarioService;
 
     @Operation(summary = "Crear reseña", description = "Crea una nueva reseña para un alojamiento")
     @SecurityRequirement(name = "bearerAuth")
@@ -40,7 +42,7 @@ public class ResenaController {
     public ResponseEntity<ResenaResponse> crear(
             @Valid @RequestBody ResenaRequest request,
             Authentication authentication) {
-        Long clienteId = 1L; // Placeholder
+        Long clienteId = Long.parseLong(usuarioService.obtenerPorEmail(authentication.getName()).getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(resenaService.crear(request, clienteId));
     }
 
@@ -55,7 +57,7 @@ public class ResenaController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('HUESPED')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id, Authentication authentication) {
-        Long clienteId = 1L; // Placeholder
+        Long clienteId = Long.parseLong(usuarioService.obtenerPorEmail(authentication.getName()).getId());
         resenaService.eliminar(id, clienteId);
         return ResponseEntity.noContent().build();
     }
@@ -76,7 +78,7 @@ public class ResenaController {
             @PathVariable Long id,
             @Valid @RequestBody ResponderResenaRequest request,
             Authentication authentication) {
-        Long anfitrionId = 1L; // Placeholder
+        Long anfitrionId = Long.parseLong(usuarioService.obtenerPorEmail(authentication.getName()).getId());
         resenaService.responder(id, request, anfitrionId);
         return ResponseEntity.ok().build();
     }
