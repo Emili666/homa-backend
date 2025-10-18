@@ -24,6 +24,7 @@ import poo.uniquindio.edu.co.homa.repository.ResenaRepository;
 import poo.uniquindio.edu.co.homa.repository.ReservaRepository;
 import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
 import poo.uniquindio.edu.co.homa.service.ResenaService;
+import poo.uniquindio.edu.co.homa.util.EmailService;
 
 @Slf4j
 @Service
@@ -35,6 +36,7 @@ public class ResenaServiceImpl implements ResenaService {
     private final UsuarioRepository usuarioRepository;
     private final ReservaRepository reservaRepository;
     private final ResenaMapper resenaMapper;
+    private final EmailService emailService;
 
    @Override
 @Transactional
@@ -75,6 +77,8 @@ public ResenaResponse crear(ResenaRequest request, Long clienteId) {
     resena.setAlojamiento(alojamiento);
 
     resena = resenaRepository.save(resena);
+
+    notificarAnfitrionNuevaResena(alojamiento, cliente, request);
 
     log.info("Reseña creada exitosamente con ID: {}", resena.getId());
     return resenaMapper.toResponse(resena);
@@ -140,4 +144,20 @@ public ResenaResponse crear(ResenaRequest request, Long clienteId) {
     public Double calcularPromedioCalificacion(Long alojamientoId) {
         return resenaRepository.calcularPromedioCalificacion(alojamientoId);
     }
+
+    private void notificarAnfitrionNuevaResena(Alojamiento alojamiento, Usuario huesped, ResenaRequest request) {
+        if (alojamiento.getAnfitrion() == null || alojamiento.getAnfitrion().getEmail() == null) {
+            log.warn("No se pudo notificar al anfitrion: alojamiento {} sin anfitrion o sin email", alojamiento.getId());
+            return;
+        }
+
+        emailService.enviarEmailNuevaResenaAnfitrion(
+                alojamiento.getAnfitrion().getEmail(),
+                alojamiento.getTitulo(),
+                huesped.getNombre(),
+                request.getCalificacion(),
+                request.getComentario()
+        );
+    }
+
 }

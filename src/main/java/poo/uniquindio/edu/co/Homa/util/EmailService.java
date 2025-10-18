@@ -177,4 +177,26 @@ public class EmailService {
 
         enviarCorreo(email, asunto, cuerpo);
     }
+
+    /**
+     * Notifica al anfitrion que su alojamiento recibio una nueva resena.
+     */
+    public void enviarEmailNuevaResenaAnfitrion(String email, String nombreAlojamiento, String nombreHuesped, Integer calificacion, String comentario) {
+        String asunto = "Nueva resena en tu alojamiento - HOMA";
+        String cuerpo = String.format("""
+                Hola,
+
+                %s ha dejado una nueva resena sobre tu alojamiento %s.
+
+                Calificacion: %d/5
+                Comentario: %s
+
+                Ingresa a la plataforma para ver la resena completa y responder si lo deseas.
+
+                Saludos,
+                Equipo HOMA
+                """, nombreHuesped, nombreAlojamiento, calificacion != null ? calificacion : 0, comentario != null ? comentario : "");
+
+        enviarCorreo(email, asunto, cuerpo);
+    }
 }

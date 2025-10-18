@@ -53,6 +53,12 @@ public class ReservaServiceImpl implements ReservaService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Alojamiento no encontrado con id: " + request.getAlojamientoId()));
 
+        if (request.getCantidadHuespedes() != null
+                && alojamiento.getMaxHuespedes() != null
+                && request.getCantidadHuespedes() > alojamiento.getMaxHuespedes()) {
+            throw new BusinessException("La cantidad de huespedes excede la capacidad del alojamiento");
+        }
+
         // Verificar disponibilidad
         if (!verificarDisponibilidad(request.getAlojamientoId(), request.getFechaEntrada(), request.getFechaSalida())) {
             throw new BusinessException("El alojamiento no está disponible para las fechas seleccionadas");
@@ -141,7 +147,7 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     @Transactional(readOnly = true)
     public Page<ReservaResponse> listarPorCliente(Long clienteId, Pageable pageable) {
-        return reservaRepository.findByHuespedId(String.valueOf(clienteId), pageable)
+        return reservaRepository.findByHuesped_Id(clienteId, pageable)
                 .map(reservaMapper::toResponse);
     }
 

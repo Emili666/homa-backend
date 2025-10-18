@@ -15,13 +15,13 @@ import poo.uniquindio.edu.co.homa.model.enums.EstadoReserva;
 
 @Repository
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
-    
-    Page<Reserva> findByHuespedId(String huespedId, Pageable pageable);
-    
+
+    Page<Reserva> findByHuesped_Id(Long huespedId, Pageable pageable);
+
     Page<Reserva> findByAlojamientoId(Long alojamientoId, Pageable pageable);
-    
-    Page<Reserva> findByAlojamientoAnfitrionId(String anfitrionId, Pageable pageable);
-    
+
+    Page<Reserva> findByAlojamiento_Anfitrion_Id(Long anfitrionId, Pageable pageable);
+
     @Query("SELECT r FROM Reserva r WHERE r.alojamiento.id = :alojamientoId " +
            "AND r.estado IN ('CONFIRMADA', 'PENDIENTE') " +
            "AND ((r.fechaEntrada <= :fechaSalida AND r.fechaSalida >= :fechaEntrada))")

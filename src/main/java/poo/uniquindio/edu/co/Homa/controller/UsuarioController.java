@@ -53,7 +53,7 @@ public class UsuarioController {
     @Operation(summary = "Obtener usuario por ID", description = "Obtiene los datos de un usuario por su ID")
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CLIENTE', 'ANFITRION')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'HUESPED', 'ANFITRION')")
     public ResponseEntity<UsuarioResponse> obtenerPorId(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.obtenerPorId(id));
     }
@@ -61,7 +61,7 @@ public class UsuarioController {
     @Operation(summary = "Actualizar usuario", description = "Actualiza los datos de un usuario")
     @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CLIENTE', 'ANFITRION')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'HUESPED', 'ANFITRION')")
     public ResponseEntity<UsuarioResponse> actualizar(
             @PathVariable Long id,
             @Valid @RequestBody ActualizarUsuarioRequest request) {
@@ -80,7 +80,7 @@ public class UsuarioController {
     @Operation(summary = "Cambiar contraseña", description = "Cambia la contraseña de un usuario")
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/{id}/cambiar-contrasena")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CLIENTE', 'ANFITRION')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'HUESPED', 'ANFITRION')")
     public ResponseEntity<Void> cambiarContrasena(
             @PathVariable Long id,
             @Valid @RequestBody CambiarContrasenaRequest request) {

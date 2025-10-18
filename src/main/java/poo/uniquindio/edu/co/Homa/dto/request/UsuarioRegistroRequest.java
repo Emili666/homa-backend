@@ -21,6 +21,7 @@ public class UsuarioRegistroRequest {
 
     @NotBlank(message = "El email es obligatorio")
     @Email(message = "El email debe ser válido")
+    @Pattern(regexp = "^[^@\\s]+@[^@\\s]+$", message = "El email debe contener '@' y texto antes y después")
     @Size(max = 100, message = "El email no puede exceder 100 caracteres")
     private String email;
 
