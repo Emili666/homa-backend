@@ -1,5 +1,7 @@
 package poo.uniquindio.edu.co.homa.config;
 
+
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import poo.uniquindio.edu.co.homa.security.JwtAuthenticationEntryPoint;
 import poo.uniquindio.edu.co.homa.security.JwtAuthenticationFilter;
 import poo.uniquindio.edu.co.homa.service.CustomUserDetailsService;
+import org.springframework.security.config.Customizer;
 
 @Configuration
 @EnableWebSecurity
@@ -36,8 +39,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.disable())
+            .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
+
                 .requestMatchers(
                         "/api/auth/**",          // Endpoints públicos
                         "/api/usuarios/registro",
