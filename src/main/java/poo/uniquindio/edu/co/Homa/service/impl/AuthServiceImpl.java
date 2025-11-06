@@ -17,6 +17,7 @@ import poo.uniquindio.edu.co.homa.dto.response.LoginResponse;
 import poo.uniquindio.edu.co.homa.exception.UnauthorizedException;
 import poo.uniquindio.edu.co.homa.model.entity.Usuario;
 import poo.uniquindio.edu.co.homa.model.enums.EstadoUsuario;
+import poo.uniquindio.edu.co.homa.mapper.UsuarioMapper;
 import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
 import poo.uniquindio.edu.co.homa.security.JwtUtil;
 import poo.uniquindio.edu.co.homa.service.AuthService;
@@ -29,6 +30,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioMapper usuarioMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -62,6 +64,7 @@ public class AuthServiceImpl implements AuthService {
                 .email(usuario.getEmail())
                 .nombre(usuario.getNombre())
                 .rol(usuario.getRol().name())
+                .usuario(usuarioMapper.toResponse(usuario))
                 .build();
     }
 
@@ -79,10 +82,13 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String email = jwtUtil.getEmailFromToken(refreshToken);
-        String newToken = jwtUtil.generarToken(email, null); // Claims opcionales
 
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new UnauthorizedException("Usuario no encontrado"));
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("rol", usuario.getRol().name());
+        String newToken = jwtUtil.generarToken(email, claims);
 
         return LoginResponse.builder()
                 .token(newToken)
@@ -90,6 +96,7 @@ public class AuthServiceImpl implements AuthService {
                 .email(usuario.getEmail())
                 .nombre(usuario.getNombre())
                 .rol(usuario.getRol().name())
+                .usuario(usuarioMapper.toResponse(usuario))
                 .build();
     }
 }
