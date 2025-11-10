@@ -27,15 +27,14 @@ public class UsuarioRegistroRequest {
 
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[A-Z]).*$", 
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[A-Z]).*$",
              message = "La contraseña debe contener al menos un número y una mayúscula")
     private String contrasena;
 
-    @NotBlank(message = "El teléfono es obligatorio")
+    // Campos opcionales que se pueden completar en el perfil
     @Pattern(regexp = "^[0-9]{10,15}$", message = "El teléfono debe tener entre 10 y 15 dígitos")
     private String telefono;
 
-    @NotNull(message = "La fecha de nacimiento es obligatoria")
     @Past(message = "La fecha de nacimiento debe ser en el pasado")
     private LocalDate fechaNacimiento;
 
