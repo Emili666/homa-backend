@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -51,20 +53,45 @@ public class UsuarioController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Obtener usuario por ID", description = "Obtiene los datos de un usuario por su ID")
-    @SecurityRequirement(name = "bearerAuth")
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'HUESPED', 'ANFITRION')")
-    public ResponseEntity<UsuarioResponse> obtenerPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(usuarioService.obtenerPorId(id));
-    }
-
     @Operation(summary = "Obtener perfil actual", description = "Obtiene los datos del usuario autenticado")
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/me")
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'HUESPED', 'ANFITRION')")
     public ResponseEntity<UsuarioResponse> obtenerPerfil(Authentication authentication) {
         return ResponseEntity.ok(usuarioService.obtenerPorEmail(authentication.getName()));
+    }
+
+    @Operation(summary = "Actualizar perfil actual", description = "Actualiza los datos del usuario autenticado")
+    @SecurityRequirement(name = "bearerAuth")
+    @PutMapping(value = "/me", consumes = { "multipart/form-data", "application/json" })
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'HUESPED', 'ANFITRION')")
+    public ResponseEntity<UsuarioResponse> actualizarPerfil(
+            Authentication authentication,
+            @RequestPart(value = "foto", required = false) MultipartFile foto,
+            @RequestPart(value = "nombre", required = false) String nombre,
+            @RequestPart(value = "email", required = false) String email,
+            @RequestPart(value = "telefono", required = false) String telefono,
+            @RequestPart(value = "contrasena", required = false) String contrasena) {
+
+        UsuarioResponse usuario = usuarioService.obtenerPorEmail(authentication.getName());
+
+        // Crear el request con los datos recibidos
+        ActualizarUsuarioRequest request = new ActualizarUsuarioRequest();
+        if (nombre != null) request.setNombre(nombre);
+        if (email != null) request.setEmail(email);
+        if (telefono != null) request.setTelefono(telefono);
+        if (contrasena != null) request.setContrasena(contrasena);
+
+        // Si hay foto, procesarla (necesitarás implementar esto en el servicio)
+        return ResponseEntity.ok(usuarioService.actualizarConFoto(usuario.getId(), request, foto));
+    }
+
+    @Operation(summary = "Obtener usuario por ID", description = "Obtiene los datos de un usuario por su ID")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'HUESPED', 'ANFITRION')")
+    public ResponseEntity<UsuarioResponse> obtenerPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.obtenerPorId(id));
     }
 
     @Operation(summary = "Actualizar usuario", description = "Actualiza los datos de un usuario")

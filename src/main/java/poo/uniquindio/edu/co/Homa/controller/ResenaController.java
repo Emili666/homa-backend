@@ -42,7 +42,7 @@ public class ResenaController {
     public ResponseEntity<ResenaResponse> crear(
             @Valid @RequestBody ResenaRequest request,
             Authentication authentication) {
-        Long clienteId = Long.parseLong(usuarioService.obtenerPorEmail(authentication.getName()).getId());
+        Long clienteId = usuarioService.obtenerPorEmail(authentication.getName()).getId();
         return ResponseEntity.status(HttpStatus.CREATED).body(resenaService.crear(request, clienteId));
     }
 
@@ -57,7 +57,7 @@ public class ResenaController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('HUESPED')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id, Authentication authentication) {
-        Long clienteId = Long.parseLong(usuarioService.obtenerPorEmail(authentication.getName()).getId());
+        Long clienteId = usuarioService.obtenerPorEmail(authentication.getName()).getId();
         resenaService.eliminar(id, clienteId);
         return ResponseEntity.noContent().build();
     }
@@ -78,7 +78,7 @@ public class ResenaController {
             @PathVariable Long id,
             @Valid @RequestBody ResponderResenaRequest request,
             Authentication authentication) {
-        Long anfitrionId = Long.parseLong(usuarioService.obtenerPorEmail(authentication.getName()).getId());
+        Long anfitrionId = usuarioService.obtenerPorEmail(authentication.getName()).getId();
         resenaService.responder(id, request, anfitrionId);
         return ResponseEntity.ok().build();
     }

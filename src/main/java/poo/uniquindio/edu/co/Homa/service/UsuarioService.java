@@ -3,6 +3,7 @@ package poo.uniquindio.edu.co.homa.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import poo.uniquindio.edu.co.homa.dto.request.ActualizarUsuarioRequest;
 import poo.uniquindio.edu.co.homa.dto.request.CambiarContrasenaRequest;
@@ -20,7 +21,9 @@ public interface UsuarioService {
     UsuarioResponse obtenerPorEmail(String email);
     
     UsuarioResponse actualizar(Long id, ActualizarUsuarioRequest request);
-    
+
+    UsuarioResponse actualizarConFoto(Long id, ActualizarUsuarioRequest request, MultipartFile foto);
+
     void eliminar(Long id);
     
     void cambiarContrasena(Long id, CambiarContrasenaRequest request);

@@ -1,8 +1,10 @@
 package poo.uniquindio.edu.co.homa.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import poo.uniquindio.edu.co.homa.dto.request.ActualizarUsuarioRequest;
 import poo.uniquindio.edu.co.homa.dto.request.UsuarioRegistroRequest;
@@ -25,6 +27,7 @@ public interface UsuarioMapper {
 
     UsuarioResponse toResponse(Usuario usuario);
 
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "email", ignore = true)
     @Mapping(target = "contrasena", ignore = true)
@@ -38,5 +41,6 @@ public interface UsuarioMapper {
     @Mapping(target = "reservas", ignore = true)
     @Mapping(target = "resenas", ignore = true)
     @Mapping(target = "codigoActivacion", ignore = true)
+    @Mapping(target = "favoritos", ignore = true)
     void updateEntityFromRequest(ActualizarUsuarioRequest request, @MappingTarget Usuario usuario);
 }

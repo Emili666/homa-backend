@@ -42,7 +42,7 @@ public class ReservaController {
 
     @Operation(summary = "Crear reserva", description = "Crea una nueva reserva")
     @PostMapping
-    @PreAuthorize("hasRole('HUESPED')")
+    @PreAuthorize("hasAnyRole('HUESPED', 'ANFITRION')")
     public ResponseEntity<ReservaResponse> crear(
             @Valid @RequestBody ReservaRequest request,
             Authentication authentication) {
@@ -106,6 +106,6 @@ public class ReservaController {
     private Long obtenerIdCliente(Authentication authentication) {
         String email = authentication.getName();
         UsuarioResponse usuario = usuarioService.obtenerPorEmail(email);
-        return Long.parseLong(usuario.getId());
+        return usuario.getId();
     }
 }

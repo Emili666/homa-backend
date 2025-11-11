@@ -40,8 +40,9 @@ public class AlojamientoController {
     public ResponseEntity<AlojamientoResponse> crear(
             @Valid @RequestBody AlojamientoRequest request,
             Authentication authentication) {
-        // En una implementación real, obtendríamos el ID del usuario autenticado
-        Long anfitrionId = 1L; // Placeholder
+        // Obtener el ID del usuario autenticado
+        String email = authentication.getName();
+        Long anfitrionId = usuarioService.obtenerPorEmail(email).getId();
         return ResponseEntity.status(HttpStatus.CREATED).body(alojamientoService.crear(request, anfitrionId));
     }
 
@@ -59,7 +60,8 @@ public class AlojamientoController {
             @PathVariable Long id,
             @Valid @RequestBody AlojamientoRequest request,
             Authentication authentication) {
-        Long anfitrionId = 1L; // Placeholder
+        String email = authentication.getName();
+        Long anfitrionId = usuarioService.obtenerPorEmail(email).getId();
         return ResponseEntity.ok(alojamientoService.actualizar(id, request, anfitrionId));
     }
 
@@ -68,7 +70,8 @@ public class AlojamientoController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ANFITRION')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id, Authentication authentication) {
-        Long anfitrionId = 1L; // Placeholder
+        String email = authentication.getName();
+        Long anfitrionId = usuarioService.obtenerPorEmail(email).getId();
         alojamientoService.eliminar(id, anfitrionId);
         return ResponseEntity.noContent().build();
     }
@@ -87,7 +90,7 @@ public class AlojamientoController {
             Pageable pageable,
             Authentication authentication) {
         String email = authentication.getName();
-        Long anfitrionId = Long.parseLong(usuarioService.obtenerPorEmail(email).getId());
+        Long anfitrionId = usuarioService.obtenerPorEmail(email).getId();
         return ResponseEntity.ok(alojamientoService.listarPorAnfitrion(anfitrionId, pageable));
     }
 

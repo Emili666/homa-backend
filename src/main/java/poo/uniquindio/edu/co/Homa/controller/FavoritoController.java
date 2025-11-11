@@ -88,6 +88,6 @@ public class FavoritoController {
     private Long obtenerUsuarioId(Authentication authentication) {
         String email = authentication.getName();
         UsuarioResponse usuario = usuarioService.obtenerPorEmail(email);
-        return Long.parseLong(usuario.getId());
+        return usuario.getId();
     }
 }

@@ -157,7 +157,7 @@ public class AlojamientoServiceImpl implements AlojamientoService {
         log.info("Estado cambiado exitosamente para alojamiento: {}", alojamiento.getId());
     }
 
-            @Override
+    @Override
     @Transactional
     public void agregarImagenes(Long id, List<MultipartFile> imagenes) {
         log.info("Agregando {} imagenes al alojamiento {}", imagenes != null ? imagenes.size() : 0, id);

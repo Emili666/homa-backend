@@ -4,24 +4,16 @@
 spring.application.name=Homa
 server.port=8080
 
-# ⚠️ NO desactivar la autoconfiguración de JPA ni DataSource
-# (Estas líneas causaban el error del entityManagerFactory)
-# spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
-
 # ---------------------------------------
 #  CONFIGURACIÓN BASE DE DATOS MARIADB
 # ---------------------------------------
 spring.datasource.url=jdbc:mariadb://localhost:3306/homa_avanzada_db?allowPublicKeyRetrieval=true&useSSL=false
-
-
 spring.datasource.username=root
-spring.datasource.password=emili123
+spring.datasource.password=TU_PASSWORD_AQUI
 spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
 
 # Propiedades de JPA / Hibernate
 spring.jpa.hibernate.ddl-auto=update
-
-
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MariaDBDialect
 spring.jpa.properties.hibernate.format_sql=true
@@ -48,33 +40,31 @@ openapi.prod-url=https://api.homa.edu.co
 # ---------------------------------------
 # 🔐 JWT CONFIGURACIÓN
 # ---------------------------------------
-jwt.secret=MiClaveSuperSeguraParaJWT1234567890123456
-jwt.expiration=3600000  # (1 hora en milisegundos)
+jwt.secret=TU_SECRET_KEY_AQUI_DEBE_SER_LARGO_Y_SEGURO
+jwt.expiration=3600000
 
 # ---------------------------------------
 # 📬 CORREO ELECTRÓNICO (SMTP GMAIL)
 # ---------------------------------------
-# 📧 Configuración de correo - Gmail con Jakarta Mail
 spring.mail.host=smtp.gmail.com
 spring.mail.port=587
-spring.mail.username=alojamientohoma@gmail.com
-spring.mail.password=heyy yavt npfe oxpo
+spring.mail.username=tu_email@gmail.com
+spring.mail.password=tu_app_password_aqui
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 
 # ---------------------------------------
 #  MAPBOX CONFIGURACIÓN
 # ---------------------------------------
-# Reemplaza con tu token real obtenido en https://account.mapbox.com/
 mapbox.access-token=TU_TOKEN_MAPBOX_AQUI
 
 # ---------------------------------------
-#  CLOUDINARY CONFIGURACI�N
+#  CLOUDINARY CONFIGURACIÓN
 # ---------------------------------------
-# Reemplaza estos valores con los de tu cuenta Cloudinary
-cloudinary.cloud-name=dczjcspmj
-cloudinary.api-key=966558555964388
-cloudinary.api-secret=oIXB_nDMg2dmXC51yJyaDLv0xSI
+# Obtén tus credenciales en https://console.cloudinary.com/
+cloudinary.cloud-name=tu_cloud_name
+cloudinary.api-key=tu_api_key
+cloudinary.api-secret=tu_api_secret
 cloudinary.folder=alojamientos
 
 # ---------------------------------------

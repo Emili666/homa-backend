@@ -30,7 +30,6 @@ public interface AlojamientoMapper {
     AlojamientoResponse toResponse(Alojamiento alojamiento);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "estado", ignore = true)
     @Mapping(target = "anfitrion", ignore = true)
     @Mapping(target = "reservas", ignore = true)
     @Mapping(target = "resenas", ignore = true)

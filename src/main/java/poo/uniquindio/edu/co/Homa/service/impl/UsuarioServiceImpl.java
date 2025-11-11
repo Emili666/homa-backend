@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +28,10 @@ import poo.uniquindio.edu.co.homa.mapper.UsuarioMapper;
 import poo.uniquindio.edu.co.homa.model.entity.ContrasenaCodigoReinicio;
 import poo.uniquindio.edu.co.homa.model.entity.Usuario;
 import poo.uniquindio.edu.co.homa.model.enums.EstadoUsuario;
+import poo.uniquindio.edu.co.homa.model.enums.RolUsuario;
 import poo.uniquindio.edu.co.homa.repository.ContrasenaCodigoReinicioRepository;
 import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
+import poo.uniquindio.edu.co.homa.service.ImageStorageService;
 import poo.uniquindio.edu.co.homa.service.UsuarioService;
 import poo.uniquindio.edu.co.homa.util.EmailService;
 
@@ -41,11 +44,12 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     private final UsuarioMapper usuarioMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final ImageStorageService imageStorageService;
 
     @Override
 @Transactional
 public UsuarioResponse registrar(UsuarioRegistroRequest request) {
-    log.info("Registrando nuevo usuario: {}", request.getEmail());
+    log.info("Registrando nuevo usuario: {} con rol: {}", request.getEmail(), request.getRol());
 
     // Verificar que el email no esté registrado
     if (usuarioRepository.existsByEmail(request.getEmail())) {
@@ -61,6 +65,11 @@ public UsuarioResponse registrar(UsuarioRegistroRequest request) {
     // Estado inicial: INACTIVO (hasta que active la cuenta)
     usuario.setEstado(EstadoUsuario.INACTIVO);
 
+    // Establecer esAnfitrion basado en el rol
+    usuario.setEsAnfitrion(request.getRol() == RolUsuario.Anfitrion);
+
+    log.info("Usuario configurado - Rol: {}, esAnfitrion: {}", usuario.getRol(), usuario.getEsAnfitrion());
+
     // Generar y asignar el código único de activación
     String codigoActivacion = UUID.randomUUID().toString();
     usuario.setCodigoActivacion(codigoActivacion);
@@ -74,7 +83,8 @@ public UsuarioResponse registrar(UsuarioRegistroRequest request) {
     // Enviar email de activación con el código
     emailService.enviarEmailActivacion(usuario.getEmail(), usuario.getCodigoActivacion());
 
-    log.info("Usuario registrado exitosamente: {}", usuario.getEmail());
+    log.info("Usuario registrado exitosamente: {} - Rol: {}, esAnfitrion: {}",
+             usuario.getEmail(), usuario.getRol(), usuario.getEsAnfitrion());
     return usuarioMapper.toResponse(usuario);
 }
 
@@ -108,6 +118,97 @@ public UsuarioResponse registrar(UsuarioRegistroRequest request) {
 
         log.info("Usuario actualizado exitosamente: {}", usuario.getEmail());
         return usuarioMapper.toResponse(usuario);
+    }
+
+    @Override
+    @Transactional
+    public UsuarioResponse actualizarConFoto(Long id, ActualizarUsuarioRequest request, MultipartFile foto) {
+        log.info("Actualizando usuario con id: {} (con foto)", id);
+
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
+
+        // Actualizar campos básicos
+        log.debug("Datos recibidos - Nombre: {}, Email: {}, Telefono: {}, Contrasena: {}",
+                  request.getNombre(), request.getEmail(), request.getTelefono(),
+                  request.getContrasena() != null ? "****" : null);
+
+        if (request.getNombre() != null && !request.getNombre().trim().isEmpty()) {
+            log.debug("Actualizando nombre de '{}' a '{}'", usuario.getNombre(), request.getNombre());
+            usuario.setNombre(request.getNombre().trim());
+        }
+        if (request.getEmail() != null && !request.getEmail().trim().isEmpty()) {
+            // Verificar que el nuevo email no esté en uso por otro usuario
+            String nuevoEmail = request.getEmail().trim();
+            if (!usuario.getEmail().equals(nuevoEmail) &&
+                usuarioRepository.existsByEmail(nuevoEmail)) {
+                throw new BusinessException("El email ya está registrado");
+            }
+            log.debug("Actualizando email de '{}' a '{}'", usuario.getEmail(), nuevoEmail);
+            usuario.setEmail(nuevoEmail);
+        }
+        if (request.getTelefono() != null && !request.getTelefono().trim().isEmpty()) {
+            log.debug("Actualizando telefono de '{}' a '{}'", usuario.getTelefono(), request.getTelefono());
+            usuario.setTelefono(request.getTelefono().trim());
+        }
+        if (request.getContrasena() != null && !request.getContrasena().trim().isEmpty()) {
+            log.debug("Actualizando contraseña");
+            usuario.setContrasena(passwordEncoder.encode(request.getContrasena()));
+        }
+
+        // Subir foto a Cloudinary si se proporciona
+        if (foto != null && !foto.isEmpty()) {
+            try {
+                // Eliminar foto anterior si existe
+                if (usuario.getFoto() != null && !usuario.getFoto().isBlank()) {
+                    // Extraer public_id de la URL de Cloudinary
+                    String publicId = extraerPublicIdDeUrl(usuario.getFoto());
+                    if (publicId != null) {
+                        imageStorageService.eliminarImagen(publicId);
+                    }
+                }
+
+                // Subir nueva foto
+                ImageStorageService.UploadResult resultado = imageStorageService.subirImagen(foto);
+                usuario.setFoto(resultado.url());
+                log.info("Foto de perfil actualizada para usuario: {}", usuario.getEmail());
+            } catch (Exception e) {
+                log.error("Error al procesar foto de perfil: {}", e.getMessage());
+                throw new BusinessException("Error al subir la foto de perfil");
+            }
+        }
+
+        usuario = usuarioRepository.save(usuario);
+        log.info("Usuario guardado en BD - ID: {}, Email: {}, Nombre: {}, Telefono: {}",
+                 usuario.getId(), usuario.getEmail(), usuario.getNombre(), usuario.getTelefono());
+
+        UsuarioResponse response = usuarioMapper.toResponse(usuario);
+        log.info("Usuario actualizado exitosamente con foto: {}", usuario.getEmail());
+        return response;
+    }
+
+    private String extraerPublicIdDeUrl(String url) {
+        // URL de Cloudinary tiene formato: https://res.cloudinary.com/.../upload/v.../folder/imagen.jpg
+        // Necesitamos extraer "folder/imagen" (sin extensión)
+        if (url == null || !url.contains("cloudinary.com")) {
+            return null;
+        }
+
+        try {
+            String[] partes = url.split("/upload/");
+            if (partes.length < 2) return null;
+
+            String[] segmentos = partes[1].split("/");
+            if (segmentos.length < 3) return null;
+
+            // Construir public_id: folder/archivo (sin extensión)
+            String folder = segmentos[1];
+            String archivo = segmentos[2].substring(0, segmentos[2].lastIndexOf('.'));
+            return folder + "/" + archivo;
+        } catch (Exception e) {
+            log.warn("No se pudo extraer public_id de URL: {}", url);
+            return null;
+        }
     }
 
     @Override
