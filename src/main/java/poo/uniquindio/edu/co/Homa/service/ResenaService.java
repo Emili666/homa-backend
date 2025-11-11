@@ -21,6 +21,8 @@ public interface ResenaService {
     Page<ResenaResponse> listarPorAlojamiento(Long alojamientoId, Pageable pageable);
     
     void responder(Long id, ResponderResenaRequest request, Long anfitrionId);
-    
+
     Double calcularPromedioCalificacion(Long alojamientoId);
+
+    Page<ResenaResponse> listarDestacadas(Pageable pageable);
 }

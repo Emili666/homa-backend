@@ -145,6 +145,22 @@ public ResenaResponse crear(ResenaRequest request, Long clienteId) {
         return resenaRepository.calcularPromedioCalificacion(alojamientoId);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ResenaResponse> listarDestacadas(Pageable pageable) {
+        log.info("Listando reseñas destacadas");
+        // Primero intentar obtener las marcadas como destacadas
+        Page<Resena> destacadas = resenaRepository.findDestacadas(pageable);
+
+        // Si no hay destacadas, obtener las mejores calificadas (4-5 estrellas)
+        if (destacadas.isEmpty()) {
+            log.info("No hay reseñas destacadas, obteniendo mejor calificadas");
+            destacadas = resenaRepository.findByCalificacionGreaterThanEqualOrderByCreadoEnDesc(4, pageable);
+        }
+
+        return destacadas.map(resenaMapper::toResponse);
+    }
+
     private void notificarAnfitrionNuevaResena(Alojamiento alojamiento, Usuario huesped, ResenaRequest request) {
         if (alojamiento.getAnfitrion() == null || alojamiento.getAnfitrion().getEmail() == null) {
             log.warn("No se pudo notificar al anfitrion: alojamiento {} sin anfitrion o sin email", alojamiento.getId());

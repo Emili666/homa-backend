@@ -19,4 +19,9 @@ public interface ResenaRepository extends JpaRepository<Resena, Long> {
     
     @Query("SELECT AVG(r.calificacion) FROM Resena r WHERE r.alojamiento.id = :alojamientoId")
     Double calcularPromedioCalificacion(@Param("alojamientoId") Long alojamientoId);
+
+    @Query("SELECT r FROM Resena r WHERE r.esDestacado = true ORDER BY r.creadoEn DESC")
+    Page<Resena> findDestacadas(Pageable pageable);
+
+    Page<Resena> findByCalificacionGreaterThanEqualOrderByCreadoEnDesc(Integer calificacion, Pageable pageable);
 }

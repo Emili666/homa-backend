@@ -88,4 +88,10 @@ public class ResenaController {
     public ResponseEntity<Double> calcularPromedio(@PathVariable Long alojamientoId) {
         return ResponseEntity.ok(resenaService.calcularPromedioCalificacion(alojamientoId));
     }
+
+    @Operation(summary = "Listar reseñas destacadas", description = "Lista las reseñas destacadas para mostrar en el home")
+    @GetMapping("/destacadas")
+    public ResponseEntity<Page<ResenaResponse>> listarDestacadas(Pageable pageable) {
+        return ResponseEntity.ok(resenaService.listarDestacadas(pageable));
+    }
 }

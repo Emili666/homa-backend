@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class ResenaResponse {
     private Long id;
     private Long alojamientoId;
+    private String tituloAlojamiento;
     private String usuarioId;
     private String nombreUsuario;
     private String fotoUsuario;

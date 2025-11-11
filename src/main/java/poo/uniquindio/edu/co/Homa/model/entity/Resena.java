@@ -46,4 +46,7 @@ public class Resena {
     @CreationTimestamp
     @Column(name = "creado_en", nullable = false, updatable = false)
     private LocalDateTime creadoEn;
+
+    @Column(name = "es_destacado")
+    private Boolean esDestacado = false;
 }

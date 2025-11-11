@@ -17,9 +17,11 @@ public interface ResenaMapper {
     @Mapping(target = "mensaje", ignore = true)
     @Mapping(target = "respondidoEn", ignore = true)
     @Mapping(target = "creadoEn", ignore = true)
+    @Mapping(target = "esDestacado", ignore = true)
     Resena toEntity(ResenaRequest request);
 
     @Mapping(source = "alojamiento.id", target = "alojamientoId")
+    @Mapping(source = "alojamiento.titulo", target = "tituloAlojamiento")
     @Mapping(source = "usuario.id", target = "usuarioId")
     @Mapping(source = "usuario.nombre", target = "nombreUsuario")
     @Mapping(source = "usuario.foto", target = "fotoUsuario")
