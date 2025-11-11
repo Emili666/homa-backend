@@ -21,8 +21,14 @@ public interface ReservaService {
     void cambiarEstado(Long id, EstadoReserva estado);
     
     Page<ReservaResponse> listarPorCliente(Long clienteId, Pageable pageable);
-    
+
     Page<ReservaResponse> listarPorAlojamiento(Long alojamientoId, Pageable pageable);
-    
+
+    Page<ReservaResponse> listarPorAnfitrion(Long anfitrionId, Pageable pageable);
+
     boolean verificarDisponibilidad(Long alojamientoId, LocalDate fechaInicio, LocalDate fechaFin);
+
+    void confirmarReserva(Long reservaId, Long anfitrionId);
+
+    void rechazarReserva(Long reservaId, Long anfitrionId);
 }

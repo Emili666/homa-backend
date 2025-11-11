@@ -160,8 +160,95 @@ public class ReservaServiceImpl implements ReservaService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<ReservaResponse> listarPorAnfitrion(Long anfitrionId, Pageable pageable) {
+        System.out.println("========================================");
+        System.out.println("=== LLAMANDO listarPorAnfitrion ===");
+        System.out.println("Anfitrion ID: " + anfitrionId);
+        System.out.println("Pageable: " + pageable);
+        System.out.println("========================================");
+
+        log.info("Buscando reservas para anfitrion ID: {}", anfitrionId);
+        Page<Reserva> reservas = reservaRepository.findByAlojamiento_Anfitrion_Id(anfitrionId, pageable);
+        log.info("Reservas encontradas: {}", reservas.getTotalElements());
+
+        System.out.println("========================================");
+        System.out.println("Total de reservas encontradas: " + reservas.getTotalElements());
+        System.out.println("Numero de elementos en la pagina: " + reservas.getNumberOfElements());
+
+        // Imprimir detalles de cada reserva encontrada
+        if (reservas.hasContent()) {
+            System.out.println("Detalles de las reservas:");
+            reservas.getContent().forEach(reserva -> {
+                System.out.println("  - ID Reserva: " + reserva.getId());
+                System.out.println("    Alojamiento: " + reserva.getAlojamiento().getTitulo());
+                System.out.println("    Huesped: " + reserva.getHuesped().getNombre());
+                System.out.println("    Fecha entrada: " + reserva.getFechaEntrada());
+                System.out.println("    Fecha salida: " + reserva.getFechaSalida());
+                System.out.println("    Estado: " + reserva.getEstado());
+                System.out.println("    ---");
+            });
+        } else {
+            System.out.println("NO HAY RESERVAS PARA ESTE ANFITRION");
+        }
+        System.out.println("========================================");
+
+        return reservas.map(reservaMapper::toResponse);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public boolean verificarDisponibilidad(Long alojamientoId, LocalDate fechaInicio, LocalDate fechaFin) {
         return reservaRepository.findReservasConflictivas(alojamientoId, fechaInicio, fechaFin).isEmpty();
+    }
+
+    @Override
+    @Transactional
+    public void confirmarReserva(Long reservaId, Long anfitrionId) {
+        log.info("Confirmando reserva {} por anfitrión {}", reservaId, anfitrionId);
+
+        Reserva reserva = reservaRepository.findById(reservaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con id: " + reservaId));
+
+        // Verificar que el anfitrión sea el propietario del alojamiento
+        if (!reserva.getAlojamiento().getAnfitrion().getId().equals(anfitrionId)) {
+            throw new BusinessException("No tienes permiso para confirmar esta reserva");
+        }
+
+        // Verificar que la reserva esté en estado PENDIENTE
+        if (reserva.getEstado() != EstadoReserva.PENDIENTE) {
+            throw new BusinessException("Solo se pueden confirmar reservas pendientes");
+        }
+
+        reserva.setEstado(EstadoReserva.CONFIRMADA);
+        reservaRepository.save(reserva);
+
+        notificarCambioEstado(reserva, EstadoReserva.CONFIRMADA);
+        log.info("Reserva confirmada exitosamente: {}", reserva.getId());
+    }
+
+    @Override
+    @Transactional
+    public void rechazarReserva(Long reservaId, Long anfitrionId) {
+        log.info("Rechazando reserva {} por anfitrión {}", reservaId, anfitrionId);
+
+        Reserva reserva = reservaRepository.findById(reservaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con id: " + reservaId));
+
+        // Verificar que el anfitrión sea el propietario del alojamiento
+        if (!reserva.getAlojamiento().getAnfitrion().getId().equals(anfitrionId)) {
+            throw new BusinessException("No tienes permiso para rechazar esta reserva");
+        }
+
+        // Verificar que la reserva esté en estado PENDIENTE
+        if (reserva.getEstado() != EstadoReserva.PENDIENTE) {
+            throw new BusinessException("Solo se pueden rechazar reservas pendientes");
+        }
+
+        reserva.setEstado(EstadoReserva.CANCELADA);
+        reservaRepository.save(reserva);
+
+        notificarCambioEstado(reserva, EstadoReserva.CANCELADA);
+        log.info("Reserva rechazada exitosamente: {}", reserva.getId());
     }
 
     private void notificarAnfitrionNuevaReserva(Reserva reserva) {

@@ -21,10 +21,13 @@ public class ReservaResponse {
     private String ciudadAlojamiento;
     private String huespedId;
     private String nombreHuesped;
+    private String emailHuesped;
+    private String telefonoHuesped;
     private Integer cantidadHuespedes;
     private LocalDate fechaEntrada;
     private LocalDate fechaSalida;
     private Double precio;
     private EstadoReserva estado;
     private LocalDateTime creadoEn;
+    private LocalDateTime fechaCreacion; // Alias para creadoEn
 }

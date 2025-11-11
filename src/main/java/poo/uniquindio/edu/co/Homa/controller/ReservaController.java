@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,6 +49,18 @@ public class ReservaController {
             Authentication authentication) {
         Long clienteId = obtenerIdCliente(authentication);
         return ResponseEntity.status(HttpStatus.CREATED).body(reservaService.crear(request, clienteId));
+    }
+
+    @Operation(summary = "Listar mis reservas", description = "Lista las reservas del usuario autenticado")
+    @GetMapping("/mis-reservas")
+    @PreAuthorize("hasAnyRole('HUESPED', 'ANFITRION')")
+    public ResponseEntity<Page<ReservaResponse>> listarMisReservas(
+            Authentication authentication,
+            Pageable pageable) {
+        System.out.println("=== ENDPOINT /mis-reservas LLAMADO ===");
+        Long clienteId = obtenerIdCliente(authentication);
+        System.out.println("Cliente ID: " + clienteId);
+        return ResponseEntity.ok(reservaService.listarPorCliente(clienteId, pageable));
     }
 
     @Operation(summary = "Obtener reserva por ID", description = "Obtiene los detalles de una reserva")
@@ -92,6 +105,45 @@ public class ReservaController {
             @PathVariable Long alojamientoId,
             Pageable pageable) {
         return ResponseEntity.ok(reservaService.listarPorAlojamiento(alojamientoId, pageable));
+    }
+
+    @Operation(summary = "Listar reservas del anfitrión", description = "Lista todas las reservas de los alojamientos del anfitrión autenticado")
+    @GetMapping("/anfitrion")
+    @PreAuthorize("hasAnyRole('ANFITRION', 'ADMINISTRADOR')")
+    public ResponseEntity<Page<ReservaResponse>> listarPorAnfitrion(
+            Authentication authentication,
+            Pageable pageable) {
+        Long anfitrionId = obtenerIdCliente(authentication);
+        System.out.println("=== ENDPOINT /anfitrion LLAMADO ===");
+        System.out.println("Email del usuario: " + authentication.getName());
+        System.out.println("ID del anfitrion: " + anfitrionId);
+        Page<ReservaResponse> result = reservaService.listarPorAnfitrion(anfitrionId, pageable);
+        System.out.println("Total de reservas encontradas: " + result.getTotalElements());
+        System.out.println("Contenido: " + result.getContent());
+        System.out.println("========================");
+        return ResponseEntity.ok(result);
+    }
+
+    @Operation(summary = "Confirmar reserva", description = "Confirma una reserva pendiente (solo anfitrión)")
+    @PutMapping("/{id}/confirmar")
+    @PreAuthorize("hasAnyRole('ANFITRION', 'ADMINISTRADOR')")
+    public ResponseEntity<ReservaResponse> confirmarReserva(
+            @PathVariable Long id,
+            Authentication authentication) {
+        Long anfitrionId = obtenerIdCliente(authentication);
+        reservaService.confirmarReserva(id, anfitrionId);
+        return ResponseEntity.ok(reservaService.obtenerPorId(id));
+    }
+
+    @Operation(summary = "Rechazar reserva", description = "Rechaza una reserva pendiente (solo anfitrión)")
+    @PutMapping("/{id}/rechazar")
+    @PreAuthorize("hasAnyRole('ANFITRION', 'ADMINISTRADOR')")
+    public ResponseEntity<ReservaResponse> rechazarReserva(
+            @PathVariable Long id,
+            Authentication authentication) {
+        Long anfitrionId = obtenerIdCliente(authentication);
+        reservaService.rechazarReserva(id, anfitrionId);
+        return ResponseEntity.ok(reservaService.obtenerPorId(id));
     }
 
     @Operation(summary = "Verificar disponibilidad", description = "Verifica si un alojamiento está disponible en fechas específicas")

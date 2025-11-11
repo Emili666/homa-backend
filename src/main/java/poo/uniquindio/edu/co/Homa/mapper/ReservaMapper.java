@@ -24,5 +24,8 @@ public interface ReservaMapper {
     @Mapping(source = "alojamiento.ciudad", target = "ciudadAlojamiento")
     @Mapping(source = "huesped.id", target = "huespedId")
     @Mapping(source = "huesped.nombre", target = "nombreHuesped")
+    @Mapping(source = "huesped.email", target = "emailHuesped")
+    @Mapping(source = "huesped.telefono", target = "telefonoHuesped")
+    @Mapping(source = "creadoEn", target = "fechaCreacion")
     ReservaResponse toResponse(Reserva reserva);
 }
