@@ -256,7 +256,7 @@ public void solicitarRecuperacionContrasena(RecuperarContrasenaRequest request) 
 
     // Generar código de reinicio
     String codigo = UUID.randomUUID().toString();
-    LocalDateTime expiracion = LocalDateTime.now().plusHours(24);
+    LocalDateTime expiracion = LocalDateTime.now().plusMinutes(15);
 
     // ✅ Aquí usamos la entidad correcta
     ContrasenaCodigoReinicio codigoReinicio = ContrasenaCodigoReinicio.builder()
@@ -269,7 +269,7 @@ public void solicitarRecuperacionContrasena(RecuperarContrasenaRequest request) 
     codigoReinicioRepository.save(codigoReinicio);
 
     // Enviar email con el código
-    emailService.enviarEmailRecuperacion(usuario.getEmail(), codigo);
+    emailService.enviarEmailRecuperacion(usuario.getEmail(), usuario.getNombre(), codigo);
 
     log.info("Código de recuperación enviado a: {}", usuario.getEmail());
 }

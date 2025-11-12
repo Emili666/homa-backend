@@ -251,6 +251,37 @@ public class ReservaServiceImpl implements ReservaService {
         log.info("Reserva rechazada exitosamente: {}", reserva.getId());
     }
 
+    @Override
+    @Transactional
+    public void completarReserva(Long reservaId, Long anfitrionId) {
+        log.info("Completando reserva {} por anfitrión {}", reservaId, anfitrionId);
+
+        Reserva reserva = reservaRepository.findById(reservaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con id: " + reservaId));
+
+        // Verificar que el anfitrión sea el propietario del alojamiento
+        if (!reserva.getAlojamiento().getAnfitrion().getId().equals(anfitrionId)) {
+            throw new BusinessException("No tienes permiso para completar esta reserva");
+        }
+
+        // Verificar que la reserva esté en estado CONFIRMADA
+        if (reserva.getEstado() != EstadoReserva.CONFIRMADA) {
+            throw new BusinessException("Solo se pueden completar reservas confirmadas");
+        }
+
+        reserva.setEstado(EstadoReserva.COMPLETADA);
+        reservaRepository.save(reserva);
+
+        log.info("Reserva completada exitosamente: {}", reserva.getId());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ReservaResponse> listarReservasCompletadas(Long clienteId, Pageable pageable) {
+        return reservaRepository.findByHuesped_IdAndEstado(clienteId, EstadoReserva.COMPLETADA, pageable)
+                .map(reservaMapper::toResponse);
+    }
+
     private void notificarAnfitrionNuevaReserva(Reserva reserva) {
         String emailAnfitrion = reserva.getAlojamiento().getAnfitrion().getEmail();
         String nombreHuesped = reserva.getHuesped().getNombre();

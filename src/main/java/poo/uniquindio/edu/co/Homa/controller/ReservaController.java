@@ -84,7 +84,7 @@ public class ReservaController {
     @PreAuthorize("hasRole('ANFITRION')")
     public ResponseEntity<Void> cambiarEstado(
             @PathVariable Long id,
-            @RequestParam EstadoReserva estado) {
+            @RequestParam("estado") EstadoReserva estado) {
         reservaService.cambiarEstado(id, estado);
         return ResponseEntity.ok().build();
     }
@@ -146,12 +146,33 @@ public class ReservaController {
         return ResponseEntity.ok(reservaService.obtenerPorId(id));
     }
 
+    @Operation(summary = "Completar reserva", description = "Marca una reserva como completada (solo anfitrión)")
+    @PutMapping("/{id}/completar")
+    @PreAuthorize("hasAnyRole('ANFITRION', 'ADMINISTRADOR')")
+    public ResponseEntity<ReservaResponse> completarReserva(
+            @PathVariable Long id,
+            Authentication authentication) {
+        Long anfitrionId = obtenerIdCliente(authentication);
+        reservaService.completarReserva(id, anfitrionId);
+        return ResponseEntity.ok(reservaService.obtenerPorId(id));
+    }
+
+    @Operation(summary = "Listar reservas completadas del usuario", description = "Lista las reservas completadas donde el usuario puede dejar reseña")
+    @GetMapping("/completadas")
+    @PreAuthorize("hasAnyRole('HUESPED', 'ANFITRION')")
+    public ResponseEntity<Page<ReservaResponse>> listarReservasCompletadas(
+            Authentication authentication,
+            Pageable pageable) {
+        Long clienteId = obtenerIdCliente(authentication);
+        return ResponseEntity.ok(reservaService.listarReservasCompletadas(clienteId, pageable));
+    }
+
     @Operation(summary = "Verificar disponibilidad", description = "Verifica si un alojamiento está disponible en fechas específicas")
     @GetMapping("/disponibilidad")
     public ResponseEntity<Boolean> verificarDisponibilidad(
-            @RequestParam Long alojamientoId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+            @RequestParam("alojamientoId") Long alojamientoId,
+            @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
         return ResponseEntity.ok(reservaService.verificarDisponibilidad(alojamientoId, fechaInicio, fechaFin));
     }
 

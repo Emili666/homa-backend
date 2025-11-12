@@ -52,6 +52,7 @@ spring.mail.username=tu_email@gmail.com
 spring.mail.password=tu_app_password_aqui
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
+app.frontend.url=${FRONTEND_BASE_URL:http://localhost:4200}
 
 # ---------------------------------------
 #  MAPBOX CONFIGURACIÓN

@@ -150,7 +150,9 @@ public class UsuarioController {
     @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{id}/estado")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    public ResponseEntity<Void> cambiarEstado(@PathVariable Long id, @RequestParam String estado) {
+    public ResponseEntity<Void> cambiarEstado(
+            @PathVariable Long id,
+            @RequestParam("estado") String estado) {
         usuarioService.cambiarEstado(id, estado);
         return ResponseEntity.ok().build();
     }

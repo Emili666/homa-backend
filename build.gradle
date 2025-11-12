@@ -18,6 +18,11 @@ java {
 	}
 }
 
+// Configurar el compilador para usar -parameters
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs += ['-parameters']
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor

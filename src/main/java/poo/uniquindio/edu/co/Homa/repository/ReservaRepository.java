@@ -18,6 +18,8 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
     Page<Reserva> findByHuesped_Id(Long huespedId, Pageable pageable);
 
+    Page<Reserva> findByHuesped_IdAndEstado(Long huespedId, EstadoReserva estado, Pageable pageable);
+
     Page<Reserva> findByAlojamientoId(Long alojamientoId, Pageable pageable);
 
     Page<Reserva> findByAlojamiento_Anfitrion_Id(Long anfitrionId, Pageable pageable);

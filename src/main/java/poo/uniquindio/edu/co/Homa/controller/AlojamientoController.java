@@ -107,10 +107,10 @@ public class AlojamientoController {
     @Operation(summary = "Buscar alojamientos", description = "Busca alojamientos con filtros")
     @GetMapping("/buscar")
     public ResponseEntity<Page<AlojamientoResponse>> buscar(
-            @RequestParam(required = false) String ciudad,
-            @RequestParam(required = false) BigDecimal precioMin,
-            @RequestParam(required = false) BigDecimal precioMax,
-            @RequestParam(required = false) Integer capacidad,
+            @RequestParam(value = "ciudad", required = false) String ciudad,
+            @RequestParam(value = "precioMin", required = false) BigDecimal precioMin,
+            @RequestParam(value = "precioMax", required = false) BigDecimal precioMax,
+            @RequestParam(value = "capacidad", required = false) Integer capacidad,
             Pageable pageable) {
         return ResponseEntity.ok(alojamientoService.buscar(ciudad, precioMin, precioMax, capacidad, pageable));
     }
@@ -121,7 +121,7 @@ public class AlojamientoController {
     @PreAuthorize("hasRole('ANFITRION')")
     public ResponseEntity<Void> cambiarEstado(
             @PathVariable Long id,
-            @RequestParam EstadoAlojamiento estado) {
+            @RequestParam("estado") EstadoAlojamiento estado) {
         alojamientoService.cambiarEstado(id, estado);
         return ResponseEntity.ok().build();
     }

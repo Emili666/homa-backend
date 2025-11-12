@@ -90,23 +90,28 @@ public class EmailService {
     /**
      * Envia el correo con el enlace para recuperar la contrasena.
      */
-    public void enviarEmailRecuperacion(String email, String codigo) {
+    public void enviarEmailRecuperacion(String email, String nombre, String codigo) {
         String asunto = "Recuperacion de contrasena - HOMA";
-        String cuerpo = String.format("""
-                Hola,
+        String baseUrl = (frontendUrl == null || frontendUrl.isBlank())
+                ? "http://localhost:4200"
+                : frontendUrl.endsWith("/") ? frontendUrl.substring(0, frontendUrl.length() - 1) : frontendUrl;
+        String recoveryUrl = String.format("%s/#/auth/recuperar", baseUrl);
+        String cuerpo = """
+                Hola %s,
 
                 Recibimos una solicitud para restablecer tu contrasena.
+                Codigo de verificacion: %s
 
-                Para restablecerla, visita:
-                %s/restablecer-contrasena?codigo=%s
+                Tambien puedes usar el siguiente enlace y pegar el codigo cuando la pagina lo solicite:
+                %s
 
-                Este enlace expira en 15 minutos.
+                Este codigo vence en 15 minutos.
 
                 Si no solicitaste este cambio, ignora este mensaje.
 
                 Saludos,
                 Equipo HOMA
-                """, frontendUrl, codigo);
+                """.formatted(nombre != null ? nombre : "Usuario", codigo, recoveryUrl);
 
         enviarCorreo(email, asunto, cuerpo);
     }

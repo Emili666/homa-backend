@@ -31,4 +31,8 @@ public interface ReservaService {
     void confirmarReserva(Long reservaId, Long anfitrionId);
 
     void rechazarReserva(Long reservaId, Long anfitrionId);
+
+    void completarReserva(Long reservaId, Long anfitrionId);
+
+    Page<ReservaResponse> listarReservasCompletadas(Long clienteId, Pageable pageable);
 }
