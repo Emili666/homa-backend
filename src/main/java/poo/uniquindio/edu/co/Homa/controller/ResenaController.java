@@ -48,7 +48,7 @@ public class ResenaController {
 
     @Operation(summary = "Obtener reseña por ID", description = "Obtiene los detalles de una reseña")
     @GetMapping("/{id}")
-    public ResponseEntity<ResenaResponse> obtenerPorId(@PathVariable Long id) {
+    public ResponseEntity<ResenaResponse> obtenerPorId(@PathVariable("id") Long id) {
         return ResponseEntity.ok(resenaService.obtenerPorId(id));
     }
 
@@ -85,7 +85,7 @@ public class ResenaController {
 
     @Operation(summary = "Calcular promedio de calificación", description = "Calcula el promedio de calificaciones de un alojamiento")
     @GetMapping("/alojamiento/{alojamientoId}/promedio")
-    public ResponseEntity<Double> calcularPromedio(@PathVariable Long alojamientoId) {
+    public ResponseEntity<Double> calcularPromedio(@PathVariable("alojamientoId") Long alojamientoId) {
         return ResponseEntity.ok(resenaService.calcularPromedioCalificacion(alojamientoId));
     }
 

@@ -66,7 +66,7 @@ public class ReservaController {
     @Operation(summary = "Obtener reserva por ID", description = "Obtiene los detalles de una reserva")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('HUESPED', 'ANFITRION', 'ADMINISTRADOR')")
-    public ResponseEntity<ReservaResponse> obtenerPorId(@PathVariable Long id) {
+    public ResponseEntity<ReservaResponse> obtenerPorId(@PathVariable("id") Long id) {
         return ResponseEntity.ok(reservaService.obtenerPorId(id));
     }
 

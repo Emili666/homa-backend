@@ -48,7 +48,7 @@ public class AlojamientoController {
 
     @Operation(summary = "Obtener alojamiento por ID", description = "Obtiene los detalles de un alojamiento")
     @GetMapping("/{id}")
-    public ResponseEntity<AlojamientoResponse> obtenerPorId(@PathVariable Long id) {
+    public ResponseEntity<AlojamientoResponse> obtenerPorId(@PathVariable("id") Long id) {
         return ResponseEntity.ok(alojamientoService.obtenerPorId(id));
     }
 
@@ -142,8 +142,8 @@ public class AlojamientoController {
     @DeleteMapping("/{alojamientoId}/imagenes/{imagenId}")
     @PreAuthorize("hasRole('ANFITRION')")
     public ResponseEntity<Void> eliminarImagen(
-            @PathVariable Long alojamientoId,
-            @PathVariable Long imagenId) {
+            @PathVariable("alojamientoId") Long alojamientoId,
+            @PathVariable("imagenId") Long imagenId) {
         alojamientoService.eliminarImagen(alojamientoId, imagenId);
         return ResponseEntity.noContent().build();
     }

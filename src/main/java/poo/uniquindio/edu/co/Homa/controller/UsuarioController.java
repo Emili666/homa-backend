@@ -90,7 +90,7 @@ public class UsuarioController {
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'HUESPED', 'ANFITRION')")
-    public ResponseEntity<UsuarioResponse> obtenerPorId(@PathVariable Long id) {
+    public ResponseEntity<UsuarioResponse> obtenerPorId(@PathVariable("id") Long id) {
         return ResponseEntity.ok(usuarioService.obtenerPorId(id));
     }
 
@@ -108,7 +108,7 @@ public class UsuarioController {
     @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminar(@PathVariable("id") Long id) {
         usuarioService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
