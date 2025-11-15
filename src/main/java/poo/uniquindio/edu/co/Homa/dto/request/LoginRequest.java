@@ -2,7 +2,6 @@ package poo.uniquindio.edu.co.homa.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +18,5 @@ public class LoginRequest {
     private String email;
 
     @NotBlank(message = "La contraseña es obligatoria")
-    @JsonAlias({"password"})
     private String contrasena;
 }
