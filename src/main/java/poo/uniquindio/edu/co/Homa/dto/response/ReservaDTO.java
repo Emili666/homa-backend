@@ -1,11 +1,11 @@
-package poo.uniquindio.edu.co.homa.dto.response;
+package poo.uniquindio.edu.co.Homa.dto.response;
 
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import poo.uniquindio.edu.co.homa.model.enums.EstadoReserva;
+import poo.uniquindio.edu.co.Homa.model.enums.EstadoReserva;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

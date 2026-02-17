@@ -15,13 +15,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import poo.uniquindio.edu.co.homa.dto.request.UsuarioRegistroRequest;
-import poo.uniquindio.edu.co.homa.mapper.UsuarioMapper;
-import poo.uniquindio.edu.co.homa.model.entity.Usuario;
-import poo.uniquindio.edu.co.homa.repository.ContrasenaCodigoReinicioRepository;
-import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
-import poo.uniquindio.edu.co.homa.service.impl.UsuarioServiceImpl;
-import poo.uniquindio.edu.co.homa.util.EmailService;
+import poo.uniquindio.edu.co.Homa.dto.request.UsuarioRegistroRequest;
+import poo.uniquindio.edu.co.Homa.mapper.UsuarioMapper;
+import poo.uniquindio.edu.co.Homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.Homa.repository.ContrasenaCodigoReinicioRepository;
+import poo.uniquindio.edu.co.Homa.repository.UsuarioRepository;
+import poo.uniquindio.edu.co.Homa.service.impl.UsuarioServiceImpl;
+import poo.uniquindio.edu.co.Homa.util.EmailService;
 
 class UsuarioServiceTest {
 

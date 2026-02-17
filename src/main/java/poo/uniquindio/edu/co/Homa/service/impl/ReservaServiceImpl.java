@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.service.impl;
+package poo.uniquindio.edu.co.Homa.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,20 +13,20 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import poo.uniquindio.edu.co.homa.dto.request.ReservaRequest;
-import poo.uniquindio.edu.co.homa.dto.response.ReservaResponse;
-import poo.uniquindio.edu.co.homa.exception.BusinessException;
-import poo.uniquindio.edu.co.homa.exception.ResourceNotFoundException;
-import poo.uniquindio.edu.co.homa.mapper.ReservaMapper;
-import poo.uniquindio.edu.co.homa.model.entity.Alojamiento;
-import poo.uniquindio.edu.co.homa.model.entity.Reserva;
-import poo.uniquindio.edu.co.homa.model.entity.Usuario;
-import poo.uniquindio.edu.co.homa.model.enums.EstadoReserva;
-import poo.uniquindio.edu.co.homa.repository.AlojamientoRepository;
-import poo.uniquindio.edu.co.homa.repository.ReservaRepository;
-import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
-import poo.uniquindio.edu.co.homa.service.ReservaService;
-import poo.uniquindio.edu.co.homa.util.EmailService;
+import poo.uniquindio.edu.co.Homa.dto.request.ReservaRequest;
+import poo.uniquindio.edu.co.Homa.dto.response.ReservaResponse;
+import poo.uniquindio.edu.co.Homa.exception.BusinessException;
+import poo.uniquindio.edu.co.Homa.exception.ResourceNotFoundException;
+import poo.uniquindio.edu.co.Homa.mapper.ReservaMapper;
+import poo.uniquindio.edu.co.Homa.model.entity.Alojamiento;
+import poo.uniquindio.edu.co.Homa.model.entity.Reserva;
+import poo.uniquindio.edu.co.Homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.Homa.model.enums.EstadoReserva;
+import poo.uniquindio.edu.co.Homa.repository.AlojamientoRepository;
+import poo.uniquindio.edu.co.Homa.repository.ReservaRepository;
+import poo.uniquindio.edu.co.Homa.repository.UsuarioRepository;
+import poo.uniquindio.edu.co.Homa.service.ReservaService;
+import poo.uniquindio.edu.co.Homa.util.EmailService;
 
 @Getter
 @Setter

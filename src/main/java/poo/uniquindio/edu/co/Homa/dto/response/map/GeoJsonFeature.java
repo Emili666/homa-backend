@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.dto.response.map;
+package poo.uniquindio.edu.co.Homa.dto.response.map;
 
 import java.util.Map;
 

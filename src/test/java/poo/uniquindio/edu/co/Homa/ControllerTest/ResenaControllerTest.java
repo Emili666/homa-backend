@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import poo.uniquindio.edu.co.homa.dto.request.ResenaRequest;
+import poo.uniquindio.edu.co.Homa.dto.request.ResenaRequest;
 
 
 @SpringBootTest

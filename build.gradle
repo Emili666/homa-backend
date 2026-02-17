@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.5.5'
+	id 'org.springframework.boot' version '3.4.2'
 	id 'io.spring.dependency-management' version '1.1.7'
 
 	// 🧪 --- Plugins de pruebas y calidad ---
@@ -57,6 +57,9 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
 
+	// --- ACTUATOR (Health checks) ---
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
 	// --- CORREO ---
 	implementation 'com.sun.mail:jakarta.mail:2.0.1'
 	implementation 'org.eclipse.angus:angus-mail:2.0.3'
@@ -81,11 +84,6 @@ dependencies {
 	testImplementation 'org.testcontainers:junit-jupiter:1.19.7'
 	testImplementation 'org.testcontainers:mariadb:1.19.7'
 	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
-
-	// --- JWT ---
-    implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
 
 }
 

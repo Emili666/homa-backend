@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.controller;
+package poo.uniquindio.edu.co.Homa.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,13 +24,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import poo.uniquindio.edu.co.homa.dto.request.ActualizarUsuarioRequest;
-import poo.uniquindio.edu.co.homa.dto.request.CambiarContrasenaRequest;
-import poo.uniquindio.edu.co.homa.dto.request.RecuperarContrasenaRequest;
-import poo.uniquindio.edu.co.homa.dto.request.RestablecerContrasenaRequest;
-import poo.uniquindio.edu.co.homa.dto.request.UsuarioRegistroRequest;
-import poo.uniquindio.edu.co.homa.dto.response.UsuarioResponse;
-import poo.uniquindio.edu.co.homa.service.UsuarioService;
+import poo.uniquindio.edu.co.Homa.dto.request.ActualizarUsuarioRequest;
+import poo.uniquindio.edu.co.Homa.dto.request.CambiarContrasenaRequest;
+import poo.uniquindio.edu.co.Homa.dto.request.RecuperarContrasenaRequest;
+import poo.uniquindio.edu.co.Homa.dto.request.RestablecerContrasenaRequest;
+import poo.uniquindio.edu.co.Homa.dto.request.UsuarioRegistroRequest;
+import poo.uniquindio.edu.co.Homa.dto.response.UsuarioResponse;
+import poo.uniquindio.edu.co.Homa.service.UsuarioService;
 
 @Tag(name = "Usuarios", description = "Endpoints para gestión de usuarios")
 @RestController

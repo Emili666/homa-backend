@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.config;
+package poo.uniquindio.edu.co.Homa.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;

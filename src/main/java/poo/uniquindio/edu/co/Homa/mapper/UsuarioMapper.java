@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.mapper;
+package poo.uniquindio.edu.co.Homa.mapper;
 
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -6,10 +6,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-import poo.uniquindio.edu.co.homa.dto.request.ActualizarUsuarioRequest;
-import poo.uniquindio.edu.co.homa.dto.request.UsuarioRegistroRequest;
-import poo.uniquindio.edu.co.homa.dto.response.UsuarioResponse;
-import poo.uniquindio.edu.co.homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.Homa.dto.request.ActualizarUsuarioRequest;
+import poo.uniquindio.edu.co.Homa.dto.request.UsuarioRegistroRequest;
+import poo.uniquindio.edu.co.Homa.dto.response.UsuarioResponse;
+import poo.uniquindio.edu.co.Homa.model.entity.Usuario;
 
 @Mapper(componentModel = "spring")
 public interface UsuarioMapper {

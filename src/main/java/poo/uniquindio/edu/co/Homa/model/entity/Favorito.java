@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.model.entity;
+package poo.uniquindio.edu.co.Homa.model.entity;
 
 import java.time.LocalDateTime;
 

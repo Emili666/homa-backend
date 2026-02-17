@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.controller;
+package poo.uniquindio.edu.co.Homa.controller;
 
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -6,11 +6,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import poo.uniquindio.edu.co.homa.dto.request.AlojamientoRequest;
-import poo.uniquindio.edu.co.homa.dto.response.AlojamientoResponse;
-import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
-import poo.uniquindio.edu.co.homa.service.AlojamientoService;
-import poo.uniquindio.edu.co.homa.service.UsuarioService;
+import poo.uniquindio.edu.co.Homa.dto.request.AlojamientoRequest;
+import poo.uniquindio.edu.co.Homa.dto.response.AlojamientoResponse;
+import poo.uniquindio.edu.co.Homa.model.enums.EstadoAlojamiento;
+import poo.uniquindio.edu.co.Homa.service.AlojamientoService;
+import poo.uniquindio.edu.co.Homa.service.UsuarioService;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

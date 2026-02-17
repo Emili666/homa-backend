@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.controller;
+package poo.uniquindio.edu.co.Homa.controller;
 
 import java.time.LocalDate;
 
@@ -24,12 +24,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import poo.uniquindio.edu.co.homa.dto.request.ReservaRequest;
-import poo.uniquindio.edu.co.homa.dto.response.ReservaResponse;
-import poo.uniquindio.edu.co.homa.dto.response.UsuarioResponse;
-import poo.uniquindio.edu.co.homa.model.enums.EstadoReserva;
-import poo.uniquindio.edu.co.homa.service.ReservaService;
-import poo.uniquindio.edu.co.homa.service.UsuarioService;
+import poo.uniquindio.edu.co.Homa.dto.request.ReservaRequest;
+import poo.uniquindio.edu.co.Homa.dto.response.ReservaResponse;
+import poo.uniquindio.edu.co.Homa.dto.response.UsuarioResponse;
+import poo.uniquindio.edu.co.Homa.model.enums.EstadoReserva;
+import poo.uniquindio.edu.co.Homa.service.ReservaService;
+import poo.uniquindio.edu.co.Homa.service.UsuarioService;
 
 @Tag(name = "Reservas", description = "Endpoints para gestión de reservas")
 @RestController

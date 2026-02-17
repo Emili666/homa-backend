@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.service.impl;
+package poo.uniquindio.edu.co.Homa.service.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,21 +13,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import poo.uniquindio.edu.co.homa.dto.request.AlojamientoRequest;
-import poo.uniquindio.edu.co.homa.dto.response.AlojamientoResponse;
-import poo.uniquindio.edu.co.homa.exception.BusinessException;
-import poo.uniquindio.edu.co.homa.exception.ResourceNotFoundException;
-import poo.uniquindio.edu.co.homa.exception.UnauthorizedException;
-import poo.uniquindio.edu.co.homa.mapper.AlojamientoMapper;
-import poo.uniquindio.edu.co.homa.model.entity.Alojamiento;
-import poo.uniquindio.edu.co.homa.model.entity.Usuario;
-import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
-import poo.uniquindio.edu.co.homa.repository.AlojamientoRepository;
-import poo.uniquindio.edu.co.homa.repository.FavoritoRepository;
-import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
-import poo.uniquindio.edu.co.homa.service.AlojamientoService;
-import poo.uniquindio.edu.co.homa.service.ImageStorageService;
-import poo.uniquindio.edu.co.homa.service.ImageStorageService.UploadResult;
+import poo.uniquindio.edu.co.Homa.dto.request.AlojamientoRequest;
+import poo.uniquindio.edu.co.Homa.dto.response.AlojamientoResponse;
+import poo.uniquindio.edu.co.Homa.exception.BusinessException;
+import poo.uniquindio.edu.co.Homa.exception.ResourceNotFoundException;
+import poo.uniquindio.edu.co.Homa.exception.UnauthorizedException;
+import poo.uniquindio.edu.co.Homa.mapper.AlojamientoMapper;
+import poo.uniquindio.edu.co.Homa.model.entity.Alojamiento;
+import poo.uniquindio.edu.co.Homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.Homa.model.enums.EstadoAlojamiento;
+import poo.uniquindio.edu.co.Homa.repository.AlojamientoRepository;
+import poo.uniquindio.edu.co.Homa.repository.FavoritoRepository;
+import poo.uniquindio.edu.co.Homa.repository.UsuarioRepository;
+import poo.uniquindio.edu.co.Homa.service.AlojamientoService;
+import poo.uniquindio.edu.co.Homa.service.ImageStorageService;
+import poo.uniquindio.edu.co.Homa.service.ImageStorageService.UploadResult;
 
 @Slf4j
 @Service

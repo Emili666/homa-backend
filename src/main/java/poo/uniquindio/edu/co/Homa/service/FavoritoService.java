@@ -1,9 +1,9 @@
-package poo.uniquindio.edu.co.homa.service;
+package poo.uniquindio.edu.co.Homa.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import poo.uniquindio.edu.co.homa.dto.response.AlojamientoResponse;
+import poo.uniquindio.edu.co.Homa.dto.response.AlojamientoResponse;
 
 public interface FavoritoService {
 

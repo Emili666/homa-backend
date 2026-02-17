@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.util;
+package poo.uniquindio.edu.co.Homa.util;
 
 import java.util.Properties;
 

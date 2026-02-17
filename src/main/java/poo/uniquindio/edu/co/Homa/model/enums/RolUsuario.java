@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.model.enums;
+package poo.uniquindio.edu.co.Homa.model.enums;
 
 
 public enum RolUsuario {

@@ -19,14 +19,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 
-import poo.uniquindio.edu.co.homa.dto.request.LoginRequest;
-import poo.uniquindio.edu.co.homa.exception.UnauthorizedException;
-import poo.uniquindio.edu.co.homa.model.entity.Usuario;
-import poo.uniquindio.edu.co.homa.model.enums.EstadoUsuario;
-import poo.uniquindio.edu.co.homa.model.enums.RolUsuario;
-import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
-import poo.uniquindio.edu.co.homa.security.JwtUtil;
-import poo.uniquindio.edu.co.homa.service.impl.AuthServiceImpl;
+import poo.uniquindio.edu.co.Homa.dto.request.LoginRequest;
+import poo.uniquindio.edu.co.Homa.exception.UnauthorizedException;
+import poo.uniquindio.edu.co.Homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.Homa.model.enums.EstadoUsuario;
+import poo.uniquindio.edu.co.Homa.model.enums.RolUsuario;
+import poo.uniquindio.edu.co.Homa.repository.UsuarioRepository;
+import poo.uniquindio.edu.co.Homa.security.JwtUtil;
+import poo.uniquindio.edu.co.Homa.service.impl.AuthServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {

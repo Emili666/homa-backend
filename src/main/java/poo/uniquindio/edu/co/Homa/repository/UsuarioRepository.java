@@ -1,12 +1,12 @@
-package poo.uniquindio.edu.co.homa.repository;
+package poo.uniquindio.edu.co.Homa.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import poo.uniquindio.edu.co.homa.model.entity.Usuario;
-import poo.uniquindio.edu.co.homa.model.enums.EstadoUsuario;
+import poo.uniquindio.edu.co.Homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.Homa.model.enums.EstadoUsuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {

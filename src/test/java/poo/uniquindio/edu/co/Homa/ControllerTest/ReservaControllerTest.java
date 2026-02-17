@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import poo.uniquindio.edu.co.homa.dto.request.ReservaRequest;
+import poo.uniquindio.edu.co.Homa.dto.request.ReservaRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc

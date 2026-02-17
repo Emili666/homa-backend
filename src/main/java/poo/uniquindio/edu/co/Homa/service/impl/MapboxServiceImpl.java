@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.service.impl;
+package poo.uniquindio.edu.co.Homa.service.impl;
 
 import java.util.List;
 import java.util.Map;
@@ -10,13 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import poo.uniquindio.edu.co.homa.dto.response.map.GeoJsonFeature;
-import poo.uniquindio.edu.co.homa.dto.response.map.GeoJsonFeatureCollection;
-import poo.uniquindio.edu.co.homa.dto.response.map.GeoJsonGeometry;
-import poo.uniquindio.edu.co.homa.model.entity.Alojamiento;
-import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
-import poo.uniquindio.edu.co.homa.repository.AlojamientoRepository;
-import poo.uniquindio.edu.co.homa.service.MapboxService;
+import poo.uniquindio.edu.co.Homa.dto.response.map.GeoJsonFeature;
+import poo.uniquindio.edu.co.Homa.dto.response.map.GeoJsonFeatureCollection;
+import poo.uniquindio.edu.co.Homa.dto.response.map.GeoJsonGeometry;
+import poo.uniquindio.edu.co.Homa.model.entity.Alojamiento;
+import poo.uniquindio.edu.co.Homa.model.enums.EstadoAlojamiento;
+import poo.uniquindio.edu.co.Homa.repository.AlojamientoRepository;
+import poo.uniquindio.edu.co.Homa.service.MapboxService;
 
 @Slf4j
 @Service

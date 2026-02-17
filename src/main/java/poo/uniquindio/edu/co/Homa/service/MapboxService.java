@@ -1,6 +1,6 @@
-package poo.uniquindio.edu.co.homa.service;
+package poo.uniquindio.edu.co.Homa.service;
 
-import poo.uniquindio.edu.co.homa.dto.response.map.GeoJsonFeatureCollection;
+import poo.uniquindio.edu.co.Homa.dto.response.map.GeoJsonFeatureCollection;
 
 public interface MapboxService {
 

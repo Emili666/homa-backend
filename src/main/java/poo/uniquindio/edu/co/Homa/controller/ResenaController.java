@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.controller;
+package poo.uniquindio.edu.co.Homa.controller;
 
 
 import org.springframework.data.domain.Page;
@@ -20,11 +20,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import poo.uniquindio.edu.co.homa.dto.request.ResenaRequest;
-import poo.uniquindio.edu.co.homa.dto.request.ResponderResenaRequest;
-import poo.uniquindio.edu.co.homa.dto.response.ResenaResponse;
-import poo.uniquindio.edu.co.homa.service.ResenaService;
-import poo.uniquindio.edu.co.homa.service.UsuarioService;
+import poo.uniquindio.edu.co.Homa.dto.request.ResenaRequest;
+import poo.uniquindio.edu.co.Homa.dto.request.ResponderResenaRequest;
+import poo.uniquindio.edu.co.Homa.dto.response.ResenaResponse;
+import poo.uniquindio.edu.co.Homa.service.ResenaService;
+import poo.uniquindio.edu.co.Homa.service.UsuarioService;
 
 @Tag(name = "Reseñas", description = "Endpoints para gestión de reseñas y calificaciones")
 @RestController

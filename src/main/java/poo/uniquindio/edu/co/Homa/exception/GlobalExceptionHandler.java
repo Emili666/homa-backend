@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.exception;
+package poo.uniquindio.edu.co.Homa.exception;
 
 
 import org.springframework.http.HttpStatus;
@@ -9,7 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import poo.uniquindio.edu.co.homa.dto.response.ApiResponse;
+import poo.uniquindio.edu.co.Homa.dto.response.ApiResponse;
 
 
 

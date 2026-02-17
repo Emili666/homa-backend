@@ -1,12 +1,12 @@
-package poo.uniquindio.edu.co.homa.mapper;
+package poo.uniquindio.edu.co.Homa.mapper;
 
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import poo.uniquindio.edu.co.homa.dto.request.ResenaRequest;
-import poo.uniquindio.edu.co.homa.dto.response.ResenaResponse;
-import poo.uniquindio.edu.co.homa.model.entity.Resena;
+import poo.uniquindio.edu.co.Homa.dto.request.ResenaRequest;
+import poo.uniquindio.edu.co.Homa.dto.response.ResenaResponse;
+import poo.uniquindio.edu.co.Homa.model.entity.Resena;
 
 @Mapper(componentModel = "spring")
 public interface ResenaMapper {

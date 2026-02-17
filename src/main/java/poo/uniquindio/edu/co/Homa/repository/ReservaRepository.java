@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.repository;
+package poo.uniquindio.edu.co.Homa.repository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,8 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import poo.uniquindio.edu.co.homa.model.entity.Reserva;
-import poo.uniquindio.edu.co.homa.model.enums.EstadoReserva;
+import poo.uniquindio.edu.co.Homa.model.entity.Reserva;
+import poo.uniquindio.edu.co.Homa.model.enums.EstadoReserva;
 
 @Repository
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {

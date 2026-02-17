@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.controller;
+package poo.uniquindio.edu.co.Homa.controller;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +12,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import poo.uniquindio.edu.co.homa.dto.request.LoginRequest;
-import poo.uniquindio.edu.co.homa.dto.response.LoginResponse;
-import poo.uniquindio.edu.co.homa.service.AuthService;
+import poo.uniquindio.edu.co.Homa.dto.request.LoginRequest;
+import poo.uniquindio.edu.co.Homa.dto.response.LoginResponse;
+import poo.uniquindio.edu.co.Homa.service.AuthService;
 
 @Tag(name = "Autenticación", description = "Endpoints para autenticación y autorización mediante JWT")
 @RestController

@@ -14,14 +14,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import poo.uniquindio.edu.co.homa.dto.request.ReservaRequest;
-import poo.uniquindio.edu.co.homa.model.entity.Alojamiento;
-import poo.uniquindio.edu.co.homa.model.entity.Reserva;
-import poo.uniquindio.edu.co.homa.model.entity.Usuario;
-import poo.uniquindio.edu.co.homa.repository.AlojamientoRepository;
-import poo.uniquindio.edu.co.homa.repository.ReservaRepository;
-import poo.uniquindio.edu.co.homa.repository.UsuarioRepository;
-import poo.uniquindio.edu.co.homa.service.impl.ReservaServiceImpl;
+import poo.uniquindio.edu.co.Homa.dto.request.ReservaRequest;
+import poo.uniquindio.edu.co.Homa.model.entity.Alojamiento;
+import poo.uniquindio.edu.co.Homa.model.entity.Reserva;
+import poo.uniquindio.edu.co.Homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.Homa.repository.AlojamientoRepository;
+import poo.uniquindio.edu.co.Homa.repository.ReservaRepository;
+import poo.uniquindio.edu.co.Homa.repository.UsuarioRepository;
+import poo.uniquindio.edu.co.Homa.service.impl.ReservaServiceImpl;
 
 class ReservaServiceTest {
 

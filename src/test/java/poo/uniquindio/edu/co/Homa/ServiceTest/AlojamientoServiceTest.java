@@ -17,12 +17,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import poo.uniquindio.edu.co.homa.exception.ResourceNotFoundException;
-import poo.uniquindio.edu.co.homa.model.entity.Alojamiento;
-import poo.uniquindio.edu.co.homa.model.entity.Usuario;
-import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
-import poo.uniquindio.edu.co.homa.repository.AlojamientoRepository;
-import poo.uniquindio.edu.co.homa.service.impl.AlojamientoServiceImpl;
+import poo.uniquindio.edu.co.Homa.exception.ResourceNotFoundException;
+import poo.uniquindio.edu.co.Homa.model.entity.Alojamiento;
+import poo.uniquindio.edu.co.Homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.Homa.model.enums.EstadoAlojamiento;
+import poo.uniquindio.edu.co.Homa.repository.AlojamientoRepository;
+import poo.uniquindio.edu.co.Homa.service.impl.AlojamientoServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class AlojamientoServiceTest {

@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.service.impl;
+package poo.uniquindio.edu.co.Homa.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,8 +16,8 @@ import com.cloudinary.utils.ObjectUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import poo.uniquindio.edu.co.homa.exception.BusinessException;
-import poo.uniquindio.edu.co.homa.service.ImageStorageService;
+import poo.uniquindio.edu.co.Homa.exception.BusinessException;
+import poo.uniquindio.edu.co.Homa.service.ImageStorageService;
 
 @Slf4j
 @Service

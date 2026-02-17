@@ -22,6 +22,9 @@ FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
+# Instalar curl para healthchecks
+RUN apk add --no-cache curl
+
 # Crear usuario no-root por seguridad
 RUN addgroup -S spring && adduser -S spring -G spring
 
@@ -32,9 +35,9 @@ COPY --from=build /app/build/libs/*.jar app.jar
 RUN chown -R spring:spring /app
 USER spring
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD java -cp app.jar org.springframework.boot.loader.Launch org.springframework.boot.actuate.endpoint.web.annotation.WebEndpointSupplier || exit 1
+# Health check usando Actuator endpoint
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
 
 # Exponer puerto
 EXPOSE 8080

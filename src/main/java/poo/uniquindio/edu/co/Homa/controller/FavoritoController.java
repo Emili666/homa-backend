@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.controller;
+package poo.uniquindio.edu.co.Homa.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,10 +17,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import poo.uniquindio.edu.co.homa.dto.response.AlojamientoResponse;
-import poo.uniquindio.edu.co.homa.dto.response.UsuarioResponse;
-import poo.uniquindio.edu.co.homa.service.FavoritoService;
-import poo.uniquindio.edu.co.homa.service.UsuarioService;
+import poo.uniquindio.edu.co.Homa.dto.response.AlojamientoResponse;
+import poo.uniquindio.edu.co.Homa.dto.response.UsuarioResponse;
+import poo.uniquindio.edu.co.Homa.service.FavoritoService;
+import poo.uniquindio.edu.co.Homa.service.UsuarioService;
 
 @Tag(name = "Favoritos", description = "Endpoints para la gestión de alojamientos favoritos")
 @RestController

@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.config;
+package poo.uniquindio.edu.co.Homa.config;
 
 
 
@@ -17,9 +17,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
-import poo.uniquindio.edu.co.homa.security.JwtAuthenticationEntryPoint;
-import poo.uniquindio.edu.co.homa.security.JwtAuthenticationFilter;
-import poo.uniquindio.edu.co.homa.service.CustomUserDetailsService;
+import poo.uniquindio.edu.co.Homa.security.JwtAuthenticationEntryPoint;
+import poo.uniquindio.edu.co.Homa.security.JwtAuthenticationFilter;
+import poo.uniquindio.edu.co.Homa.service.CustomUserDetailsService;
 import org.springframework.security.config.Customizer;
 
 @Configuration

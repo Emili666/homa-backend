@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.exception;
+package poo.uniquindio.edu.co.Homa.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {

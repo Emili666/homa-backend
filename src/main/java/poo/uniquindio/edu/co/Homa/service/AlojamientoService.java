@@ -1,9 +1,9 @@
-package poo.uniquindio.edu.co.homa.service;
+package poo.uniquindio.edu.co.Homa.service;
 
 
-import poo.uniquindio.edu.co.homa.dto.request.AlojamientoRequest;
-import poo.uniquindio.edu.co.homa.dto.response.AlojamientoResponse;
-import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
+import poo.uniquindio.edu.co.Homa.dto.request.AlojamientoRequest;
+import poo.uniquindio.edu.co.Homa.dto.response.AlojamientoResponse;
+import poo.uniquindio.edu.co.Homa.model.enums.EstadoAlojamiento;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

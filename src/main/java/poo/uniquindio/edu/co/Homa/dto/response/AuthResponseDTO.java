@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.dto.response;
+package poo.uniquindio.edu.co.Homa.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

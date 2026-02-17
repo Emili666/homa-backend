@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa;
+package poo.uniquindio.edu.co.Homa;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

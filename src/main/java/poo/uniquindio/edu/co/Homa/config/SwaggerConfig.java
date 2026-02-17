@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.config;
+package poo.uniquindio.edu.co.Homa.config;
 
 import java.util.List;
 

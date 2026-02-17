@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.controller;
+package poo.uniquindio.edu.co.Homa.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import poo.uniquindio.edu.co.homa.dto.response.map.GeoJsonFeatureCollection;
-import poo.uniquindio.edu.co.homa.service.MapboxService;
+import poo.uniquindio.edu.co.Homa.dto.response.map.GeoJsonFeatureCollection;
+import poo.uniquindio.edu.co.Homa.service.MapboxService;
 
 @Tag(name = "Mapas", description = "Integración con Mapbox para visualizar alojamientos")
 @RestController

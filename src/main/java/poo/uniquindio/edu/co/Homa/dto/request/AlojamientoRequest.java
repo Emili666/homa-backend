@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.dto.request;
+package poo.uniquindio.edu.co.Homa.dto.request;
 
 
 import jakarta.validation.constraints.*;
@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import poo.uniquindio.edu.co.homa.model.enums.EstadoAlojamiento;
-import poo.uniquindio.edu.co.homa.model.enums.Servicio;
+import poo.uniquindio.edu.co.Homa.model.enums.EstadoAlojamiento;
+import poo.uniquindio.edu.co.Homa.model.enums.Servicio;
 
 import java.util.List;
 

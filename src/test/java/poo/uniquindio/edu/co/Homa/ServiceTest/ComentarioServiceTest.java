@@ -12,10 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import poo.uniquindio.edu.co.homa.model.entity.Reserva;
-import poo.uniquindio.edu.co.homa.repository.ResenaRepository;
-import poo.uniquindio.edu.co.homa.repository.ReservaRepository;
-import poo.uniquindio.edu.co.homa.service.impl.ResenaServiceImpl;
+import poo.uniquindio.edu.co.Homa.model.entity.Reserva;
+import poo.uniquindio.edu.co.Homa.repository.ResenaRepository;
+import poo.uniquindio.edu.co.Homa.repository.ReservaRepository;
+import poo.uniquindio.edu.co.Homa.service.impl.ResenaServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class ComentarioServiceTest {

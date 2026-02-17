@@ -1,4 +1,4 @@
-package poo.uniquindio.edu.co.homa.repository;
+package poo.uniquindio.edu.co.Homa.repository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import poo.uniquindio.edu.co.homa.model.entity.ContrasenaCodigoReinicio;
+import poo.uniquindio.edu.co.Homa.model.entity.ContrasenaCodigoReinicio;
 
 @Repository
 public interface ContrasenaCodigoReinicioRepository extends JpaRepository<ContrasenaCodigoReinicio, Long> {
