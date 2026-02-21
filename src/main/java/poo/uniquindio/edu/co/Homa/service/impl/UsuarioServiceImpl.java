@@ -81,7 +81,11 @@ public UsuarioResponse registrar(UsuarioRegistroRequest request) {
     usuario = usuarioRepository.save(usuario);
 
     // Enviar email de activación con el código
-    emailService.enviarEmailActivacion(usuario.getEmail(), usuario.getCodigoActivacion());
+    try {
+        emailService.enviarEmailActivacion(usuario.getEmail(), usuario.getCodigoActivacion());
+    } catch (Exception e) {
+        log.warn("No se pudo enviar correo de activacion para {}: {}", usuario.getEmail(), e.getMessage());
+    }
 
     log.info("Usuario registrado exitosamente: {} - Rol: {}, esAnfitrion: {}",
              usuario.getEmail(), usuario.getRol(), usuario.getEsAnfitrion());

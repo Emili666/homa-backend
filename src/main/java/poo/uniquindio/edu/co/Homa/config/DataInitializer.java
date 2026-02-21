@@ -168,9 +168,9 @@ public class DataInitializer implements CommandLineRunner {
                     .estado(EstadoAlojamiento.ACTIVO)
                     .anfitrion(anfitrion1)
                     .imagenes(Arrays.asList(
-                            "https://via.placeholder.com/800x600/4A90E2/FFFFFF?text=Apartamento+Bogotá+1",
-                            "https://via.placeholder.com/800x600/4A90E2/FFFFFF?text=Apartamento+Bogotá+2",
-                            "https://via.placeholder.com/800x600/4A90E2/FFFFFF?text=Apartamento+Bogotá+3"
+                            "https://placehold.co/800x600/4A90E2/FFFFFF?text=Apartamento+Bogotá+1",
+                            "https://placehold.co/800x600/4A90E2/FFFFFF?text=Apartamento+Bogotá+2",
+                            "https://placehold.co/800x600/4A90E2/FFFFFF?text=Apartamento+Bogotá+3"
                     ))
                     .servicios(Arrays.asList(Servicio.WIFI, Servicio.COCINA, Servicio.TV, 
                             Servicio.AIRE_ACONDICIONADO, Servicio.CALEFACCION, Servicio.ZONA_TRABAJO))
@@ -193,9 +193,9 @@ public class DataInitializer implements CommandLineRunner {
                     .estado(EstadoAlojamiento.ACTIVO)
                     .anfitrion(anfitrion1)
                     .imagenes(Arrays.asList(
-                            "https://via.placeholder.com/800x600/E74C3C/FFFFFF?text=Casa+Villa+de+Leyva+1",
-                            "https://via.placeholder.com/800x600/E74C3C/FFFFFF?text=Casa+Villa+de+Leyva+2",
-                            "https://via.placeholder.com/800x600/E74C3C/FFFFFF?text=Casa+Villa+de+Leyva+3"
+                            "https://placehold.co/800x600/E74C3C/FFFFFF?text=Casa+Villa+de+Leyva+1",
+                            "https://placehold.co/800x600/E74C3C/FFFFFF?text=Casa+Villa+de+Leyva+2",
+                            "https://placehold.co/800x600/E74C3C/FFFFFF?text=Casa+Villa+de+Leyva+3"
                     ))
                     .servicios(Arrays.asList(Servicio.WIFI, Servicio.COCINA, Servicio.JARDIN, 
                             Servicio.PARRILLA, Servicio.CHIMENEA, Servicio.ESTACIONAMIENTO))
@@ -218,9 +218,9 @@ public class DataInitializer implements CommandLineRunner {
                     .estado(EstadoAlojamiento.ACTIVO)
                     .anfitrion(anfitrion2)
                     .imagenes(Arrays.asList(
-                            "https://via.placeholder.com/800x600/2ECC71/FFFFFF?text=Loft+Medellín+1",
-                            "https://via.placeholder.com/800x600/2ECC71/FFFFFF?text=Loft+Medellín+2",
-                            "https://via.placeholder.com/800x600/2ECC71/FFFFFF?text=Loft+Medellín+3"
+                            "https://placehold.co/800x600/2ECC71/FFFFFF?text=Loft+Medellín+1",
+                            "https://placehold.co/800x600/2ECC71/FFFFFF?text=Loft+Medellín+2",
+                            "https://placehold.co/800x600/2ECC71/FFFFFF?text=Loft+Medellín+3"
                     ))
                     .servicios(Arrays.asList(Servicio.WIFI, Servicio.COCINA, Servicio.JACUZZI, 
                             Servicio.AIRE_ACONDICIONADO, Servicio.TV, Servicio.GIMNASIO))
@@ -243,9 +243,9 @@ public class DataInitializer implements CommandLineRunner {
                     .estado(EstadoAlojamiento.ACTIVO)
                     .anfitrion(anfitrion2)
                     .imagenes(Arrays.asList(
-                            "https://via.placeholder.com/800x600/F39C12/FFFFFF?text=Casa+Cali+1",
-                            "https://via.placeholder.com/800x600/F39C12/FFFFFF?text=Casa+Cali+2",
-                            "https://via.placeholder.com/800x600/F39C12/FFFFFF?text=Casa+Cali+3"
+                            "https://placehold.co/800x600/F39C12/FFFFFF?text=Casa+Cali+1",
+                            "https://placehold.co/800x600/F39C12/FFFFFF?text=Casa+Cali+2",
+                            "https://placehold.co/800x600/F39C12/FFFFFF?text=Casa+Cali+3"
                     ))
                     .servicios(Arrays.asList(Servicio.WIFI, Servicio.COCINA, Servicio.PISCINA, 
                             Servicio.JARDIN, Servicio.PARRILLA, Servicio.ESTACIONAMIENTO, Servicio.TV))
@@ -268,8 +268,8 @@ public class DataInitializer implements CommandLineRunner {
                     .estado(EstadoAlojamiento.ACTIVO)
                     .anfitrion(anfitrion1)
                     .imagenes(Arrays.asList(
-                            "https://via.placeholder.com/800x600/9B59B6/FFFFFF?text=Habitación+Cartagena+1",
-                            "https://via.placeholder.com/800x600/9B59B6/FFFFFF?text=Habitación+Cartagena+2"
+                            "https://placehold.co/800x600/9B59B6/FFFFFF?text=Habitación+Cartagena+1",
+                            "https://placehold.co/800x600/9B59B6/FFFFFF?text=Habitación+Cartagena+2"
                     ))
                     .servicios(Arrays.asList(Servicio.WIFI, Servicio.AIRE_ACONDICIONADO, 
                             Servicio.BALCON, Servicio.TV))
@@ -292,9 +292,9 @@ public class DataInitializer implements CommandLineRunner {
                     .estado(EstadoAlojamiento.ACTIVO)
                     .anfitrion(anfitrion2)
                     .imagenes(Arrays.asList(
-                            "https://via.placeholder.com/800x600/1ABC9C/FFFFFF?text=Penthouse+Bogotá+1",
-                            "https://via.placeholder.com/800x600/1ABC9C/FFFFFF?text=Penthouse+Bogotá+2",
-                            "https://via.placeholder.com/800x600/1ABC9C/FFFFFF?text=Penthouse+Bogotá+3"
+                            "https://placehold.co/800x600/1ABC9C/FFFFFF?text=Penthouse+Bogotá+1",
+                            "https://placehold.co/800x600/1ABC9C/FFFFFF?text=Penthouse+Bogotá+2",
+                            "https://placehold.co/800x600/1ABC9C/FFFFFF?text=Penthouse+Bogotá+3"
                     ))
                     .servicios(Arrays.asList(Servicio.WIFI, Servicio.COCINA, Servicio.JACUZZI, 
                             Servicio.GIMNASIO, Servicio.AIRE_ACONDICIONADO, Servicio.CALEFACCION, 

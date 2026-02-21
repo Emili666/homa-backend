@@ -49,8 +49,12 @@ public class SecurityConfig {
                         "/api/usuarios/recuperar-contrasena",
                         "/api/usuarios/restablecer-contrasena",
                         "/api/mapas/alojamientos",
-                        "/swagger-ui/**", 
-                        "/v3/api-docs/**"
+                        "/api/alojamientos/buscar",
+                        "/api/resenas/destacadas",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/actuator/health",
+                        "/error"
                 ).permitAll()
                 .anyRequest().authenticated() // Todo lo demás requiere login
             )

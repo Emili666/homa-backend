@@ -29,6 +29,7 @@ import poo.uniquindio.edu.co.Homa.dto.request.CambiarContrasenaRequest;
 import poo.uniquindio.edu.co.Homa.dto.request.RecuperarContrasenaRequest;
 import poo.uniquindio.edu.co.Homa.dto.request.RestablecerContrasenaRequest;
 import poo.uniquindio.edu.co.Homa.dto.request.UsuarioRegistroRequest;
+import poo.uniquindio.edu.co.Homa.dto.response.ApiResponse;
 import poo.uniquindio.edu.co.Homa.dto.response.UsuarioResponse;
 import poo.uniquindio.edu.co.Homa.service.UsuarioService;
 
@@ -42,8 +43,10 @@ public class UsuarioController {
 
     @Operation(summary = "Registrar usuario", description = "Registra un nuevo usuario en el sistema")
     @PostMapping("/registro")
-    public ResponseEntity<UsuarioResponse> registrar(@Valid @RequestBody UsuarioRegistroRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.registrar(request));
+    public ResponseEntity<ApiResponse<UsuarioResponse>> registrar(@Valid @RequestBody UsuarioRegistroRequest request) {
+        UsuarioResponse usuario = usuarioService.registrar(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Usuario registrado correctamente. Correo de confirmacion enviado.", usuario));
     }
 
     @Operation(summary = "Activar cuenta", description = "Activa la cuenta de un usuario mediante código")
@@ -126,9 +129,9 @@ public class UsuarioController {
 
     @Operation(summary = "Solicitar recuperación de contraseña", description = "Envía un código para recuperar la contraseña")
     @PostMapping("/recuperar-contrasena")
-    public ResponseEntity<Void> solicitarRecuperacion(@Valid @RequestBody RecuperarContrasenaRequest request) {
+    public ResponseEntity<ApiResponse<Void>> solicitarRecuperacion(@Valid @RequestBody RecuperarContrasenaRequest request) {
         usuarioService.solicitarRecuperacionContrasena(request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ApiResponse.success("Correo de recuperacion enviado.", null));
     }
 
     @Operation(summary = "Restablecer contraseña", description = "Restablece la contraseña usando el código enviado")

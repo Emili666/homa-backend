@@ -50,7 +50,7 @@ public class AlojamientoServiceImpl implements AlojamientoService {
 
         Alojamiento alojamiento = alojamientoMapper.toEntity(request);
         alojamiento.setAnfitrion(anfitrion);
-        alojamiento.setEstado(EstadoAlojamiento.PENDIENTE);
+        alojamiento.setEstado(EstadoAlojamiento.ACTIVO);
         alojamiento.setCreadoEn(LocalDateTime.now());
 
         alojamiento = alojamientoRepository.save(alojamiento);
@@ -120,7 +120,7 @@ public class AlojamientoServiceImpl implements AlojamientoService {
     @Override
     @Transactional(readOnly = true)
     public Page<AlojamientoResponse> listarPorAnfitrion(Long anfitrionId, Pageable pageable) {
-        return alojamientoRepository.findByAnfitrionId(anfitrionId, pageable)
+        return alojamientoRepository.findByAnfitrionIdAndEstadoNot(anfitrionId, EstadoAlojamiento.ELIMINADO, pageable)
                 .map(this::mapearConMetadatos);
 
     }

@@ -25,6 +25,12 @@ public class EmailService {
     @Value("${spring.mail.password}")
     private String fromPassword;
 
+    @Value("${spring.mail.host:smtp.gmail.com}")
+    private String smtpHost;
+
+    @Value("${spring.mail.port:587}")
+    private int smtpPort;
+
     @Value("${app.frontend.url:http://localhost:4200}")
     private String frontendUrl;
 
@@ -35,8 +41,8 @@ public class EmailService {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.host", smtpHost);
+        props.put("mail.smtp.port", String.valueOf(smtpPort));
 
         return Session.getInstance(props, new Authenticator() {
             @Override
@@ -60,7 +66,8 @@ public class EmailService {
             Transport.send(message);
             log.info("Correo enviado correctamente a {}", destinatario);
         } catch (MessagingException e) {
-            log.error("Error al enviar correo: {}", e.getMessage());
+            log.error("Error al enviar correo a {}: {}", destinatario, e.getMessage(), e);
+            throw new IllegalStateException("No fue posible enviar el correo de activacion.", e);
         }
     }
 
@@ -69,20 +76,22 @@ public class EmailService {
      */
     public void enviarEmailActivacion(String email, String codigoActivacion) {
         String asunto = "Activa tu cuenta en HOMA";
+        String activationUrl = String.format("%s/activar-cuenta?codigo=%s",
+                normalizeBaseUrl(frontendUrl), codigoActivacion);
         String cuerpo = String.format("""
                 Bienvenido a HOMA!
 
-                Para activar tu cuenta, visita:
-                %s/activar-cuenta?codigo=%s
+                Activa tu cuenta ingresando al siguiente enlace:
+                %s
 
-                Si prefieres activarla manualmente, usa este codigo:
+                Codigo de activacion:
                 %s
 
                 Si no solicitaste esta cuenta, ignora este mensaje.
 
                 Saludos,
                 Equipo HOMA
-                """, frontendUrl, codigoActivacion, codigoActivacion);
+                """, activationUrl, codigoActivacion);
 
         enviarCorreo(email, asunto, cuerpo);
     }
@@ -92,9 +101,7 @@ public class EmailService {
      */
     public void enviarEmailRecuperacion(String email, String nombre, String codigo) {
         String asunto = "Recuperacion de contrasena - HOMA";
-        String baseUrl = (frontendUrl == null || frontendUrl.isBlank())
-                ? "http://localhost:4200"
-                : frontendUrl.endsWith("/") ? frontendUrl.substring(0, frontendUrl.length() - 1) : frontendUrl;
+        String baseUrl = normalizeBaseUrl(frontendUrl);
         String recoveryUrl = String.format("%s/#/auth/recuperar", baseUrl);
         String cuerpo = """
                 Hola %s,
@@ -114,6 +121,13 @@ public class EmailService {
                 """.formatted(nombre != null ? nombre : "Usuario", codigo, recoveryUrl);
 
         enviarCorreo(email, asunto, cuerpo);
+    }
+
+    private String normalizeBaseUrl(String url) {
+        if (url == null || url.isBlank()) {
+            return "http://localhost:8080";
+        }
+        return url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
     }
 
     /**

@@ -38,6 +38,8 @@ public interface AlojamientoRepository extends JpaRepository<Alojamiento, Long> 
 
     Page<Alojamiento> findByAnfitrionId(Long anfitrionId, Pageable pageable);
 
+    Page<Alojamiento> findByAnfitrionIdAndEstadoNot(Long anfitrionId, EstadoAlojamiento estado, Pageable pageable);
+
     Optional<Alojamiento> findByTitulo(String titulo);
 
     @Query("SELECT COUNT(r) > 0 FROM Reserva r WHERE r.alojamiento.id = :id AND r.fechaEntrada > CURRENT_DATE")
