@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import poo.uniquindio.edu.co.Homa.model.entity.Usuario;
+import poo.uniquindio.edu.co.Homa.model.enums.EstadoUsuario;
 import poo.uniquindio.edu.co.Homa.repository.UsuarioRepository;
 
 @Service
@@ -27,6 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .username(usuario.getEmail())
                 .password(usuario.getContrasena()) // Debe estar encriptada
                 .roles(usuario.getRol().name().toUpperCase())
+                .disabled(usuario.getEstado() != EstadoUsuario.ACTIVO)
                 .build();
     }
 }

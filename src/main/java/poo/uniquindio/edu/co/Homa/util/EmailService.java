@@ -102,7 +102,7 @@ public class EmailService {
     public void enviarEmailRecuperacion(String email, String nombre, String codigo) {
         String asunto = "Recuperacion de contrasena - HOMA";
         String baseUrl = normalizeBaseUrl(frontendUrl);
-        String recoveryUrl = String.format("%s/#/auth/recuperar", baseUrl);
+        String recoveryUrl = String.format("%s/auth/recuperar", baseUrl);
         String cuerpo = """
                 Hola %s,
 
@@ -177,7 +177,8 @@ public class EmailService {
     /**
      * Notifica al anfitrión que recibió una nueva reserva.
      */
-    public void enviarEmailNuevaReservaAnfitrion(String email, String nombreAlojamiento, String nombreHuesped, String fechas) {
+    public void enviarEmailNuevaReservaAnfitrion(String email, String nombreAlojamiento, String nombreHuesped,
+            String fechas) {
         String asunto = "Nueva reserva recibida - HOMA";
         String cuerpo = String.format("""
                 Hola,
@@ -200,7 +201,8 @@ public class EmailService {
     /**
      * Notifica al anfitrion que su alojamiento recibio una nueva resena.
      */
-    public void enviarEmailNuevaResenaAnfitrion(String email, String nombreAlojamiento, String nombreHuesped, Integer calificacion, String comentario) {
+    public void enviarEmailNuevaResenaAnfitrion(String email, String nombreAlojamiento, String nombreHuesped,
+            Integer calificacion, String comentario) {
         String asunto = "Nueva resena en tu alojamiento - HOMA";
         String cuerpo = String.format("""
                 Hola,
@@ -214,7 +216,8 @@ public class EmailService {
 
                 Saludos,
                 Equipo HOMA
-                """, nombreHuesped, nombreAlojamiento, calificacion != null ? calificacion : 0, comentario != null ? comentario : "");
+                """, nombreHuesped, nombreAlojamiento, calificacion != null ? calificacion : 0,
+                comentario != null ? comentario : "");
 
         enviarCorreo(email, asunto, cuerpo);
     }
