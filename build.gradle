@@ -27,6 +27,9 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	all {
+		exclude group: 'com.google.collections', module: 'google-collections'
+	}
 }
 
 repositories {
@@ -84,6 +87,11 @@ dependencies {
 	testImplementation 'org.testcontainers:junit-jupiter:1.19.7'
 	testImplementation 'org.testcontainers:mariadb:1.19.7'
 	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+
+	// --- MERCADO PAGO ---
+	implementation ('com.mercadopago:sdk-java:2.1.20') {
+		exclude group: 'com.google.collections', module: 'google-collections'
+	}
 
 }
 
