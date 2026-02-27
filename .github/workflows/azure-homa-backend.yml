@@ -46,6 +46,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'HOMA-BACKEND-APP-NAME' # REPLACE WITH YOUR APP NAME
+          app-name: 'homa-backend' # REPLACE WITH YOUR APP NAME
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_XXXXX }} # REPLACE WITH YOUR SECRET NAME
           package: '*.jar'
