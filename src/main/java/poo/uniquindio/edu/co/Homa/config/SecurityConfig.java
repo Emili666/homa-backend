@@ -1,7 +1,5 @@
 package poo.uniquindio.edu.co.Homa.config;
 
-
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,30 +36,32 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .cors(Customizer.withDefaults())
-            .authorizeHttpRequests(auth -> auth
+                .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
+                .authorizeHttpRequests(auth -> auth
 
-                .requestMatchers(
-                        "/api/auth/**",          // Endpoints públicos
-                        "/api/usuarios/registro",
-                        "/api/usuarios/activar/**",
-                        "/api/usuarios/recuperar-contrasena",
-                        "/api/usuarios/restablecer-contrasena",
-                        "/api/mapas/alojamientos",
-                        "/api/alojamientos/buscar",
-                        "/api/resenas/destacadas",
-                        "/swagger-ui/**",
-                        "/v3/api-docs/**",
-                        "/actuator/health",
-                        "/error"
-                ).permitAll()
-                .anyRequest().authenticated() // Todo lo demás requiere login
-            )
-            .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(authenticationProvider()) // ✅ Registro del proveedor
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                        .requestMatchers(
+                                "/api/auth/**", // Endpoints públicos
+                                "/api/usuarios/registro",
+                                "/api/usuarios/activar/**",
+                                "/api/usuarios/recuperar-contrasena",
+                                "/api/usuarios/restablecer-contrasena",
+                                "/api/mapas/alojamientos",
+                                "/api/alojamientos/buscar",
+                                "/api/resenas/destacadas",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/actuator/health",
+                                "/error")
+                        .permitAll()
+                        .anyRequest().authenticated() // Todo lo demás requiere login
+                )
+                .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider()) // ✅ Registro del proveedor
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
