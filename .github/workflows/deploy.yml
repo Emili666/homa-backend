@@ -2,7 +2,7 @@ name: Backend Deployment (AWS EB)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   workflow_dispatch:
 
 jobs:
@@ -49,7 +49,7 @@ jobs:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: homa-backend
-          environment_name: HomaBackend-env
+          environment_name: Homa-backend-env
           version_label: ${{ github.run_number }}
-          region: us-east-1
+          region: us-east-2
           deployment_package: ${{ env.JAR_NAME }}
