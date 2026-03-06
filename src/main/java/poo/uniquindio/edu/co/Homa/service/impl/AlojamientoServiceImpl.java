@@ -113,16 +113,16 @@ public class AlojamientoServiceImpl implements AlojamientoService {
     @Override
     @Transactional(readOnly = true)
     public Page<AlojamientoResponse> listarTodos(Pageable pageable) {
-        return alojamientoRepository.findByEstado(EstadoAlojamiento.ACTIVO, pageable)
-                .map(this::mapearConMetadatos);
+        Page<Alojamiento> page = alojamientoRepository.findByEstado(EstadoAlojamiento.ACTIVO, pageable);
+        return mapearListaConMetadatos(page);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<AlojamientoResponse> listarPorAnfitrion(Long anfitrionId, Pageable pageable) {
-        return alojamientoRepository.findByAnfitrionIdAndEstadoNot(anfitrionId, EstadoAlojamiento.ELIMINADO, pageable)
-                .map(this::mapearConMetadatos);
-
+        Page<Alojamiento> page = alojamientoRepository.findByAnfitrionIdAndEstadoNot(anfitrionId,
+                EstadoAlojamiento.ELIMINADO, pageable);
+        return mapearListaConMetadatos(page);
     }
 
     @Override
@@ -133,14 +133,14 @@ public class AlojamientoServiceImpl implements AlojamientoService {
         Float precioMinF = precioMin != null ? precioMin.floatValue() : null;
         Float precioMaxF = precioMax != null ? precioMax.floatValue() : null;
 
-        return alojamientoRepository.buscarAlojamientos(
+        Page<Alojamiento> page = alojamientoRepository.buscarAlojamientos(
                 EstadoAlojamiento.ACTIVO,
                 ciudad,
                 precioMinF,
                 precioMaxF,
                 capacidad,
-                pageable)
-                .map(this::mapearConMetadatos);
+                pageable);
+        return mapearListaConMetadatos(page);
     }
 
     @Override
@@ -220,6 +220,32 @@ public class AlojamientoServiceImpl implements AlojamientoService {
             response.setEsFavorito(Boolean.FALSE);
         }
         return response;
+    }
+
+    private Page<AlojamientoResponse> mapearListaConMetadatos(Page<Alojamiento> page) {
+        if (!page.hasContent()) {
+            return page.map(alojamientoMapper::toResponse);
+        }
+
+        List<Long> ids = page.getContent().stream()
+                .map(Alojamiento::getId)
+                .toList();
+
+        List<Object[]> queryResult = favoritoRepository.countByAlojamientoIdIn(ids);
+
+        java.util.Map<Long, Long> conteos = queryResult.stream()
+                .collect(java.util.stream.Collectors.toMap(
+                        row -> (Long) row[0],
+                        row -> (Long) row[1]));
+
+        return page.map(alojamiento -> {
+            AlojamientoResponse response = alojamientoMapper.toResponse(alojamiento);
+            response.setTotalFavoritos(conteos.getOrDefault(alojamiento.getId(), 0L));
+            if (response.getEsFavorito() == null) {
+                response.setEsFavorito(Boolean.FALSE);
+            }
+            return response;
+        });
     }
 
     private String extraerPublicIdDesdeUrl(String urlImagen) {

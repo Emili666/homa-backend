@@ -60,8 +60,9 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
 
-	// --- ACTUATOR (Health checks) ---
+	// --- ACTUATOR (Health checks, Metrics, Prometheus) ---
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 
 	// --- CORREO ---
 	implementation 'com.sun.mail:jakarta.mail:2.0.1'
