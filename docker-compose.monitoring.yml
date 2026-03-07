@@ -8,7 +8,7 @@ version: "3.9"
 #   docker compose -f docker-compose.monitoring.yml up -d
 #
 # Acceso:
-#   Grafana:    http://38.242.225.58:3000  (admin / homa_grafana_2026)
+#   Grafana:    http://38.242.225.58:3030  (admin / homa_grafana_2026)
 #   Prometheus: http://38.242.225.58:9090  (sin autenticación — proteger con firewall)
 # ──────────────────────────────────────────────────────────────────────────────
 
@@ -56,7 +56,7 @@ services:
     container_name: homa_grafana
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3030:3000"
     environment:
       # Credenciales de Grafana
       GF_SECURITY_ADMIN_USER: admin
@@ -64,7 +64,7 @@ services:
       GF_USERS_ALLOW_SIGN_UP: "false"
 
       # Configuración de la instancia
-      GF_SERVER_ROOT_URL: "http://38.242.225.58:3000"
+      GF_SERVER_ROOT_URL: "http://38.242.225.58:3030"
       GF_INSTANCE_NAME: "HOMA Monitoring"
 
       # Auto-provisionar datasource y dashboards
