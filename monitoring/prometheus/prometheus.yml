@@ -1,0 +1,47 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# HOMA — Configuración de Prometheus
+# ──────────────────────────────────────────────────────────────────────────────
+
+global:
+  scrape_interval: 15s          # Frecuencia de recolección de métricas
+  evaluation_interval: 15s      # Frecuencia de evaluación de reglas de alerta
+  scrape_timeout: 10s
+
+  # Etiquetas globales aplicadas a todas las métricas
+  external_labels:
+    monitor: 'homa-prometheus'
+    env: 'production'
+
+# ── Reglas de alerta ──────────────────────────────────────────────────────────
+rule_files:
+  - "/etc/prometheus/alerts.yml"
+
+# ── Scrape configurations ─────────────────────────────────────────────────────
+scrape_configs:
+
+  # 1. Auto-scraping de Prometheus mismo
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # 2. HOMA Backend (Spring Boot + Micrometer)
+  #    El backend está en Azure → scraping por URL pública
+  - job_name: 'homa-backend'
+    metrics_path: '/api/actuator/prometheus'   # Ruta del endpoint Prometheus
+    scheme: 'https'
+    scrape_interval: 20s
+    static_configs:
+      - targets: ['homa-api-bsbmcvc2f7gud3af.canadacentral-01.azurewebsites.net']
+        labels:
+          app: 'homa-backend'
+          environment: 'production'
+          version: 'v1'
+
+  # 3. Node Exporter (recursos del VPS: CPU, RAM, disco, red)
+  - job_name: 'node-exporter'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['node_exporter:9100']
+        labels:
+          server: 'homa-vps-contabo'
+          os: 'ubuntu-24.04'

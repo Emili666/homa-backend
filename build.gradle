@@ -63,6 +63,9 @@ dependencies {
 	// --- ACTUATOR (Health checks) ---
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+	// --- MICROMETER PROMETHEUS (Métricas para Grafana) ---
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+
 	// --- CORREO ---
 	implementation 'com.sun.mail:jakarta.mail:2.0.1'
 	implementation 'org.eclipse.angus:angus-mail:2.0.3'

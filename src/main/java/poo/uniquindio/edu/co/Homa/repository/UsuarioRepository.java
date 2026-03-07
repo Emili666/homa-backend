@@ -16,6 +16,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByEmailAndEstado(String email, EstadoUsuario estado);
 
     boolean existsByEmail(String email);
+
     Optional<Usuario> findByCodigoActivacion(String codigoActivacion);
+
+    // Para métricas de Prometheus
+    long countByEstado(EstadoUsuario estado);
 
 }

@@ -25,27 +25,28 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     Page<Reserva> findByAlojamiento_Anfitrion_Id(Long anfitrionId, Pageable pageable);
 
     @Query("SELECT r FROM Reserva r WHERE r.alojamiento.id = :alojamientoId " +
-           "AND r.estado IN ('CONFIRMADA', 'PENDIENTE') " +
-           "AND ((r.fechaEntrada <= :fechaSalida AND r.fechaSalida >= :fechaEntrada))")
+            "AND r.estado IN ('CONFIRMADA', 'PENDIENTE') " +
+            "AND ((r.fechaEntrada <= :fechaSalida AND r.fechaSalida >= :fechaEntrada))")
     List<Reserva> findReservasConflictivas(
-        @Param("alojamientoId") Long alojamientoId,
-        @Param("fechaEntrada") LocalDate fechaEntrada,
-        @Param("fechaSalida") LocalDate fechaSalida
-    );
-    
+            @Param("alojamientoId") Long alojamientoId,
+            @Param("fechaEntrada") LocalDate fechaEntrada,
+            @Param("fechaSalida") LocalDate fechaSalida);
+
     @Query("SELECT COUNT(r) FROM Reserva r WHERE r.alojamiento.id = :alojamientoId " +
-           "AND r.estado = 'CONFIRMADA' " +
-           "AND r.fechaEntrada >= :fechaInicio AND r.fechaSalida <= :fechaFin")
+            "AND r.estado = 'CONFIRMADA' " +
+            "AND r.fechaEntrada >= :fechaInicio AND r.fechaSalida <= :fechaFin")
     Long contarReservasPorPeriodo(
-        @Param("alojamientoId") Long alojamientoId,
-        @Param("fechaInicio") LocalDate fechaInicio,
-        @Param("fechaFin") LocalDate fechaFin
-        
+            @Param("alojamientoId") Long alojamientoId,
+            @Param("fechaInicio") LocalDate fechaInicio,
+            @Param("fechaFin") LocalDate fechaFin
+
     );
-    
+
     boolean existsByHuesped_IdAndAlojamiento_IdAndEstado(
-        Long huespedId, 
-        Long alojamientoId, 
-        EstadoReserva estado
-    );
+            Long huespedId,
+            Long alojamientoId,
+            EstadoReserva estado);
+
+    // Para métricas de Prometheus
+    long countByEstado(EstadoReserva estado);
 }

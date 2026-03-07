@@ -1,0 +1,109 @@
+version: "3.9"
+
+# ──────────────────────────────────────────────────────────────────────────────
+# HOMA — Stack de Monitoreo: Prometheus + Grafana
+# VPS: 38.242.225.58 (Contabo Ubuntu 24.04)
+#
+# Uso:
+#   docker compose -f docker-compose.monitoring.yml up -d
+#
+# Acceso:
+#   Grafana:    http://38.242.225.58:3000  (admin / homa_grafana_2026)
+#   Prometheus: http://38.242.225.58:9090  (sin autenticación — proteger con firewall)
+# ──────────────────────────────────────────────────────────────────────────────
+
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+services:
+
+  # ── PROMETHEUS ─────────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.51.2
+    container_name: homa_prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=30d" # Guardar 30 días de datos
+      - "--storage.tsdb.retention.size=5GB"
+      - "--web.enable-lifecycle" # Recarga config sin reiniciar
+      - "--web.enable-admin-api"
+    networks:
+      - monitoring
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── GRAFANA ────────────────────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: homa_grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Credenciales de Grafana
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: homa_grafana_2026
+      GF_USERS_ALLOW_SIGN_UP: "false"
+
+      # Configuración de la instancia
+      GF_SERVER_ROOT_URL: "http://38.242.225.58:3000"
+      GF_INSTANCE_NAME: "HOMA Monitoring"
+
+      # Auto-provisionar datasource y dashboards
+      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+
+      # Deshabilitar la telemetría de Grafana
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks:
+      - monitoring
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── NODE EXPORTER (Métricas del VPS: CPU, RAM, disco) ─────────────────────
+  node_exporter:
+    image: prom/node-exporter:v1.8.0
+    container_name: homa_node_exporter
+    restart: unless-stopped
+    pid: "host"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.sysfs=/host/sys"
+      - "--path.rootfs=/rootfs"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)"
+    ports:
+      - "9100:9100"
+    networks:
+      - monitoring

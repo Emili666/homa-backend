@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "resena", indexes = {
-    @Index(name = "idx_alojamiento_id", columnList = "alojamiento_id"),
-    @Index(name = "idx_usuario_id", columnList = "usuario_id"),
-    @Index(name = "idx_calificacion", columnList = "calificacion")
+        @Index(name = "idx_alojamiento_id", columnList = "alojamiento_id"),
+        @Index(name = "idx_usuario_id", columnList = "usuario_id"),
+        @Index(name = "idx_calificacion", columnList = "calificacion")
 })
 @Getter
 @Setter
@@ -48,5 +48,6 @@ public class Resena {
     private LocalDateTime creadoEn;
 
     @Column(name = "es_destacado")
+    @Builder.Default
     private Boolean esDestacado = false;
 }
