@@ -27,7 +27,7 @@ scrape_configs:
   # 2. HOMA Backend (Spring Boot + Micrometer)
   #    El backend está en Azure → scraping por URL pública
   - job_name: 'homa-backend'
-    metrics_path: '/api/actuator/prometheus'   # Ruta del endpoint Prometheus
+    metrics_path: '/actuator/prometheus'   # Ruta del endpoint Prometheus
     scheme: 'https'
     scrape_interval: 20s
     static_configs:
