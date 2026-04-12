@@ -53,6 +53,11 @@ public class ReservaServiceImpl implements ReservaService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Alojamiento no encontrado con id: " + request.getAlojamientoId()));
 
+        // Validar que la fecha de salida sea posterior a la entrada
+        if (!request.getFechaSalida().isAfter(request.getFechaEntrada())) {
+            throw new BusinessException("La fecha de salida debe ser posterior a la fecha de entrada");
+        }
+
         if (request.getCantidadHuespedes() != null
                 && alojamiento.getMaxHuespedes() != null
                 && request.getCantidadHuespedes() > alojamiento.getMaxHuespedes()) {

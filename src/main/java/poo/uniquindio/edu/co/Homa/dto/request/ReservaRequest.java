@@ -22,10 +22,8 @@ public class ReservaRequest {
     private Integer cantidadHuespedes;
 
     @NotNull(message = "La fecha de entrada es obligatoria")
-    @FutureOrPresent(message = "La fecha de entrada debe ser hoy o en el futuro")
     private LocalDate fechaEntrada;
 
     @NotNull(message = "La fecha de salida es obligatoria")
-    @Future(message = "La fecha de salida debe ser en el futuro")
     private LocalDate fechaSalida;
 }
