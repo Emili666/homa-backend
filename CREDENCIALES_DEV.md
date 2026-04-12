@@ -62,14 +62,11 @@ jdbc:mariadb://38.242.225.58:3306/homa_avanzada_db?allowPublicKeyRetrieval=true&
 
 ## Cloudinary (Imágenes)
 
-> ⚠️ No encontradas en el historial — completar con las keys del panel de Cloudinary:  
-> https://console.cloudinary.com
-
 | Variable | Valor |
 |---|---|
-| `CLOUDINARY_CLOUD_NAME` | *(completar)* |
-| `CLOUDINARY_API_KEY` | *(completar)* |
-| `CLOUDINARY_API_SECRET` | *(completar)* |
+| `CLOUDINARY_CLOUD_NAME` | `dczjcspmj` |
+| `CLOUDINARY_API_KEY` | `966558555964388` |
+| `CLOUDINARY_API_SECRET` | `oIXB_nDMg2dmXC51yJyaDLv0xSI` |
 | `CLOUDINARY_FOLDER` | `alojamientos` |
 
 ---
@@ -163,9 +160,9 @@ app.cors.allowed-origins=http://localhost:4200
 mapbox.access-token=${MAPBOX_TOKEN:completar}
 
 # Cloudinary
-cloudinary.cloud-name=${CLOUDINARY_CLOUD_NAME:completar}
-cloudinary.api-key=${CLOUDINARY_API_KEY:completar}
-cloudinary.api-secret=${CLOUDINARY_API_SECRET:completar}
+cloudinary.cloud-name=dczjcspmj
+cloudinary.api-key=966558555964388
+cloudinary.api-secret=oIXB_nDMg2dmXC51yJyaDLv0xSI
 cloudinary.folder=alojamientos
 
 # Archivos
