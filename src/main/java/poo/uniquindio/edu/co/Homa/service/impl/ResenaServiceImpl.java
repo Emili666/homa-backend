@@ -162,18 +162,21 @@ public ResenaResponse crear(ResenaRequest request, Long clienteId) {
     }
 
     private void notificarAnfitrionNuevaResena(Alojamiento alojamiento, Usuario huesped, ResenaRequest request) {
-        if (alojamiento.getAnfitrion() == null || alojamiento.getAnfitrion().getEmail() == null) {
-            log.warn("No se pudo notificar al anfitrion: alojamiento {} sin anfitrion o sin email", alojamiento.getId());
-            return;
+        try {
+            if (alojamiento.getAnfitrion() == null || alojamiento.getAnfitrion().getEmail() == null) {
+                log.warn("No se pudo notificar al anfitrion: alojamiento {} sin anfitrion o sin email", alojamiento.getId());
+                return;
+            }
+            emailService.enviarEmailNuevaResenaAnfitrion(
+                    alojamiento.getAnfitrion().getEmail(),
+                    alojamiento.getTitulo(),
+                    huesped.getNombre(),
+                    request.getCalificacion(),
+                    request.getComentario()
+            );
+        } catch (Exception e) {
+            log.warn("No se pudo enviar email de nueva resena al anfitrion: {}", e.getMessage());
         }
-
-        emailService.enviarEmailNuevaResenaAnfitrion(
-                alojamiento.getAnfitrion().getEmail(),
-                alojamiento.getTitulo(),
-                huesped.getNombre(),
-                request.getCalificacion(),
-                request.getComentario()
-        );
     }
 
 }

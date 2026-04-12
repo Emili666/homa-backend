@@ -19,7 +19,7 @@ public class ReservaResponse {
     private Long alojamientoId;
     private String tituloAlojamiento;
     private String ciudadAlojamiento;
-    private String huespedId;
+    private Long huespedId;
     private String nombreHuesped;
     private String emailHuesped;
     private String telefonoHuesped;

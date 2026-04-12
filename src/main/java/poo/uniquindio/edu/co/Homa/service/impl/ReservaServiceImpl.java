@@ -274,23 +274,29 @@ public class ReservaServiceImpl implements ReservaService {
     }
 
     private void notificarAnfitrionNuevaReserva(Reserva reserva) {
-        String emailAnfitrion = reserva.getAlojamiento().getAnfitrion().getEmail();
-        String nombreHuesped = reserva.getHuesped().getNombre();
-        String nombreAlojamiento = reserva.getAlojamiento().getTitulo();
-        String rangoFechas = String.format("%s al %s", reserva.getFechaEntrada(), reserva.getFechaSalida());
-
-        emailService.enviarEmailNuevaReservaAnfitrion(emailAnfitrion, nombreAlojamiento, nombreHuesped, rangoFechas);
+        try {
+            String emailAnfitrion = reserva.getAlojamiento().getAnfitrion().getEmail();
+            String nombreHuesped = reserva.getHuesped().getNombre();
+            String nombreAlojamiento = reserva.getAlojamiento().getTitulo();
+            String rangoFechas = String.format("%s al %s", reserva.getFechaEntrada(), reserva.getFechaSalida());
+            emailService.enviarEmailNuevaReservaAnfitrion(emailAnfitrion, nombreAlojamiento, nombreHuesped, rangoFechas);
+        } catch (Exception e) {
+            log.warn("No se pudo enviar email de nueva reserva al anfitrion: {}", e.getMessage());
+        }
     }
 
     private void notificarCambioEstado(Reserva reserva, EstadoReserva estado) {
-        String emailHuesped = reserva.getHuesped().getEmail();
-        String nombreAlojamiento = reserva.getAlojamiento().getTitulo();
-        String rangoFechas = String.format("%s al %s", reserva.getFechaEntrada(), reserva.getFechaSalida());
-
-        if (estado == EstadoReserva.CONFIRMADA) {
-            emailService.enviarEmailConfirmacionReserva(emailHuesped, nombreAlojamiento, rangoFechas);
-        } else if (estado == EstadoReserva.CANCELADA) {
-            emailService.enviarEmailCancelacionReserva(emailHuesped, nombreAlojamiento, rangoFechas);
+        try {
+            String emailHuesped = reserva.getHuesped().getEmail();
+            String nombreAlojamiento = reserva.getAlojamiento().getTitulo();
+            String rangoFechas = String.format("%s al %s", reserva.getFechaEntrada(), reserva.getFechaSalida());
+            if (estado == EstadoReserva.CONFIRMADA) {
+                emailService.enviarEmailConfirmacionReserva(emailHuesped, nombreAlojamiento, rangoFechas);
+            } else if (estado == EstadoReserva.CANCELADA) {
+                emailService.enviarEmailCancelacionReserva(emailHuesped, nombreAlojamiento, rangoFechas);
+            }
+        } catch (Exception e) {
+            log.warn("No se pudo enviar email de cambio de estado: {}", e.getMessage());
         }
     }
 
