@@ -86,7 +86,7 @@ jdbc:mariadb://38.242.225.58:3306/homa_avanzada_db?allowPublicKeyRetrieval=true&
 
 | Variable | Valor |
 |---|---|
-| `TURNSTILE_SECRET` | `0x4AAAAAACnmLUH8G8QHJ1oXdwBNdg2616g` |
+| `TURNSTILE_SECRET` | `0x4AAAAAACnmLaIWOjA6yIuhnaMWYp5eLcY` |
 
 ---
 
@@ -188,7 +188,7 @@ mercadopago.back_url_pending=http://localhost:4200/pending
 mercadopago.back_url_failure=http://localhost:4200/failure
 
 # Turnstile
-cloudflare.turnstile.secret=0x4AAAAAACnmLUH8G8QHJ1oXdwBNdg2616g
+cloudflare.turnstile.secret=0x4AAAAAACnmLaIWOjA6yIuhnaMWYp5eLcY
 cloudflare.turnstile.verify-url=https://challenges.cloudflare.com/turnstile/v0/siteverify
 
 # Admin inicial
