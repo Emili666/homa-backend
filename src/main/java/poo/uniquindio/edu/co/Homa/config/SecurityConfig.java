@@ -48,7 +48,6 @@ public class SecurityConfig {
                                 "/api/alojamientos",
                                 "/api/resenas/destacadas",
                                 "/api/resenas/alojamiento/**",
-                                "/api/resenas/alojamiento/**/promedio",
                                 "/api/reservas/disponibilidad",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
