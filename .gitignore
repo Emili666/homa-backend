@@ -37,8 +37,10 @@ out/
 .vscode/
 
 ### Archivos de configuración con credenciales ###
-src/main/resources/application.properties
-src/main/resources/application-*.properties
+# En produccion real estos archivos NO deben subirse
+# Para proyecto academico se incluyen con valores de desarrollo
+# src/main/resources/application.properties
+src/main/resources/application-prod.properties
 !src/main/resources/application-test.properties
 !src/main/resources/application.properties.example
 
