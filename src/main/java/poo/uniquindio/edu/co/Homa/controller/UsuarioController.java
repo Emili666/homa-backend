@@ -41,7 +41,7 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    @Operation(summary = "Registrar usuario", description = "Registra un nuevo usuario en el sistema")
+    @Operation(summary = "Registrar usuario")
     @PostMapping("/registro")
     public ResponseEntity<ApiResponse<UsuarioResponse>> registrar(@Valid @RequestBody UsuarioRegistroRequest request) {
         UsuarioResponse usuario = usuarioService.registrar(request);
@@ -49,14 +49,14 @@ public class UsuarioController {
                 .body(ApiResponse.success("Usuario registrado correctamente. Correo de confirmacion enviado.", usuario));
     }
 
-    @Operation(summary = "Activar cuenta", description = "Activa la cuenta de un usuario mediante código")
+    @Operation(summary = "Activar cuenta")
     @GetMapping("/activar/{codigo}")
     public ResponseEntity<Void> activarCuenta(@PathVariable String codigo) {
         usuarioService.activarCuenta(codigo);
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Obtener perfil actual", description = "Obtiene los datos del usuario autenticado")
+    @Operation(summary = "Obtener perfil actual")
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/me")
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'HUESPED', 'ANFITRION')")
@@ -64,9 +64,9 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.obtenerPorEmail(authentication.getName()));
     }
 
-    @Operation(summary = "Actualizar perfil actual", description = "Actualiza los datos del usuario autenticado")
+    @Operation(summary = "Actualizar perfil actual")
     @SecurityRequirement(name = "bearerAuth")
-    @PutMapping(value = "/me", consumes = { "multipart/form-data", "application/json" })
+    @PutMapping(value = "/me", consumes = {"multipart/form-data", "application/json"})
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'HUESPED', 'ANFITRION')")
     public ResponseEntity<UsuarioResponse> actualizarPerfil(
             Authentication authentication,
@@ -78,36 +78,24 @@ public class UsuarioController {
 
         UsuarioResponse usuario = usuarioService.obtenerPorEmail(authentication.getName());
 
-        // Crear el request con los datos recibidos
         ActualizarUsuarioRequest request = new ActualizarUsuarioRequest();
         if (nombre != null) request.setNombre(nombre);
         if (email != null) request.setEmail(email);
         if (telefono != null) request.setTelefono(telefono);
         if (contrasena != null) request.setContrasena(contrasena);
 
-        // Si hay foto, procesarla (necesitarás implementar esto en el servicio)
         return ResponseEntity.ok(usuarioService.actualizarConFoto(usuario.getId(), request, foto));
     }
 
-    @Operation(summary = "Obtener usuario por ID", description = "Obtiene los datos de un usuario por su ID")
+    @Operation(summary = "Obtener usuario por ID")
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'HUESPED', 'ANFITRION')")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<UsuarioResponse> obtenerPorId(@PathVariable("id") Long id) {
         return ResponseEntity.ok(usuarioService.obtenerPorId(id));
     }
 
-    @Operation(summary = "Actualizar usuario", description = "Actualiza los datos de un usuario")
-    @SecurityRequirement(name = "bearerAuth")
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'HUESPED', 'ANFITRION')")
-    public ResponseEntity<UsuarioResponse> actualizar(
-            @PathVariable Long id,
-            @Valid @RequestBody ActualizarUsuarioRequest request) {
-        return ResponseEntity.ok(usuarioService.actualizar(id, request));
-    }
-
-    @Operation(summary = "Eliminar usuario", description = "Elimina (desactiva) un usuario del sistema")
+    @Operation(summary = "Eliminar usuario")
     @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
@@ -116,32 +104,34 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Cambiar contraseña", description = "Cambia la contraseña de un usuario")
+    @Operation(summary = "Cambiar contraseña del usuario autenticado")
     @SecurityRequirement(name = "bearerAuth")
-    @PostMapping("/{id}/cambiar-contrasena")
+    @PostMapping("/me/cambiar-contrasena")
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'HUESPED', 'ANFITRION')")
     public ResponseEntity<Void> cambiarContrasena(
-            @PathVariable Long id,
+            Authentication authentication,
             @Valid @RequestBody CambiarContrasenaRequest request) {
-        usuarioService.cambiarContrasena(id, request);
+        UsuarioResponse usuario = usuarioService.obtenerPorEmail(authentication.getName());
+        usuarioService.cambiarContrasena(usuario.getId(), request, authentication.getName());
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Solicitar recuperación de contraseña", description = "Envía un código para recuperar la contraseña")
+    @Operation(summary = "Solicitar recuperación de contraseña")
     @PostMapping("/recuperar-contrasena")
     public ResponseEntity<ApiResponse<Void>> solicitarRecuperacion(@Valid @RequestBody RecuperarContrasenaRequest request) {
         usuarioService.solicitarRecuperacionContrasena(request);
-        return ResponseEntity.ok(ApiResponse.success("Correo de recuperacion enviado.", null));
+        // Respuesta genérica para no revelar si el email existe
+        return ResponseEntity.ok(ApiResponse.success("Si el correo existe, recibirás instrucciones.", null));
     }
 
-    @Operation(summary = "Restablecer contraseña", description = "Restablece la contraseña usando el código enviado")
+    @Operation(summary = "Restablecer contraseña")
     @PostMapping("/restablecer-contrasena")
     public ResponseEntity<Void> restablecerContrasena(@Valid @RequestBody RestablecerContrasenaRequest request) {
         usuarioService.restablecerContrasena(request);
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Listar todos los usuarios", description = "Lista todos los usuarios del sistema (solo admin)")
+    @Operation(summary = "Listar todos los usuarios (solo admin)")
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping
     @PreAuthorize("hasRole('ADMINISTRADOR')")
@@ -149,7 +139,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.listarTodos(pageable));
     }
 
-    @Operation(summary = "Cambiar estado de usuario", description = "Cambia el estado de un usuario (solo admin)")
+    @Operation(summary = "Cambiar estado de usuario (solo admin)")
     @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{id}/estado")
     @PreAuthorize("hasRole('ADMINISTRADOR')")

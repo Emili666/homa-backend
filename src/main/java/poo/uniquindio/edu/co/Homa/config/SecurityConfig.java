@@ -30,46 +30,45 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomUserDetailsService customUserDetailsService;
 
-    /**
-     * Configura las reglas de seguridad HTTP.
-     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-
                         .requestMatchers(
-                                "/api/auth/**", // Endpoints públicos
+                                "/api/auth/**",
                                 "/api/usuarios/registro",
                                 "/api/usuarios/activar/**",
                                 "/api/usuarios/recuperar-contrasena",
                                 "/api/usuarios/restablecer-contrasena",
                                 "/api/mapas/alojamientos",
                                 "/api/alojamientos/buscar",
+                                "/api/alojamientos/{id}",
+                                "/api/alojamientos",
                                 "/api/resenas/destacadas",
+                                "/api/resenas/alojamiento/**",
+                                "/api/resenas/alojamiento/**/promedio",
+                                "/api/reservas/disponibilidad",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",
-                                "/actuator/**",
-                                "/api/actuator/**",
                                 "/error")
                         .permitAll()
-                        .anyRequest().authenticated() // Todo lo demás requiere login
+                        // Actuator: solo health publico, el resto requiere ADMINISTRADOR
+                        .requestMatchers("/actuator/health").permitAll()
+                        .requestMatchers("/actuator/**").hasRole("ADMINISTRADOR")
+                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider()) // ✅ Registro del proveedor
+                .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    /**
-     * Configura el proveedor de autenticación (con tu servicio y encoder).
-     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -78,17 +77,11 @@ public class SecurityConfig {
         return provider;
     }
 
-    /**
-     * Bean para encriptar contraseñas con BCrypt.
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Bean para obtener el AuthenticationManager (usado en AuthService).
-     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();

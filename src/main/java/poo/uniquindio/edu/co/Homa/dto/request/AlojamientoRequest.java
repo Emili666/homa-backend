@@ -34,16 +34,16 @@ public class AlojamientoRequest {
     @NotNull(message = "La latitud es obligatoria")
     @DecimalMin(value = "-90.0", message = "La latitud debe estar entre -90 y 90")
     @DecimalMax(value = "90.0", message = "La latitud debe estar entre -90 y 90")
-    private Float latitud;
+    private Double latitud;
 
     @NotNull(message = "La longitud es obligatoria")
     @DecimalMin(value = "-180.0", message = "La longitud debe estar entre -180 y 180")
     @DecimalMax(value = "180.0", message = "La longitud debe estar entre -180 y 180")
-    private Float longitud;
+    private Double longitud;
 
     @NotNull(message = "El precio por noche es obligatorio")
     @DecimalMin(value = "0.01", message = "El precio debe ser mayor a 0")
-    private Float precioPorNoche;
+    private Double precioPorNoche;
 
     @NotNull(message = "El máximo de huéspedes es obligatorio")
     @Min(value = 1, message = "Debe permitir al menos 1 huésped")

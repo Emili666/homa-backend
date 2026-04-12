@@ -64,9 +64,9 @@ public class ReservaServiceImpl implements ReservaService {
             throw new BusinessException("El alojamiento no está disponible para las fechas seleccionadas");
         }
 
-        // Calcular precio total
+        // Calcular precio total con Double para precisión monetaria
         long dias = ChronoUnit.DAYS.between(request.getFechaEntrada(), request.getFechaSalida());
-        Double precioTotal = (double) (alojamiento.getPrecioPorNoche() * dias);
+        Double precioTotal = alojamiento.getPrecioPorNoche() * dias;
 
         Reserva reserva = reservaMapper.toEntity(request);
         reserva.setHuesped(cliente);
@@ -145,6 +145,25 @@ public class ReservaServiceImpl implements ReservaService {
     }
 
     @Override
+    @Transactional
+    public void cambiarEstadoVerificado(Long id, EstadoReserva estado, Long anfitrionId) {
+        log.info("Cambiando estado de reserva {} a {} por anfitrion {}", id, estado, anfitrionId);
+
+        Reserva reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con id: " + id));
+
+        if (!reserva.getAlojamiento().getAnfitrion().getId().equals(anfitrionId)) {
+            throw new BusinessException("No tienes permiso para modificar esta reserva");
+        }
+
+        reserva.setEstado(estado);
+        reservaRepository.save(reserva);
+
+        notificarCambioEstado(reserva, estado);
+        log.info("Estado cambiado exitosamente para reserva: {}", reserva.getId());
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Page<ReservaResponse> listarPorCliente(Long clienteId, Pageable pageable) {
         return reservaRepository.findByHuesped_Id(clienteId, pageable)
@@ -161,37 +180,9 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     @Transactional(readOnly = true)
     public Page<ReservaResponse> listarPorAnfitrion(Long anfitrionId, Pageable pageable) {
-        System.out.println("========================================");
-        System.out.println("=== LLAMANDO listarPorAnfitrion ===");
-        System.out.println("Anfitrion ID: " + anfitrionId);
-        System.out.println("Pageable: " + pageable);
-        System.out.println("========================================");
-
         log.info("Buscando reservas para anfitrion ID: {}", anfitrionId);
         Page<Reserva> reservas = reservaRepository.findByAlojamiento_Anfitrion_Id(anfitrionId, pageable);
         log.info("Reservas encontradas: {}", reservas.getTotalElements());
-
-        System.out.println("========================================");
-        System.out.println("Total de reservas encontradas: " + reservas.getTotalElements());
-        System.out.println("Numero de elementos en la pagina: " + reservas.getNumberOfElements());
-
-        // Imprimir detalles de cada reserva encontrada
-        if (reservas.hasContent()) {
-            System.out.println("Detalles de las reservas:");
-            reservas.getContent().forEach(reserva -> {
-                System.out.println("  - ID Reserva: " + reserva.getId());
-                System.out.println("    Alojamiento: " + reserva.getAlojamiento().getTitulo());
-                System.out.println("    Huesped: " + reserva.getHuesped().getNombre());
-                System.out.println("    Fecha entrada: " + reserva.getFechaEntrada());
-                System.out.println("    Fecha salida: " + reserva.getFechaSalida());
-                System.out.println("    Estado: " + reserva.getEstado());
-                System.out.println("    ---");
-            });
-        } else {
-            System.out.println("NO HAY RESERVAS PARA ESTE ANFITRION");
-        }
-        System.out.println("========================================");
-
         return reservas.map(reservaMapper::toResponse);
     }
 

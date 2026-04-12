@@ -58,19 +58,12 @@ services:
     ports:
       - "3030:3000"
     environment:
-      # Credenciales de Grafana
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: homa_grafana_2026
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD requerido}
       GF_USERS_ALLOW_SIGN_UP: "false"
-
-      # Configuración de la instancia
-      GF_SERVER_ROOT_URL: "http://38.242.225.58:3030"
+      GF_SERVER_ROOT_URL: "${GRAFANA_ROOT_URL:-http://localhost:3030}"
       GF_INSTANCE_NAME: "HOMA Monitoring"
-
-      # Auto-provisionar datasource y dashboards
       GF_PATHS_PROVISIONING: /etc/grafana/provisioning
-
-      # Deshabilitar la telemetría de Grafana
       GF_ANALYTICS_REPORTING_ENABLED: "false"
       GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
     volumes:

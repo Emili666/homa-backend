@@ -57,9 +57,7 @@ public class ReservaController {
     public ResponseEntity<Page<ReservaResponse>> listarMisReservas(
             Authentication authentication,
             Pageable pageable) {
-        System.out.println("=== ENDPOINT /mis-reservas LLAMADO ===");
         Long clienteId = obtenerIdCliente(authentication);
-        System.out.println("Cliente ID: " + clienteId);
         return ResponseEntity.ok(reservaService.listarPorCliente(clienteId, pageable));
     }
 
@@ -79,13 +77,15 @@ public class ReservaController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Cambiar estado de reserva", description = "Cambia el estado de una reserva (solo admin)")
+    @Operation(summary = "Cambiar estado de reserva", description = "Cambia el estado de una reserva (solo anfitrión propietario)")
     @PatchMapping("/{id}/estado")
     @PreAuthorize("hasRole('ANFITRION')")
     public ResponseEntity<Void> cambiarEstado(
             @PathVariable Long id,
-            @RequestParam("estado") EstadoReserva estado) {
-        reservaService.cambiarEstado(id, estado);
+            @RequestParam("estado") EstadoReserva estado,
+            Authentication authentication) {
+        Long anfitrionId = obtenerIdCliente(authentication);
+        reservaService.cambiarEstadoVerificado(id, estado, anfitrionId);
         return ResponseEntity.ok().build();
     }
 
@@ -114,14 +114,7 @@ public class ReservaController {
             Authentication authentication,
             Pageable pageable) {
         Long anfitrionId = obtenerIdCliente(authentication);
-        System.out.println("=== ENDPOINT /anfitrion LLAMADO ===");
-        System.out.println("Email del usuario: " + authentication.getName());
-        System.out.println("ID del anfitrion: " + anfitrionId);
-        Page<ReservaResponse> result = reservaService.listarPorAnfitrion(anfitrionId, pageable);
-        System.out.println("Total de reservas encontradas: " + result.getTotalElements());
-        System.out.println("Contenido: " + result.getContent());
-        System.out.println("========================");
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(reservaService.listarPorAnfitrion(anfitrionId, pageable));
     }
 
     @Operation(summary = "Confirmar reserva", description = "Confirma una reserva pendiente (solo anfitrión)")

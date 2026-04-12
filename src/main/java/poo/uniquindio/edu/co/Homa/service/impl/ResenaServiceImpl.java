@@ -126,12 +126,12 @@ public ResenaResponse crear(ResenaRequest request, Long clienteId) {
         Resena resena = resenaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reseña no encontrada con id: " + id));
 
-        // Verificar que el anfitrión sea el propietario del alojamiento
         if (!resena.getAlojamiento().getAnfitrion().getId().equals(anfitrionId)) {
             throw new BusinessException("No tienes permiso para responder esta reseña");
         }
 
-        resena.setComentario(request.getMensaje());
+        // Guardar la respuesta en 'mensaje', no sobreescribir el comentario del huésped
+        resena.setMensaje(request.getMensaje());
         resena.setRespondidoEn(LocalDateTime.now());
 
         resenaRepository.save(resena);

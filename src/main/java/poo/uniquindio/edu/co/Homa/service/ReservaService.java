@@ -19,6 +19,8 @@ public interface ReservaService {
     void cancelar(Long id, Long clienteId);
     
     void cambiarEstado(Long id, EstadoReserva estado);
+
+    void cambiarEstadoVerificado(Long id, EstadoReserva estado, Long anfitrionId);
     
     Page<ReservaResponse> listarPorCliente(Long clienteId, Pageable pageable);
 

@@ -118,7 +118,7 @@ public class AlojamientoController {
     @Operation(summary = "Cambiar estado de alojamiento", description = "Cambia el estado de un alojamiento (solo admin)")
     @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{id}/estado")
-    @PreAuthorize("hasRole('ANFITRION')")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Void> cambiarEstado(
             @PathVariable Long id,
             @RequestParam("estado") EstadoAlojamiento estado) {

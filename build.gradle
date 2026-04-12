@@ -67,11 +67,7 @@ dependencies {
 	implementation 'io.micrometer:micrometer-registry-prometheus'
 
 	// --- CORREO ---
-	implementation 'com.sun.mail:jakarta.mail:2.0.1'
-	implementation 'org.eclipse.angus:angus-mail:2.0.3'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
-	implementation 'org.simplejavamail:simple-java-mail:8.12.6'
-	implementation 'org.simplejavamail:batch-module:8.12.6'
 
 	// --- SWAGGER / OPENAPI ---
 	//implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
@@ -120,8 +116,8 @@ sonarqube {
     properties {
         property "sonar.projectKey", "HOMA"
         property "sonar.projectName", "Proyecto HOMA - Backend"
-        property "sonar.host.url", "http://localhost:9000"
-        property "sonar.login", "sqa_72d0ad502d23fe2edb6d0c7c725c0555ab420f87"
+        property "sonar.host.url", System.getenv("SONAR_HOST_URL") ?: "http://localhost:9000"
+        property "sonar.login", System.getenv("SONAR_TOKEN") ?: ""
         property "sonar.language", "java"
         property "sonar.sources", "src/main/java"
         property "sonar.tests", "src/test/java"

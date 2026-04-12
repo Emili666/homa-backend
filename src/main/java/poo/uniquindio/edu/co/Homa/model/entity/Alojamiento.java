@@ -40,12 +40,12 @@ public class Alojamiento {
     @Column(nullable = false, length = 255)
     private String direccion;
 
-    private Float latitud;
+    private Double latitud;
 
-    private Float longitud;
+    private Double longitud;
 
     @Column(name = "precio_por_noche", nullable = false)
-    private Float precioPorNoche;
+    private Double precioPorNoche;
 
     @Column(name = "max_huespedes", nullable = false)
     private Integer maxHuespedes;

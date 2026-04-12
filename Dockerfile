@@ -18,15 +18,15 @@ RUN gradle clean bootJar --no-daemon -x test
 # ==============================================================
 # ETAPA 2: Runtime - Imagen final optimizada
 # ==============================================================
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17-jre-jammy
 
 WORKDIR /app
 
 # Instalar curl para healthchecks
-RUN apk add --no-cache curl
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 
 # Crear usuario no-root por seguridad
-RUN addgroup -S spring && adduser -S spring -G spring
+RUN groupadd -r spring && useradd -r -g spring spring
 
 # Copiar JAR desde etapa de build
 COPY --from=build /app/build/libs/*.jar app.jar

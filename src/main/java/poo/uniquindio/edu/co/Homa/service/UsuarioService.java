@@ -26,7 +26,7 @@ public interface UsuarioService {
 
     void eliminar(Long id);
     
-    void cambiarContrasena(Long id, CambiarContrasenaRequest request);
+    void cambiarContrasena(Long id, CambiarContrasenaRequest request, String emailAutenticado);
     
     void solicitarRecuperacionContrasena(RecuperarContrasenaRequest request);
     

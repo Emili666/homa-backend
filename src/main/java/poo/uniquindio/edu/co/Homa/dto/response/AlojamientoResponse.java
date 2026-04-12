@@ -22,9 +22,9 @@ public class AlojamientoResponse {
     private String descripcion;
     private String ciudad;
     private String direccion;
-    private Float latitud;
-    private Float longitud;
-    private Float precioPorNoche;
+    private Double latitud;
+    private Double longitud;
+    private Double precioPorNoche;
     private Integer maxHuespedes;
     private EstadoAlojamiento estado;
     private List<String> imagenes;

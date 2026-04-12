@@ -54,8 +54,8 @@ public class MapboxServiceImpl implements MapboxService {
         GeoJsonGeometry geometry = GeoJsonGeometry.builder()
                 .type("Point")
                 .coordinates(List.of(
-                        Double.valueOf(alojamiento.getLongitud()),
-                        Double.valueOf(alojamiento.getLatitud())))
+                        alojamiento.getLongitud(),
+                        alojamiento.getLatitud()))
                 .build();
 
         Map<String, Object> properties = Map.of(

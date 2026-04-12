@@ -19,7 +19,7 @@ public interface AlojamientoRepository extends JpaRepository<Alojamiento, Long> 
 
         List<Alojamiento> findByEstado(EstadoAlojamiento estado);
 
-        Page<Alojamiento> findByAnfitrionIdAndEstado(String anfitrionId, EstadoAlojamiento estado, Pageable pageable);
+        Page<Alojamiento> findByAnfitrionIdAndEstado(Long anfitrionId, EstadoAlojamiento estado, Pageable pageable);
 
         Optional<Alojamiento> findByIdAndEstado(Long id, EstadoAlojamiento estado);
 
