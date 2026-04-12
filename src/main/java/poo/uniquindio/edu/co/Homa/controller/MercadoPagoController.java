@@ -37,8 +37,12 @@ public class MercadoPagoController {
                     request.getQuantity());
             return ResponseEntity.ok(Map.of("id", preferenceId));
         } catch (MPApiException e) {
-            log.error("Error de API Mercado Pago: {}", e.getApiResponse().getContent());
-            return ResponseEntity.badRequest().body(Map.of("error", "Error al procesar el pago. Intenta nuevamente."));
+            String mpError = e.getApiResponse() != null ? e.getApiResponse().getContent() : "sin respuesta";
+            log.error("Error de API Mercado Pago (status {}): {}", e.getStatusCode(), mpError);
+            return ResponseEntity.badRequest().body(Map.of(
+                "error", "Error al procesar el pago.",
+                "detalle", mpError
+            ));
         } catch (MPException e) {
             log.error("Error de Mercado Pago: {}", e.getMessage());
             return ResponseEntity.internalServerError().body(Map.of("error", "Error interno al procesar el pago."));
