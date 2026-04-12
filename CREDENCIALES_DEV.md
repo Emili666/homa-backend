@@ -71,11 +71,12 @@ jdbc:mariadb://38.242.225.58:3306/homa_avanzada_db?allowPublicKeyRetrieval=true&
 
 ---
 
-## Mapbox (Mapas)
+## Mapas
 
-| Variable | Valor |
-|---|---|
-| `MAPBOX_TOKEN` | *(completar — panel: https://account.mapbox.com)* |
+El proyecto usa **Leaflet + OpenStreetMap** — completamente gratuito, sin token ni cuenta requerida.
+
+El backend genera GeoJSON estándar en `GET /api/mapas/alojamientos`.
+El frontend Angular usa la librería `leaflet` para renderizar el mapa.
 
 ---
 
@@ -156,8 +157,7 @@ app.frontend.url=http://localhost:4200
 app.backend.url=http://localhost:8081
 app.cors.allowed-origins=http://localhost:4200
 
-# Mapbox
-mapbox.access-token=${MAPBOX_TOKEN:completar}
+# Mapas — Leaflet + OpenStreetMap (sin token)
 
 # Cloudinary
 cloudinary.cloud-name=dczjcspmj

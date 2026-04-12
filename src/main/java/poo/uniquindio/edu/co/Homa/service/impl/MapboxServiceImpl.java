@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +17,10 @@ import poo.uniquindio.edu.co.Homa.model.enums.EstadoAlojamiento;
 import poo.uniquindio.edu.co.Homa.repository.AlojamientoRepository;
 import poo.uniquindio.edu.co.Homa.service.MapboxService;
 
+/**
+ * Genera GeoJSON estándar con los alojamientos activos.
+ * El frontend usa Leaflet + OpenStreetMap (gratuito, sin token).
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -25,43 +28,34 @@ public class MapboxServiceImpl implements MapboxService {
 
     private final AlojamientoRepository alojamientoRepository;
 
-    @Value("${mapbox.access-token:}")
-    private String mapboxAccessToken;
-
     @Override
     @Transactional(readOnly = true)
     public GeoJsonFeatureCollection obtenerAlojamientosGeoJson() {
-        log.info("Generando FeatureCollection para alojamientos activos");
+        log.info("Generando GeoJSON de alojamientos activos");
 
         List<Alojamiento> alojamientos = alojamientoRepository.findByEstado(EstadoAlojamiento.ACTIVO);
 
         List<GeoJsonFeature> features = alojamientos.stream()
-                .filter(alojamiento -> alojamiento.getLatitud() != null && alojamiento.getLongitud() != null)
-                .map(this::alojamientoToFeature)
+                .filter(a -> a.getLatitud() != null && a.getLongitud() != null)
+                .map(this::toFeature)
                 .collect(Collectors.toList());
 
+        log.info("GeoJSON generado con {} alojamientos", features.size());
         return GeoJsonFeatureCollection.builder()
                 .features(features)
                 .build();
     }
 
-    @Override
-    public String obtenerAccessToken() {
-        return mapboxAccessToken;
-    }
-
-    private GeoJsonFeature alojamientoToFeature(Alojamiento alojamiento) {
+    private GeoJsonFeature toFeature(Alojamiento alojamiento) {
         GeoJsonGeometry geometry = GeoJsonGeometry.builder()
                 .type("Point")
-                .coordinates(List.of(
-                        alojamiento.getLongitud(),
-                        alojamiento.getLatitud()))
+                .coordinates(List.of(alojamiento.getLongitud(), alojamiento.getLatitud()))
                 .build();
 
         Map<String, Object> properties = Map.of(
                 "id", alojamiento.getId(),
                 "titulo", alojamiento.getTitulo(),
-                "descripcion", alojamiento.getDescripcion(),
+                "descripcion", alojamiento.getDescripcion() != null ? alojamiento.getDescripcion() : "",
                 "precioPorNoche", alojamiento.getPrecioPorNoche(),
                 "ciudad", alojamiento.getCiudad(),
                 "direccion", alojamiento.getDireccion(),

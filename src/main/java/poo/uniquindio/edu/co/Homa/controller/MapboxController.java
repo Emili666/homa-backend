@@ -1,7 +1,6 @@
 package poo.uniquindio.edu.co.Homa.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import poo.uniquindio.edu.co.Homa.dto.response.map.GeoJsonFeatureCollection;
 import poo.uniquindio.edu.co.Homa.service.MapboxService;
 
-@Tag(name = "Mapas", description = "Integración con Mapbox para visualizar alojamientos")
+@Tag(name = "Mapas", description = "Endpoints de mapas — usa OpenStreetMap + Leaflet (sin token requerido)")
 @RestController
 @RequestMapping("/api/mapas")
 @RequiredArgsConstructor
@@ -20,16 +19,9 @@ public class MapboxController {
 
     private final MapboxService mapboxService;
 
-    @Operation(summary = "Obtiene los alojamientos en formato GeoJSON")
+    @Operation(summary = "Obtiene los alojamientos en formato GeoJSON para renderizar en el mapa")
     @GetMapping("/alojamientos")
     public ResponseEntity<GeoJsonFeatureCollection> obtenerAlojamientosGeoJson() {
         return ResponseEntity.ok(mapboxService.obtenerAlojamientosGeoJson());
-    }
-
-    @Operation(summary = "Obtiene el token público de Mapbox configurado en el backend")
-    @GetMapping("/token")
-    @PreAuthorize("hasAnyRole('HUESPED', 'ANFITRION', 'ADMINISTRADOR')")
-    public ResponseEntity<String> obtenerToken() {
-        return ResponseEntity.ok(mapboxService.obtenerAccessToken());
     }
 }
