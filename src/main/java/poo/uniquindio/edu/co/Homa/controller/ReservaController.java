@@ -77,6 +77,16 @@ public class ReservaController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "Cambiar estado de reserva (admin)", description = "Cambia el estado de cualquier reserva (solo administrador)")
+    @PatchMapping("/{id}/admin/estado")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<Void> cambiarEstadoAdmin(
+            @PathVariable Long id,
+            @RequestParam("estado") EstadoReserva estado) {
+        reservaService.cambiarEstado(id, estado);
+        return ResponseEntity.ok().build();
+    }
+
     @Operation(summary = "Cambiar estado de reserva", description = "Cambia el estado de una reserva (solo anfitrión propietario)")
     @PatchMapping("/{id}/estado")
     @PreAuthorize("hasRole('ANFITRION')")
