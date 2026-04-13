@@ -61,7 +61,6 @@ public class MercadoPagoService {
         PreferenceRequest request = PreferenceRequest.builder()
                 .items(List.of(item))
                 .backUrls(backUrls)
-                .autoReturn("approved")
                 .build();
 
         PreferenceClient client = new PreferenceClient();
