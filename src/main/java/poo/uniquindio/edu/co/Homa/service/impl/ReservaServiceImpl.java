@@ -44,7 +44,9 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     @Transactional
     public ReservaResponse crear(ReservaRequest request, Long clienteId) {
-        log.info("Creando nueva reserva para cliente: {}", clienteId);
+        log.info("Creando reserva - clienteId: {}, alojamientoId: {}, entrada: {}, salida: {}, huespedes: {}",
+                clienteId, request.getAlojamientoId(), request.getFechaEntrada(),
+                request.getFechaSalida(), request.getCantidadHuespedes());
 
         Usuario cliente = usuarioRepository.findById(clienteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + clienteId));
