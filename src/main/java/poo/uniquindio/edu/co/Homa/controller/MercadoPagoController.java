@@ -28,7 +28,7 @@ public class MercadoPagoController {
 
     @PostMapping("/create-preference")
     @Operation(summary = "Crear preferencia de pago en Mercado Pago")
-    @PreAuthorize("hasAnyRole('HUESPED', 'ANFITRION', 'ADMINISTRADOR')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> createPreference(@Valid @RequestBody PaymentRequest request) {
         try {
             String preferenceId = mercadoPagoService.createPreference(

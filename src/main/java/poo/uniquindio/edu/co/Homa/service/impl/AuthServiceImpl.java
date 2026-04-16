@@ -53,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
 
         // Generar token JWT
         Map<String, Object> claims = new HashMap<>();
-        claims.put("rol", usuario.getRol().name());
+        claims.put("rol", usuario.getRol().name().toUpperCase());
         String token = jwtUtil.generarToken(usuario.getEmail(), claims);
 
         log.info("Login exitoso para el usuario: {}", request.getEmail());
@@ -63,7 +63,7 @@ public class AuthServiceImpl implements AuthService {
                 .tipo("Bearer")
                 .email(usuario.getEmail())
                 .nombre(usuario.getNombre())
-                .rol(usuario.getRol().name())
+                .rol(usuario.getRol().name().toUpperCase())
                 .usuario(usuarioMapper.toResponse(usuario))
                 .build();
     }
@@ -87,7 +87,7 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new UnauthorizedException("Usuario no encontrado"));
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put("rol", usuario.getRol().name());
+        claims.put("rol", usuario.getRol().name().toUpperCase());
         String newToken = jwtUtil.generarToken(email, claims);
 
         return LoginResponse.builder()
@@ -95,7 +95,7 @@ public class AuthServiceImpl implements AuthService {
                 .tipo("Bearer")
                 .email(usuario.getEmail())
                 .nombre(usuario.getNombre())
-                .rol(usuario.getRol().name())
+                .rol(usuario.getRol().name().toUpperCase())
                 .usuario(usuarioMapper.toResponse(usuario))
                 .build();
     }
