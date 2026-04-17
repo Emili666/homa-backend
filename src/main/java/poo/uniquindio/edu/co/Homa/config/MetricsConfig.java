@@ -24,6 +24,15 @@ import poo.uniquindio.edu.co.Homa.model.enums.EstadoAlojamiento;
  * - homa_usuarios_activos → Gauge: usuarios activos en BD
  * - homa_reservas_pendientes → Gauge: reservas pendientes en BD
  * - homa_alojamientos_activos → Gauge: alojamientos activos en BD
+ * ── NUEVAS MÉTRICAS DE RESERVAS (ISO/IEC 25010) ──
+ * - homa_reservas_rechazadas_total → Reservas rechazadas por anfitrión
+ * - homa_reservas_completadas_gauge → Gauge: reservas completadas en BD
+ * - homa_reservas_canceladas_gauge → Gauge: reservas canceladas en BD
+ * - homa_reserva_duracion_noches → Histogram: distribución de noches por reserva
+ * - homa_reserva_precio_total → Histogram: distribución de precios de reserva
+ * - homa_reserva_creacion_duration_seconds → Timer: tiempo de creación de reserva
+ * - homa_disponibilidad_consultas_total → Conteo de consultas de disponibilidad
+ * - homa_disponibilidad_no_disponible_total → Conteo de alojamientos no disponibles
  */
 @Slf4j
 @Configuration
@@ -73,6 +82,19 @@ public class MetricsConfig {
                 .tag("entidad", "alojamiento")
                 .register(registry);
 
+        // ── NUEVOS GAUGES DE RESERVAS ──────────────────────────────────────────────
+        Gauge.builder("homa_reservas_completadas_gauge", reservaRepository,
+                repo -> repo.countByEstado(EstadoReserva.COMPLETADA))
+                .description("Número de reservas en estado COMPLETADA")
+                .tag("entidad", "reserva")
+                .register(registry);
+
+        Gauge.builder("homa_reservas_canceladas_gauge", reservaRepository,
+                repo -> repo.countByEstado(EstadoReserva.CANCELADA))
+                .description("Número de reservas en estado CANCELADA")
+                .tag("entidad", "reserva")
+                .register(registry);
+
         log.info("[Métricas HOMA] Gauges de negocio registrados en Micrometer.");
         return new HomaBusinessMetrics(registry);
     }
@@ -92,12 +114,19 @@ public class MetricsConfig {
         private final Counter reservaCancelada;
         private final Counter reservaConfirmada;
         private final Counter reservaCompletada;
+        private final Counter reservaRechazada;
         private final Counter alojamientoCreado;
         private final Counter alojamientoEliminado;
+        private final Counter disponibilidadConsulta;
+        private final Counter disponibilidadNoDisponible;
 
         // ── TIMERS (duración de operaciones clave) ─────────────────────────────────
         private final Timer timerLogin;
         private final Timer timerReservaCreacion;
+
+        // ── HISTOGRAMS (distribución de valores) ───────────────────────────────────
+        private final DistributionSummary reservaDuracionNoches;
+        private final DistributionSummary reservaPrecioTotal;
 
         public HomaBusinessMetrics(MeterRegistry registry) {
             this.loginExitoso = Counter.builder("homa_logins_total")
@@ -134,6 +163,11 @@ public class MetricsConfig {
                     .tag("accion", "completada")
                     .register(registry);
 
+            this.reservaRechazada = Counter.builder("homa_reservas_total")
+                    .description("Total de reservas según acción")
+                    .tag("accion", "rechazada")
+                    .register(registry);
+
             this.alojamientoCreado = Counter.builder("homa_alojamientos_total")
                     .description("Total de alojamientos según acción")
                     .tag("accion", "creado")
@@ -152,6 +186,26 @@ public class MetricsConfig {
             this.timerReservaCreacion = Timer.builder("homa_reserva_creacion_duration_seconds")
                     .description("Tiempo de creación de una reserva (incluyendo validaciones)")
                     .publishPercentiles(0.5, 0.95, 0.99)
+                    .register(registry);
+
+            this.disponibilidadConsulta = Counter.builder("homa_disponibilidad_consultas_total")
+                    .description("Total de consultas de disponibilidad de alojamientos")
+                    .register(registry);
+
+            this.disponibilidadNoDisponible = Counter.builder("homa_disponibilidad_no_disponible_total")
+                    .description("Total de consultas donde el alojamiento NO estaba disponible")
+                    .register(registry);
+
+            this.reservaDuracionNoches = DistributionSummary.builder("homa_reserva_duracion_noches")
+                    .description("Distribución de la duración en noches de las reservas")
+                    .baseUnit("noches")
+                    .publishPercentiles(0.5, 0.75, 0.95)
+                    .register(registry);
+
+            this.reservaPrecioTotal = DistributionSummary.builder("homa_reserva_precio_total")
+                    .description("Distribución del precio total de las reservas en COP")
+                    .baseUnit("COP")
+                    .publishPercentiles(0.5, 0.75, 0.95)
                     .register(registry);
         }
 
@@ -199,6 +253,26 @@ public class MetricsConfig {
 
         public Timer getTimerReservaCreacion() {
             return timerReservaCreacion;
+        }
+
+        public void incrementReservaRechazada() {
+            reservaRechazada.increment();
+        }
+
+        public void incrementDisponibilidadConsulta() {
+            disponibilidadConsulta.increment();
+        }
+
+        public void incrementDisponibilidadNoDisponible() {
+            disponibilidadNoDisponible.increment();
+        }
+
+        public void registrarDuracionReserva(long noches) {
+            reservaDuracionNoches.record(noches);
+        }
+
+        public void registrarPrecioReserva(double precio) {
+            reservaPrecioTotal.record(precio);
         }
     }
 }

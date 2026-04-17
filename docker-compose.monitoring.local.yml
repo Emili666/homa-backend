@@ -1,0 +1,56 @@
+version: "3.9"
+
+# ──────────────────────────────────────────────────────────────────────────────
+# HOMA — Stack de Monitoreo LOCAL (desarrollo)
+# Uso: docker compose -f docker-compose.monitoring.local.yml up -d
+# Grafana:    http://localhost:3030
+# Prometheus: http://localhost:9090
+# ──────────────────────────────────────────────────────────────────────────────
+
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  prometheus_data_local:
+  grafana_data_local:
+
+services:
+
+  prometheus:
+    image: prom/prometheus:v2.51.2
+    container_name: homa_prometheus_local
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.local.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data_local:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"
+    networks:
+      - monitoring
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: homa_grafana_local
+    restart: unless-stopped
+    ports:
+      - "3030:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+    volumes:
+      - grafana_data_local:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus

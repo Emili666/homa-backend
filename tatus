@@ -1,0 +1,10 @@
+[33mfaec45a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m fix: normalize user roles to uppercase and relax payment endpoint authorization
+[33m4474b8d[m docs: agregar INICIO_RAPIDO.md para compañeros del equipo
+[33m3e85293[m fix: eliminar autoReturn de MP que requeria back_url publica
+[33m5f7ec88[m feat: agregar endpoint admin para cambiar estado de reservas
+[33mdceffe7[m fix: agregar log detallado en crear reserva
+[33m47e0950[m fix: eliminar validaciones @Future/@FutureOrPresent en ReservaRequest
+[33mad99598[m fix: mejorar logging de error MP para diagnostico
+[33m6d00c5e[m fix: capturar excepciones de email en reservas y resenas para evitar rollback
+[33m5f285b4[m fix: eliminar patron invalido en SecurityConfig que causaba PatternParseException
+[33ma2d4322[m feat: reemplazar Mapbox por Leaflet+OpenStreetMap (sin token)

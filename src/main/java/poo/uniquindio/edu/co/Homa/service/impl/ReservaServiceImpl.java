@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import poo.uniquindio.edu.co.Homa.config.MetricsConfig.HomaBusinessMetrics;
 import poo.uniquindio.edu.co.Homa.dto.request.ReservaRequest;
 import poo.uniquindio.edu.co.Homa.dto.response.ReservaResponse;
 import poo.uniquindio.edu.co.Homa.exception.BusinessException;
@@ -40,6 +41,7 @@ public class ReservaServiceImpl implements ReservaService {
     private final UsuarioRepository usuarioRepository;
     private final ReservaMapper reservaMapper;
     private final EmailService emailService;
+    private final HomaBusinessMetrics metrics;
 
     @Override
     @Transactional
@@ -83,6 +85,11 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setCreadoEn(LocalDateTime.now());
 
         reserva = reservaRepository.save(reserva);
+
+        // ── Métricas de reserva ────────────────────────────────────────────────────
+        metrics.incrementReservaCreada();
+        metrics.registrarDuracionReserva(dias);
+        metrics.registrarPrecioReserva(precioTotal);
 
         notificarAnfitrionNuevaReserva(reserva);
 
@@ -132,6 +139,7 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setEstado(EstadoReserva.CANCELADA);
         reservaRepository.save(reserva);
 
+        metrics.incrementReservaCancelada();
         notificarCambioEstado(reserva, EstadoReserva.CANCELADA);
         log.info("Reserva cancelada exitosamente: {}", reserva.getId());
     }
@@ -196,7 +204,12 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     @Transactional(readOnly = true)
     public boolean verificarDisponibilidad(Long alojamientoId, LocalDate fechaInicio, LocalDate fechaFin) {
-        return reservaRepository.findReservasConflictivas(alojamientoId, fechaInicio, fechaFin).isEmpty();
+        metrics.incrementDisponibilidadConsulta();
+        boolean disponible = reservaRepository.findReservasConflictivas(alojamientoId, fechaInicio, fechaFin).isEmpty();
+        if (!disponible) {
+            metrics.incrementDisponibilidadNoDisponible();
+        }
+        return disponible;
     }
 
     @Override
@@ -220,6 +233,7 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setEstado(EstadoReserva.CONFIRMADA);
         reservaRepository.save(reserva);
 
+        metrics.incrementReservaConfirmada();
         notificarCambioEstado(reserva, EstadoReserva.CONFIRMADA);
         log.info("Reserva confirmada exitosamente: {}", reserva.getId());
     }
@@ -245,6 +259,7 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setEstado(EstadoReserva.CANCELADA);
         reservaRepository.save(reserva);
 
+        metrics.incrementReservaRechazada();
         notificarCambioEstado(reserva, EstadoReserva.CANCELADA);
         log.info("Reserva rechazada exitosamente: {}", reserva.getId());
     }
@@ -270,6 +285,7 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setEstado(EstadoReserva.COMPLETADA);
         reservaRepository.save(reserva);
 
+        metrics.incrementReservaCompletada();
         log.info("Reserva completada exitosamente: {}", reserva.getId());
     }
 
