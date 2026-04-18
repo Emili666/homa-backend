@@ -392,29 +392,27 @@
 
     {
       "datasource": "Prometheus",
-      "fieldConfig": { "defaults": { "unit": "noches", "custom": { "lineWidth": 2 } } },
+      "fieldConfig": { "defaults": { "unit": "short", "custom": { "lineWidth": 2 } } },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 41 },
       "id": 58,
-      "title": "🌙 Distribución de Noches por Reserva",
+      "title": "🌙 Total Noches Reservadas (Análisis Negocio)",
       "type": "timeseries",
       "targets": [
-        { "expr": "histogram_quantile(0.50, sum(rate(homa_reserva_duracion_noches_bucket[1h])) by (le))", "legendFormat": "Mediana (p50)", "datasource": "Prometheus" },
-        { "expr": "histogram_quantile(0.75, sum(rate(homa_reserva_duracion_noches_bucket[1h])) by (le))", "legendFormat": "p75", "datasource": "Prometheus" },
-        { "expr": "histogram_quantile(0.95, sum(rate(homa_reserva_duracion_noches_bucket[1h])) by (le))", "legendFormat": "p95", "datasource": "Prometheus" }
+        { "expr": "homa_reserva_noches_total_total", "legendFormat": "Noches acumuladas", "datasource": "Prometheus" },
+        { "expr": "rate(homa_reserva_noches_total_total[1h]) * 3600", "legendFormat": "Noches por hora", "datasource": "Prometheus" }
       ]
     },
 
     {
       "datasource": "Prometheus",
-      "fieldConfig": { "defaults": { "unit": "currencyUSD", "custom": { "lineWidth": 2 } } },
+      "fieldConfig": { "defaults": { "unit": "short", "custom": { "lineWidth": 2 } } },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 41 },
       "id": 59,
-      "title": "💰 Distribución de Precio Total por Reserva (COP)",
+      "title": "💰 Ingresos Acumulados por Reservas COP (Análisis Negocio)",
       "type": "timeseries",
       "targets": [
-        { "expr": "histogram_quantile(0.50, sum(rate(homa_reserva_precio_total_bucket[1h])) by (le))", "legendFormat": "Mediana (p50)", "datasource": "Prometheus" },
-        { "expr": "histogram_quantile(0.75, sum(rate(homa_reserva_precio_total_bucket[1h])) by (le))", "legendFormat": "p75", "datasource": "Prometheus" },
-        { "expr": "histogram_quantile(0.95, sum(rate(homa_reserva_precio_total_bucket[1h])) by (le))", "legendFormat": "p95", "datasource": "Prometheus" }
+        { "expr": "homa_reserva_ingresos_total_total", "legendFormat": "Ingresos acumulados (COP)", "datasource": "Prometheus" },
+        { "expr": "rate(homa_reserva_ingresos_total_total[1h]) * 3600", "legendFormat": "Ingresos por hora (COP)", "datasource": "Prometheus" }
       ]
     },
 

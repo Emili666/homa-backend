@@ -124,9 +124,9 @@ public class MetricsConfig {
         private final Timer timerLogin;
         private final Timer timerReservaCreacion;
 
-        // ── HISTOGRAMS (distribución de valores) ───────────────────────────────────
-        private final DistributionSummary reservaDuracionNoches;
-        private final DistributionSummary reservaPrecioTotal;
+        // ── COUNTERS ACUMULADOS DE NEGOCIO ─────────────────────────────────────────
+        private final Counter nochesReservadas;
+        private final Counter ingresosReservados;
 
         public HomaBusinessMetrics(MeterRegistry registry) {
             this.loginExitoso = Counter.builder("homa_logins_total")
@@ -196,16 +196,14 @@ public class MetricsConfig {
                     .description("Total de consultas donde el alojamiento NO estaba disponible")
                     .register(registry);
 
-            this.reservaDuracionNoches = DistributionSummary.builder("homa_reserva_duracion_noches")
-                    .description("Distribución de la duración en noches de las reservas")
+            this.nochesReservadas = Counter.builder("homa_reserva_noches_total")
+                    .description("Total acumulado de noches reservadas en el sistema")
                     .baseUnit("noches")
-                    .publishPercentiles(0.5, 0.75, 0.95)
                     .register(registry);
 
-            this.reservaPrecioTotal = DistributionSummary.builder("homa_reserva_precio_total")
-                    .description("Distribución del precio total de las reservas en COP")
+            this.ingresosReservados = Counter.builder("homa_reserva_ingresos_total")
+                    .description("Total acumulado de ingresos generados por reservas en COP")
                     .baseUnit("COP")
-                    .publishPercentiles(0.5, 0.75, 0.95)
                     .register(registry);
         }
 
@@ -268,11 +266,11 @@ public class MetricsConfig {
         }
 
         public void registrarDuracionReserva(long noches) {
-            reservaDuracionNoches.record(noches);
+            nochesReservadas.increment(noches);
         }
 
         public void registrarPrecioReserva(double precio) {
-            reservaPrecioTotal.record(precio);
+            ingresosReservados.increment(precio);
         }
     }
 }
