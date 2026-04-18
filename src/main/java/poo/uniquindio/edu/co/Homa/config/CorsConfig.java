@@ -17,12 +17,23 @@ public class CorsConfig implements WebMvcConfigurer {
         @Value("${app.cors.allowed-origins:http://localhost:4200}")
         private String[] allowedOrigins;
 
+        // Origen de producción siempre permitido
+        private static final String CLOUDFRONT_ORIGIN = "https://d3duuewq1nioxx.cloudfront.net";
+
+        private java.util.List<String> getAllowedOrigins() {
+                java.util.List<String> origins = new java.util.ArrayList<>(Arrays.asList(allowedOrigins));
+                if (!origins.contains(CLOUDFRONT_ORIGIN)) {
+                        origins.add(CLOUDFRONT_ORIGIN);
+                }
+                return origins;
+        }
+
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
 
                 // Orígenes permitidos (Angular frontend)
-                configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+                configuration.setAllowedOrigins(getAllowedOrigins());
 
                 // Métodos HTTP permitidos
                 configuration.setAllowedMethods(Arrays.asList(
@@ -56,7 +67,7 @@ public class CorsConfig implements WebMvcConfigurer {
         @Override
         public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                                .allowedOrigins(allowedOrigins)
+                                .allowedOrigins(getAllowedOrigins().toArray(new String[0]))
                                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                                 .allowedHeaders("*")
                                 .exposedHeaders("Authorization", "Content-Disposition")
