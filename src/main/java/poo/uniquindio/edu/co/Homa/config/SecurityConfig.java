@@ -53,10 +53,13 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",
+                                "/actuator/health",
+                                "/actuator/prometheus",
                                 "/error")
                         .permitAll()
-                        // Actuator: solo health publico, el resto requiere ADMINISTRADOR
+                        // Actuator: solo health y prometheus publicos
                         .requestMatchers("/actuator/health").permitAll()
+                        .requestMatchers("/actuator/prometheus").permitAll()
                         .requestMatchers("/actuator/**").hasRole("ADMINISTRADOR")
                         .anyRequest().authenticated()
                 )
