@@ -52,6 +52,10 @@ public class AlojamientoServiceImpl implements AlojamientoService {
         alojamiento.setAnfitrion(anfitrion);
         alojamiento.setEstado(EstadoAlojamiento.ACTIVO);
         alojamiento.setCreadoEn(LocalDateTime.now());
+        // Inicializar lista de imágenes si viene nula
+        if (alojamiento.getImagenes() == null) {
+            alojamiento.setImagenes(new java.util.ArrayList<>());
+        }
 
         alojamiento = alojamientoRepository.save(alojamiento);
 
