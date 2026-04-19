@@ -36,7 +36,7 @@ public class AlojamientoController {
     @Operation(summary = "Crear alojamiento", description = "Crea un nuevo alojamiento (solo anfitriones)")
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping
-    @PreAuthorize("hasRole('ANFITRION')")
+    @PreAuthorize("hasAnyRole('ANFITRION', 'ADMINISTRADOR')")
     public ResponseEntity<AlojamientoResponse> crear(
             @Valid @RequestBody AlojamientoRequest request,
             Authentication authentication) {
