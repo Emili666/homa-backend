@@ -49,7 +49,7 @@ public class AlojamientoRequest {
     @Min(value = 1, message = "Debe permitir al menos 1 huésped")
     private Integer maxHuespedes;
 
-    @Size(min = 1, max = 10, message = "Debe incluir entre 1 y 10 imágenes")
+    @Size(max = 10, message = "No puede incluir más de 10 imágenes")
     private List<String> imagenes;
 
     private List<Servicio> servicios;
