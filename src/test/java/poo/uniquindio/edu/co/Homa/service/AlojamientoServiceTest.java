@@ -190,6 +190,8 @@ class AlojamientoServiceTest {
     void actualizarAlojamiento_porAnfitrionAjeno_lanzaException() {
         // Arrange
         when(alojamientoRepository.findById(10L)).thenReturn(Optional.of(alojamiento));
+        // otroAnfitrion tiene rol Anfitrion (no admin), así que debe fallar
+        when(usuarioRepository.findById(99L)).thenReturn(Optional.of(otroAnfitrion));
 
         // Act & Assert — otroAnfitrion.id=99L, propietario es 1L
         assertThatThrownBy(() -> alojamientoService.actualizar(10L, request, 99L))
