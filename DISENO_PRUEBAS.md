@@ -1,6 +1,6 @@
 # HOMA — Diseño, Reutilización y Pruebas del Software
 **Curso:** Ingeniería de Software III — Universidad del Quindío  
-**Versión:** 1.00 | **Fecha:** 17/04/2026  
+**Versión:** 2.00 | **Fecha:** 02/05/2026  
 **Autores:** Sarita Londoño Perdomo · Juan Pablo Castro Vanegas · Emili García Bermúdez
 
 ---
