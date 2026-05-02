@@ -81,7 +81,7 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setHuesped(cliente);
         reserva.setAlojamiento(alojamiento);
         reserva.setPrecio(precioTotal);
-        reserva.setEstado(EstadoReserva.PENDIENTE);
+        reserva.setEstado(EstadoReserva.PENDIENTE_CONFIRMACION);
         reserva.setCreadoEn(LocalDateTime.now());
 
         reserva = reservaRepository.save(reserva);
@@ -120,7 +120,7 @@ public class ReservaServiceImpl implements ReservaService {
         }
 
         // Verificar que la reserva pueda ser cancelada
-        if (reserva.getEstado() == EstadoReserva.CANCELADA) {
+        if (reserva.getEstado() == EstadoReserva.CANCELADA || reserva.getEstado() == EstadoReserva.RECHAZADA) {
             throw new BusinessException("La reserva ya está cancelada");
         }
 
@@ -225,8 +225,8 @@ public class ReservaServiceImpl implements ReservaService {
             throw new BusinessException("No tienes permiso para confirmar esta reserva");
         }
 
-        // Verificar que la reserva esté en estado PENDIENTE
-        if (reserva.getEstado() != EstadoReserva.PENDIENTE) {
+        // Verificar que la reserva esté en estado PENDIENTE_CONFIRMACION
+        if (reserva.getEstado() != EstadoReserva.PENDIENTE_CONFIRMACION) {
             throw new BusinessException("Solo se pueden confirmar reservas pendientes");
         }
 
@@ -251,16 +251,16 @@ public class ReservaServiceImpl implements ReservaService {
             throw new BusinessException("No tienes permiso para rechazar esta reserva");
         }
 
-        // Verificar que la reserva esté en estado PENDIENTE
-        if (reserva.getEstado() != EstadoReserva.PENDIENTE) {
+        // Verificar que la reserva esté en estado PENDIENTE_CONFIRMACION
+        if (reserva.getEstado() != EstadoReserva.PENDIENTE_CONFIRMACION) {
             throw new BusinessException("Solo se pueden rechazar reservas pendientes");
         }
 
-        reserva.setEstado(EstadoReserva.CANCELADA);
+        reserva.setEstado(EstadoReserva.RECHAZADA);
         reservaRepository.save(reserva);
 
         metrics.incrementReservaRechazada();
-        notificarCambioEstado(reserva, EstadoReserva.CANCELADA);
+        notificarCambioEstado(reserva, EstadoReserva.RECHAZADA);
         log.info("Reserva rechazada exitosamente: {}", reserva.getId());
     }
 
@@ -315,7 +315,7 @@ public class ReservaServiceImpl implements ReservaService {
             String rangoFechas = String.format("%s al %s", reserva.getFechaEntrada(), reserva.getFechaSalida());
             if (estado == EstadoReserva.CONFIRMADA) {
                 emailService.enviarEmailConfirmacionReserva(emailHuesped, nombreAlojamiento, rangoFechas);
-            } else if (estado == EstadoReserva.CANCELADA) {
+            } else if (estado == EstadoReserva.CANCELADA || estado == EstadoReserva.RECHAZADA) {
                 emailService.enviarEmailCancelacionReserva(emailHuesped, nombreAlojamiento, rangoFechas);
             }
         } catch (Exception e) {

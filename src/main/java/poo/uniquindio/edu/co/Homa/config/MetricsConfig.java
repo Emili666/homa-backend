@@ -59,8 +59,8 @@ public class MetricsConfig {
                 .register(registry);
 
         Gauge.builder("homa_reservas_pendientes", reservaRepository,
-                repo -> repo.countByEstado(EstadoReserva.PENDIENTE))
-                .description("Número de reservas en estado PENDIENTE")
+                repo -> repo.countByEstado(EstadoReserva.PENDIENTE_CONFIRMACION))
+                .description("Número de reservas en estado PENDIENTE_CONFIRMACION")
                 .tag("entidad", "reserva")
                 .register(registry);
 
