@@ -60,29 +60,29 @@ jobs:
             RUN_ID=$1
             echo "Actualizando run $RUN_ID..."
 
-            # Obtener todos los tests del run
+            AUTH=$(echo -n "${TESTRAIL_USER}:${TESTRAIL_KEY}" | base64 -w 0)
+
             TESTS=$(curl -s \
-              "${TESTRAIL_URL}/index.php?/api/v2/get_tests/${RUN_ID}" \
-              -u "${TESTRAIL_USER}:${TESTRAIL_KEY}")
+              -H "Content-Type: application/json" \
+              -H "Authorization: Basic ${AUTH}" \
+              "${TESTRAIL_URL}/index.php?/api/v2/get_tests/${RUN_ID}")
 
             echo "Tests obtenidos: $TESTS"
 
-            # Construir payload con todos los case_ids
             PAYLOAD=$(echo "$TESTS" | python3 -c "
-          import sys, json
-          data = json.load(sys.stdin)
-          tests = data.get('tests', data) if isinstance(data, dict) else data
-          results = [{'case_id': t['case_id'], 'status_id': $STATUS_ID, 'comment': '$COMMENT'} for t in tests]
-          print(json.dumps({'results': results}))
+import sys, json
+data = json.load(sys.stdin)
+tests = data.get('tests', [])
+results = [{'case_id': t['case_id'], 'status_id': $STATUS_ID, 'comment': '$COMMENT'} for t in tests]
+print(json.dumps({'results': results}))
             ")
 
             echo "Payload: $PAYLOAD"
 
-            # Enviar resultados
             RESPONSE=$(curl -s -X POST \
-              "${TESTRAIL_URL}/index.php?/api/v2/add_results_for_cases/${RUN_ID}" \
               -H "Content-Type: application/json" \
-              -u "${TESTRAIL_USER}:${TESTRAIL_KEY}" \
+              -H "Authorization: Basic ${AUTH}" \
+              "${TESTRAIL_URL}/index.php?/api/v2/add_results_for_cases/${RUN_ID}" \
               -d "$PAYLOAD")
 
             echo "Respuesta TestRail run $RUN_ID: $RESPONSE"
@@ -92,6 +92,7 @@ jobs:
           update_run 14
           update_run 15
           update_run 16
+          echo "TestRail actualizado"
 
       - name: Build with Gradle
         run: ./gradlew build -x test
