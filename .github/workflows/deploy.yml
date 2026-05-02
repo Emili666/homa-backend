@@ -59,14 +59,34 @@ jobs:
           status = os.environ['JOB_STATUS']
           sha = os.environ['GIT_SHA']
 
-          status_id = 1 if status == 'success' else 5
-          comment = f"GitHub Actions CI/CD. Status: {status}. Commit: {sha[:8]}. 35 tests automatizados JUnit 5 + Mockito."
+          print(f"URL: {url}")
+          print(f"User length: {len(user)}")
+          print(f"Key length: {len(key)}")
+          print(f"User starts with: {user[:5]}...")
 
-          token = base64.b64encode(f"{user}:{key}".encode()).decode()
+          status_id = 1 if status == 'success' else 5
+          comment = f"GitHub Actions CI/CD. Status: {status}. Commit: {sha[:8]}. 35 tests JUnit 5."
+
+          # TestRail usa email:api_key en Basic Auth
+          credentials = f"{user}:{key}"
+          token = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
+          print(f"Token base64 length: {len(token)}")
+
           headers = {
               'Content-Type': 'application/json',
               'Authorization': f'Basic {token}'
           }
+
+          # Test de conexión primero
+          try:
+              req = urllib.request.Request(
+                  f"{url}/index.php?/api/v2/get_projects",
+                  headers=headers
+              )
+              with urllib.request.urlopen(req) as resp:
+                  print(f"Conexion exitosa: {resp.status}")
+          except Exception as e:
+              print(f"Error de conexion: {e}")
 
           run_ids = [13, 14, 15, 16]
 
@@ -94,7 +114,7 @@ jobs:
               except Exception as e:
                   print(f"  Error en run {run_id}: {e}")
 
-          print("TestRail actualizado correctamente")
+          print("Proceso finalizado")
           PYEOF
 
       - name: Build with Gradle
