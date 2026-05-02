@@ -55,7 +55,7 @@ public class AlojamientoController {
     @Operation(summary = "Actualizar alojamiento", description = "Actualiza un alojamiento existente")
     @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ANFITRION')")
+    @PreAuthorize("hasAnyRole('ANFITRION', 'ADMINISTRADOR')")
     public ResponseEntity<AlojamientoResponse> actualizar(
             @PathVariable Long id,
             @Valid @RequestBody AlojamientoRequest request,
@@ -68,7 +68,7 @@ public class AlojamientoController {
     @Operation(summary = "Eliminar alojamiento", description = "Elimina un alojamiento")
     @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ANFITRION')")
+    @PreAuthorize("hasAnyRole('ANFITRION', 'ADMINISTRADOR')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id, Authentication authentication) {
         String email = authentication.getName();
         Long anfitrionId = usuarioService.obtenerPorEmail(email).getId();

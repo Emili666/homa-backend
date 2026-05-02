@@ -79,8 +79,12 @@ public class AlojamientoServiceImpl implements AlojamientoService {
         Alojamiento alojamiento = alojamientoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Alojamiento no encontrado con id: " + id));
 
-        // Verificar que el anfitrión sea el propietario
-        if (!alojamiento.getAnfitrion().getId().equals(anfitrionId)) {
+        // Verificar que el anfitrión sea el propietario (o admin con id diferente)
+        Usuario usuario = usuarioRepository.findById(anfitrionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+
+        boolean esAdmin = usuario.getRol() == poo.uniquindio.edu.co.Homa.model.enums.RolUsuario.Administrador;
+        if (!esAdmin && !alojamiento.getAnfitrion().getId().equals(anfitrionId)) {
             throw new UnauthorizedException("No tienes permiso para actualizar este alojamiento");
         }
 
