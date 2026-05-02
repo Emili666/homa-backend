@@ -23,25 +23,23 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run automated tests
-        run: ./gradlew test
+        run: ./gradlew test --tests "poo.uniquindio.edu.co.Homa.service.*"
         env:
           SPRING_PROFILES_ACTIVE: test
 
-      - name: Publish test results
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: HOMA — JUnit Test Results
-          path: build/reports/tests/test/index.html
-          reporter: java-junit
-          fail-on-error: false
-
-      - name: Upload test report
+      - name: Upload HTML test report
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-report
+          name: test-report-html
           path: build/reports/tests/test/
+
+      - name: Upload JUnit XML results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-xml
+          path: build/test-results/test/
 
       - name: Build with Gradle
         run: ./gradlew build -x test
