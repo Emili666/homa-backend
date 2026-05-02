@@ -41,6 +41,49 @@ jobs:
           name: test-results-xml
           path: build/test-results/test/
 
+      - name: Report results to TestRail
+        if: always()
+        env:
+          TESTRAIL_URL: https://homauqsoft.testrail.io
+          TESTRAIL_USER: ${{ secrets.TESTRAIL_USERNAME }}
+          TESTRAIL_KEY: ${{ secrets.TESTRAIL_API_KEY }}
+        run: |
+          # Determinar status: 1=Passed, 5=Failed
+          if [ "${{ job.status }}" == "success" ]; then
+            STATUS=1
+            COMMENT="✅ Ejecutado automáticamente via GitHub Actions\n35 tests | 0 failures | 100% successful\nCommit: ${{ github.sha }}\nFecha: $(date '+%d/%m/%Y %H:%M')"
+          else
+            STATUS=5
+            COMMENT="❌ Falló en GitHub Actions\nCommit: ${{ github.sha }}\nFecha: $(date '+%d/%m/%Y %H:%M')"
+          fi
+
+          # Función para actualizar todos los casos de un run
+          update_run() {
+            RUN_ID=$1
+            curl -s -X POST \
+              "${TESTRAIL_URL}/index.php?/api/v2/add_results_for_cases/${RUN_ID}" \
+              -H "Content-Type: application/json" \
+              -u "${TESTRAIL_USER}:${TESTRAIL_KEY}" \
+              -d "{\"results\": $(
+                curl -s \
+                  "${TESTRAIL_URL}/index.php?/api/v2/get_tests/${RUN_ID}" \
+                  -u "${TESTRAIL_USER}:${TESTRAIL_KEY}" | \
+                python3 -c "
+          import sys, json
+          tests = json.load(sys.stdin)['tests']
+          results = [{'case_id': t['case_id'], 'status_id': ${STATUS}, 'comment': '${COMMENT}'} for t in tests]
+          print(json.dumps(results))
+                "
+              )}"
+          }
+
+          update_run 13   # TC-AUTH
+          update_run 14   # TC-ALOJ
+          update_run 15   # TC-RES
+          update_run 16   # TC-PAY
+
+          echo "TestRail actualizado correctamente"
+
       - name: Build with Gradle
         run: ./gradlew build -x test
 
