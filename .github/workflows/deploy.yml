@@ -48,41 +48,50 @@ jobs:
           TESTRAIL_USER: ${{ secrets.TESTRAIL_USERNAME }}
           TESTRAIL_KEY: ${{ secrets.TESTRAIL_API_KEY }}
         run: |
-          # Determinar status: 1=Passed, 5=Failed
           if [ "${{ job.status }}" == "success" ]; then
-            STATUS=1
-            COMMENT="✅ Ejecutado automáticamente via GitHub Actions\n35 tests | 0 failures | 100% successful\nCommit: ${{ github.sha }}\nFecha: $(date '+%d/%m/%Y %H:%M')"
+            STATUS_ID=1
+            COMMENT="Ejecutado automaticamente via GitHub Actions. 35 tests, 0 failures, 100% successful. Commit: ${{ github.sha }}"
           else
-            STATUS=5
-            COMMENT="❌ Falló en GitHub Actions\nCommit: ${{ github.sha }}\nFecha: $(date '+%d/%m/%Y %H:%M')"
+            STATUS_ID=5
+            COMMENT="Fallo en GitHub Actions. Commit: ${{ github.sha }}"
           fi
 
-          # Función para actualizar todos los casos de un run
           update_run() {
             RUN_ID=$1
-            curl -s -X POST \
+            echo "Actualizando run $RUN_ID..."
+
+            # Obtener todos los tests del run
+            TESTS=$(curl -s \
+              "${TESTRAIL_URL}/index.php?/api/v2/get_tests/${RUN_ID}" \
+              -u "${TESTRAIL_USER}:${TESTRAIL_KEY}")
+
+            echo "Tests obtenidos: $TESTS"
+
+            # Construir payload con todos los case_ids
+            PAYLOAD=$(echo "$TESTS" | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          tests = data.get('tests', data) if isinstance(data, dict) else data
+          results = [{'case_id': t['case_id'], 'status_id': $STATUS_ID, 'comment': '$COMMENT'} for t in tests]
+          print(json.dumps({'results': results}))
+            ")
+
+            echo "Payload: $PAYLOAD"
+
+            # Enviar resultados
+            RESPONSE=$(curl -s -X POST \
               "${TESTRAIL_URL}/index.php?/api/v2/add_results_for_cases/${RUN_ID}" \
               -H "Content-Type: application/json" \
               -u "${TESTRAIL_USER}:${TESTRAIL_KEY}" \
-              -d "{\"results\": $(
-                curl -s \
-                  "${TESTRAIL_URL}/index.php?/api/v2/get_tests/${RUN_ID}" \
-                  -u "${TESTRAIL_USER}:${TESTRAIL_KEY}" | \
-                python3 -c "
-          import sys, json
-          tests = json.load(sys.stdin)['tests']
-          results = [{'case_id': t['case_id'], 'status_id': ${STATUS}, 'comment': '${COMMENT}'} for t in tests]
-          print(json.dumps(results))
-                "
-              )}"
+              -d "$PAYLOAD")
+
+            echo "Respuesta TestRail run $RUN_ID: $RESPONSE"
           }
 
-          update_run 13   # TC-AUTH
-          update_run 14   # TC-ALOJ
-          update_run 15   # TC-RES
-          update_run 16   # TC-PAY
-
-          echo "TestRail actualizado correctamente"
+          update_run 13
+          update_run 14
+          update_run 15
+          update_run 16
 
       - name: Build with Gradle
         run: ./gradlew build -x test
