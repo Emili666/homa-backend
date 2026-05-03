@@ -93,6 +93,6 @@ public class GlobalExceptionHandler {
         log.error("Error interno no controlado: {}", ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error("Error interno del servidor. Por favor intenta más tarde."));
+                .body(ApiResponse.error("Error interno: " + ex.getClass().getSimpleName() + " - " + ex.getMessage()));
     }
 }
