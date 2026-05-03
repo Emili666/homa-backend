@@ -1,7 +1,7 @@
 package poo.uniquindio.edu.co.Homa.model.enums;
 
 public enum EstadoReserva {
-    PENDIENTE_CONFIRMACION,
+    PENDIENTE,
     CONFIRMADA,
     RECHAZADA,
     CANCELADA,

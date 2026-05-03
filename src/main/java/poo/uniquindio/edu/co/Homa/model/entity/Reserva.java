@@ -50,7 +50,7 @@ public class Reserva {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
-    private EstadoReserva estado = EstadoReserva.PENDIENTE_CONFIRMACION;
+    private EstadoReserva estado = EstadoReserva.PENDIENTE;
 
     @CreationTimestamp
     @Column(name = "creado_en", nullable = false, updatable = false)

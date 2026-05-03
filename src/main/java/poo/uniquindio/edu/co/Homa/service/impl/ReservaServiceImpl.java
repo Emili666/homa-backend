@@ -81,7 +81,7 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setHuesped(cliente);
         reserva.setAlojamiento(alojamiento);
         reserva.setPrecio(precioTotal);
-        reserva.setEstado(EstadoReserva.PENDIENTE_CONFIRMACION);
+        reserva.setEstado(EstadoReserva.PENDIENTE);
         reserva.setCreadoEn(LocalDateTime.now());
 
         reserva = reservaRepository.save(reserva);
@@ -226,7 +226,7 @@ public class ReservaServiceImpl implements ReservaService {
         }
 
         // Verificar que la reserva esté en estado PENDIENTE_CONFIRMACION
-        if (reserva.getEstado() != EstadoReserva.PENDIENTE_CONFIRMACION) {
+        if (reserva.getEstado() != EstadoReserva.PENDIENTE) {
             throw new BusinessException("Solo se pueden confirmar reservas pendientes");
         }
 
@@ -252,7 +252,7 @@ public class ReservaServiceImpl implements ReservaService {
         }
 
         // Verificar que la reserva esté en estado PENDIENTE_CONFIRMACION
-        if (reserva.getEstado() != EstadoReserva.PENDIENTE_CONFIRMACION) {
+        if (reserva.getEstado() != EstadoReserva.PENDIENTE) {
             throw new BusinessException("Solo se pueden rechazar reservas pendientes");
         }
 
