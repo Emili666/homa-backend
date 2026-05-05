@@ -120,15 +120,19 @@ public class MetricsConfig {
         private final Counter disponibilidadConsulta;
         private final Counter disponibilidadNoDisponible;
 
+        // ── MÉTRICAS DE PAGOS ──────────────────────────────────────────────────────
+        private final Counter pagoExitoso;
+        private final Counter pagoFallido;
+        private final Counter pagoReintento;
+        private final Timer timerPago;
+
         // ── TIMERS (duración de operaciones clave) ─────────────────────────────────
         private final Timer timerLogin;
         private final Timer timerReservaCreacion;
 
         // ── COUNTERS ACUMULADOS DE NEGOCIO ─────────────────────────────────────────
         private final Counter nochesReservadas;
-        private final Counter ingresosReservados;
-
-        public HomaBusinessMetrics(MeterRegistry registry) {
+        private final Counter ingresosReservados;        public HomaBusinessMetrics(MeterRegistry registry) {
             this.loginExitoso = Counter.builder("homa_logins_total")
                     .description("Total de inicios de sesión")
                     .tag("resultado", "exitoso")
@@ -205,6 +209,26 @@ public class MetricsConfig {
                     .description("Total acumulado de ingresos generados por reservas en COP")
                     .baseUnit("COP")
                     .register(registry);
+
+            // ── MÉTRICAS DE PAGOS ──────────────────────────────────────────────────
+            this.pagoExitoso = Counter.builder("homa_pagos_total")
+                    .description("Total de intentos de pago según resultado")
+                    .tag("resultado", "exitoso")
+                    .register(registry);
+
+            this.pagoFallido = Counter.builder("homa_pagos_total")
+                    .description("Total de intentos de pago según resultado")
+                    .tag("resultado", "fallido")
+                    .register(registry);
+
+            this.pagoReintento = Counter.builder("homa_pagos_reintentos_total")
+                    .description("Total de reintentos de pago tras un fallo")
+                    .register(registry);
+
+            this.timerPago = Timer.builder("homa_pago_latencia_seconds")
+                    .description("Latencia de integración con MercadoPago (P95)")
+                    .publishPercentiles(0.5, 0.75, 0.95, 0.99)
+                    .register(registry);
         }
 
         // ── Métodos de acceso ──────────────────────────────────────────────────────
@@ -271,6 +295,24 @@ public class MetricsConfig {
 
         public void registrarPrecioReserva(double precio) {
             ingresosReservados.increment(precio);
+        }
+
+        // ── Métodos de pagos ───────────────────────────────────────────────────────
+
+        public void incrementPagoExitoso() {
+            pagoExitoso.increment();
+        }
+
+        public void incrementPagoFallido() {
+            pagoFallido.increment();
+        }
+
+        public void incrementPagoReintento() {
+            pagoReintento.increment();
+        }
+
+        public Timer getTimerPago() {
+            return timerPago;
         }
     }
 }
