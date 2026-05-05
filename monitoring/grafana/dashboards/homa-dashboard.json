@@ -428,23 +428,22 @@
       "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
-          "unit": "percentunit",
+          "unit": "none",
           "color": { "mode": "thresholds" },
           "thresholds": { "mode": "absolute", "steps": [
-            {"color": "red", "value": null},
-            {"color": "yellow", "value": 0.90},
-            {"color": "green", "value": 0.95}
+            {"color": "blue", "value": null},
+            {"color": "green", "value": 1}
           ]}
         }
       },
       "gridPos": { "h": 4, "w": 6, "x": 0, "y": 50 },
       "id": 60,
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "textMode": "auto", "noValue": "Sin pagos aún" },
-      "title": "✅ Tasa de Pagos Exitosos (≥ 95%)",
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "textMode": "auto", "noValue": "0" },
+      "title": "✅ Pagos Exitosos (Total)",
       "type": "stat",
       "targets": [{
-        "expr": "increase(homa_pagos_total{resultado='exitoso'}[24h]) / (increase(homa_pagos_total{resultado='exitoso'}[24h]) + increase(homa_pagos_total{resultado='fallido'}[24h]))",
-        "legendFormat": "Tasa éxito",
+        "expr": "homa_pagos_total_total{resultado='exitoso'}",
+        "legendFormat": "Exitosos",
         "datasource": "Prometheus"
       }]
     },
@@ -453,23 +452,23 @@
       "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
-          "unit": "percentunit",
+          "unit": "none",
           "color": { "mode": "thresholds" },
           "thresholds": { "mode": "absolute", "steps": [
             {"color": "green", "value": null},
-            {"color": "yellow", "value": 0.03},
-            {"color": "red", "value": 0.05}
+            {"color": "yellow", "value": 1},
+            {"color": "red", "value": 5}
           ]}
         }
       },
       "gridPos": { "h": 4, "w": 6, "x": 6, "y": 50 },
       "id": 61,
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "textMode": "auto", "noValue": "Sin pagos aún" },
-      "title": "❌ Tasa de Fallos en Pagos (≤ 5%)",
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "textMode": "auto", "noValue": "0" },
+      "title": "❌ Pagos Fallidos (Total)",
       "type": "stat",
       "targets": [{
-        "expr": "increase(homa_pagos_total{resultado='fallido'}[24h]) / (increase(homa_pagos_total{resultado='exitoso'}[24h]) + increase(homa_pagos_total{resultado='fallido'}[24h]))",
-        "legendFormat": "Tasa fallos",
+        "expr": "homa_pagos_total_total{resultado='fallido'}",
+        "legendFormat": "Fallidos",
         "datasource": "Prometheus"
       }]
     },
@@ -489,11 +488,11 @@
       },
       "gridPos": { "h": 4, "w": 6, "x": 12, "y": 50 },
       "id": 62,
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "textMode": "auto", "noValue": "Sin pagos aún" },
-      "title": "⏱️ Latencia P95 MercadoPago (≤ 2s)",
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "textMode": "auto", "noValue": "Sin datos" },
+      "title": "⏱️ Latencia P95 /api/payments (≤ 2s)",
       "type": "stat",
       "targets": [{
-        "expr": "histogram_quantile(0.95, sum(rate(homa_pago_latencia_seconds_bucket[5m])) by (le))",
+        "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{job='homa-backend', uri=~'.*payments.*'}[5m])) by (le))",
         "legendFormat": "p95",
         "datasource": "Prometheus"
       }]
@@ -515,10 +514,10 @@
       "gridPos": { "h": 4, "w": 6, "x": 18, "y": 50 },
       "id": 63,
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "textMode": "auto", "noValue": "0" },
-      "title": "🔄 Reintentos de Pago (24h)",
+      "title": "🔄 Reintentos de Pago (Total)",
       "type": "stat",
       "targets": [{
-        "expr": "increase(homa_pagos_reintentos_total[24h])",
+        "expr": "homa_pagos_reintentos_total_total",
         "legendFormat": "Reintentos",
         "datasource": "Prometheus"
       }]
