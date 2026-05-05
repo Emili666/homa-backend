@@ -442,7 +442,7 @@
       "title": "✅ Pagos Exitosos (Total)",
       "type": "stat",
       "targets": [{
-        "expr": "homa_pagos_total_total{resultado='exitoso'}",
+        "expr": "homa_pagos_total{resultado='exitoso'}",
         "legendFormat": "Exitosos",
         "datasource": "Prometheus"
       }]
@@ -467,7 +467,7 @@
       "title": "❌ Pagos Fallidos (Total)",
       "type": "stat",
       "targets": [{
-        "expr": "homa_pagos_total_total{resultado='fallido'}",
+        "expr": "homa_pagos_total{resultado='fallido'}",
         "legendFormat": "Fallidos",
         "datasource": "Prometheus"
       }]
@@ -517,7 +517,7 @@
       "title": "🔄 Reintentos de Pago (Total)",
       "type": "stat",
       "targets": [{
-        "expr": "homa_pagos_reintentos_total_total",
+        "expr": "homa_pagos_reintentos_total",
         "legendFormat": "Reintentos",
         "datasource": "Prometheus"
       }]
@@ -552,12 +552,12 @@
       },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 54 },
       "id": 65,
-      "title": "⏱️ Latencia Integración MercadoPago por Percentil",
+      "title": "⏱️ Latencia /api/payments por Percentil (HTTP)",
       "type": "timeseries",
       "targets": [
-        { "expr": "histogram_quantile(0.50, sum(rate(homa_pago_latencia_seconds_bucket[5m])) by (le))", "legendFormat": "p50", "datasource": "Prometheus" },
-        { "expr": "histogram_quantile(0.95, sum(rate(homa_pago_latencia_seconds_bucket[5m])) by (le))", "legendFormat": "p95 (objetivo ≤ 2s)", "datasource": "Prometheus" },
-        { "expr": "histogram_quantile(0.99, sum(rate(homa_pago_latencia_seconds_bucket[5m])) by (le))", "legendFormat": "p99", "datasource": "Prometheus" }
+        { "expr": "histogram_quantile(0.50, sum(rate(http_server_requests_seconds_bucket{job='homa-backend',uri=~'.*payments.*'}[5m])) by (le))", "legendFormat": "p50", "datasource": "Prometheus" },
+        { "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{job='homa-backend',uri=~'.*payments.*'}[5m])) by (le))", "legendFormat": "p95 (≤ 2s)", "datasource": "Prometheus" },
+        { "expr": "histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket{job='homa-backend',uri=~'.*payments.*'}[5m])) by (le))", "legendFormat": "p99", "datasource": "Prometheus" }
       ]
     },
 
