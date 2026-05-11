@@ -31,6 +31,9 @@ public class MercadoPagoService {
     @Value("${mercadopago.back_url_failure}")
     private String backUrlFailure;
 
+    @Value("${mercadopago.notification_url:}")
+    private String notificationUrl;
+
     /**
      * Crea una preferencia de pago en Mercado Pago.
      *
@@ -58,13 +61,19 @@ public class MercadoPagoService {
                 .failure(backUrlFailure)
                 .build();
 
-        PreferenceRequest request = PreferenceRequest.builder()
+        PreferenceRequest.PreferenceRequestBuilder builder = PreferenceRequest.builder()
                 .items(List.of(item))
                 .backUrls(backUrls)
-                .build();
+                // Redirige automáticamente al usuario tras pago aprobado
+                .autoReturn("approved");
+
+        // Agregar webhook solo si está configurado
+        if (notificationUrl != null && !notificationUrl.isBlank()) {
+            builder.notificationUrl(notificationUrl);
+        }
 
         PreferenceClient client = new PreferenceClient();
-        Preference preference = client.create(request);
+        Preference preference = client.create(builder.build());
 
         log.info("Preferencia de pago creada con ID: {}", preference.getId());
         return preference.getId();
