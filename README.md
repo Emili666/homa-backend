@@ -26,5 +26,5 @@ El archivo `application.properties` contiene configuraciones críticas:
 
 ## 🔑 Credenciales de Administrador (Semilla)
 Al iniciar, el sistema verifica y crea un administrador si no existe:
-- **Email**: `superadmin@homa.com`
-- **Contraseña**: `admin123`
+- **Email**: definido en la variable `ADMIN_EMAIL` de tu `.env`
+- **Contraseña**: definida en la variable `ADMIN_PASSWORD` de tu `.env`

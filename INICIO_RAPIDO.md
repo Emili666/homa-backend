@@ -24,8 +24,7 @@ git clone https://github.com/Emili666/homa-frontend.git
 
 ## 2. Levantar el Backend
 
-El `application.properties` ya tiene todas las credenciales configuradas.  
-**No necesitas configurar nada.**
+Copia `.env.example` como `.env` y completa las variables con tus credenciales antes de correr el proyecto.
 
 ```bash
 cd homa-backend
@@ -64,27 +63,27 @@ El frontend queda en: `http://localhost:4200`
 ### Administrador
 | Campo | Valor |
 |---|---|
-| Email | `superadmin@homa.com` |
-| Contraseña | `admin123` |
+| Email | definido en `ADMIN_EMAIL` de tu `.env` |
+| Contraseña | definida en `ADMIN_PASSWORD` de tu `.env` |
 
 ### Usuarios de prueba en la BD
 | Email | Contraseña | Rol |
 |---|---|---|
-| `emilibermudez6@gmail.com` | `Emili123` | Huésped |
-| `eynera.diaz@uqvirtual.edu.co` | (ver con el equipo) | Anfitrión |
+| (ver con el equipo) | (ver con el equipo) | Huésped |
+| (ver con el equipo) | (ver con el equipo) | Anfitrión |
 
 ---
 
-## 5. Servicios externos (ya configurados)
+## 5. Servicios externos
 
 | Servicio | Estado |
 |---|---|
-| Base de datos MariaDB | VPS Contabo `38.242.225.58` — ya conectada |
-| Cloudinary (imágenes) | Configurado — cloud: `dczjcspmj` |
+| Base de datos MariaDB | Configurada vía variable `DB_HOST` en `.env` |
+| Cloudinary (imágenes) | Configurado vía variables `CLOUDINARY_*` en `.env` |
 | Mercado Pago | Sandbox TEST — no cobra dinero real |
-| Correo SMTP | Gmail `alojamientohoma@gmail.com` |
+| Correo SMTP | Gmail — configurado vía `MAIL_USERNAME` en `.env` |
 | Mapas | Leaflet + OpenStreetMap — sin token |
-| CAPTCHA | Cloudflare Turnstile — clave de prueba |
+| CAPTCHA | Cloudflare Turnstile — configurado vía `TURNSTILE_SECRET` en `.env` |
 
 ---
 
@@ -102,9 +101,9 @@ Créala en: https://www.mercadopago.com.co/developers/panel/test-users
 
 ---
 
-## 7. Credenciales completas
+## 7. Variables de entorno
 
-Ver archivo: `CREDENCIALES_DEV.md`
+Todas las credenciales necesarias están documentadas en `.env.example`. Copia ese archivo como `.env` y completa los valores reales.
 
 ---
 

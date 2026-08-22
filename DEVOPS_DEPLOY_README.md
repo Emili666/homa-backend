@@ -32,7 +32,7 @@ El Backend está pre-configurado para conectarse a tu VPS. Asegúrate de que el 
 
 | Variable | Valor Sugerido |
 | :--- | :--- |
-| `DB_HOST` | `38.242.225.58` |
-| `DB_NAME` | `homa_avanzada_db` |
-| `DB_USERNAME` | `homa_user` |
-| `DB_PASSWORD` | `emili_password_homa` |
+| `DB_HOST` | IP o hostname de tu servidor de base de datos |
+| `DB_NAME` | Nombre de tu base de datos |
+| `DB_USERNAME` | Usuario de tu base de datos |
+| `DB_PASSWORD` | *(definida en tu .env, no se documenta aquí)* |
