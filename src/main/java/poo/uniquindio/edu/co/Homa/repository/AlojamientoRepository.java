@@ -1,0 +1,50 @@
+package poo.uniquindio.edu.co.Homa.repository;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import poo.uniquindio.edu.co.Homa.model.entity.Alojamiento;
+import poo.uniquindio.edu.co.Homa.model.enums.EstadoAlojamiento;
+
+@Repository
+public interface AlojamientoRepository extends JpaRepository<Alojamiento, Long> {
+        Page<Alojamiento> findByEstado(EstadoAlojamiento estado, Pageable pageable);
+
+        List<Alojamiento> findByEstado(EstadoAlojamiento estado);
+
+        Page<Alojamiento> findByAnfitrionIdAndEstado(Long anfitrionId, EstadoAlojamiento estado, Pageable pageable);
+
+        Optional<Alojamiento> findByIdAndEstado(Long id, EstadoAlojamiento estado);
+
+        @Query("SELECT a FROM Alojamiento a WHERE a.estado = :estado " +
+                        "AND (:ciudad IS NULL OR LOWER(a.ciudad) LIKE LOWER(CONCAT('%', :ciudad, '%'))) " +
+                        "AND (:precioMin IS NULL OR a.precioPorNoche >= :precioMin) " +
+                        "AND (:precioMax IS NULL OR a.precioPorNoche <= :precioMax) " +
+                        "AND (:maxHuespedes IS NULL OR a.maxHuespedes >= :maxHuespedes)")
+        Page<Alojamiento> buscarAlojamientos(
+                        @Param("estado") EstadoAlojamiento estado,
+                        @Param("ciudad") String ciudad,
+                        @Param("precioMin") Float precioMin,
+                        @Param("precioMax") Float precioMax,
+                        @Param("maxHuespedes") Integer maxHuespedes,
+                        Pageable pageable);
+
+        Page<Alojamiento> findByAnfitrionId(Long anfitrionId, Pageable pageable);
+
+        Page<Alojamiento> findByAnfitrionIdAndEstadoNot(Long anfitrionId, EstadoAlojamiento estado, Pageable pageable);
+
+        Optional<Alojamiento> findByTitulo(String titulo);
+
+        @Query("SELECT COUNT(r) > 0 FROM Reserva r WHERE r.alojamiento.id = :id AND r.fechaEntrada > CURRENT_DATE")
+        boolean tieneReservasFuturas(@Param("id") Long id);
+
+        // Para métricas de Prometheus
+        long countByEstado(EstadoAlojamiento estado);
+}

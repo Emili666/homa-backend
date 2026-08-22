@@ -1,0 +1,113 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# HOMA — Reglas de Alerta para Prometheus
+# ──────────────────────────────────────────────────────────────────────────────
+
+groups:
+
+  # ── Alertas del Backend Spring Boot ───────────────────────────────────────
+  - name: homa_backend_alerts
+    rules:
+
+      # Backend caído (no se reciben métricas en 1 minuto)
+      - alert: HomaBackendDown
+        expr: up{job="homa-backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "🔴 HOMA Backend está caído"
+          description: "El backend de HOMA no responde desde hace más de 1 minuto."
+
+      # Latencia p95 mayor a 2 segundos
+      - alert: HomaHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(http_server_requests_seconds_bucket{job="homa-backend"}[5m])) by (le, uri)
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "⚠️ Alta latencia en HOMA Backend"
+          description: "El percentil 95 de latencia supera los 2 segundos en {{ $labels.uri }}."
+
+      # Tasa de errores HTTP 5xx mayor al 5% en 5 minutos
+      - alert: HomaHighErrorRate
+        expr: |
+          sum(rate(http_server_requests_seconds_count{job="homa-backend", status=~"5.."}[5m]))
+          /
+          sum(rate(http_server_requests_seconds_count{job="homa-backend"}[5m]))
+          > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "🔴 Alta tasa de errores 5xx en HOMA"
+          description: "Más del 5% de las peticiones están fallando con errores de servidor."
+
+      # Memoria JVM cercana al límite (>85%)
+      - alert: HomaHighMemoryUsage
+        expr: |
+          jvm_memory_used_bytes{job="homa-backend", area="heap"}
+          /
+          jvm_memory_max_bytes{job="homa-backend", area="heap"}
+          > 0.85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "⚠️ Uso de memoria JVM alto en HOMA"
+          description: "La JVM está usando más del 85% del heap disponible."
+
+      # Pool de conexiones a la BD casi lleno (>80%)
+      - alert: HomaDatabaseConnectionPoolHigh
+        expr: |
+          hikaricp_connections_active{job="homa-backend"}
+          /
+          hikaricp_connections_max{job="homa-backend"}
+          > 0.80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "⚠️ Pool de conexiones a BD casi lleno"
+          description: "El pool HikariCP está usando más del 80% de las conexiones disponibles."
+
+  # ── Alertas del VPS ────────────────────────────────────────────────────────
+  - name: homa_vps_alerts
+    rules:
+
+      # CPU del VPS mayor al 80% por más de 10 minutos
+      - alert: VpsHighCPU
+        expr: |
+          100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "⚠️ CPU del VPS HOMA alta"
+          description: "El VPS está usando más del 80% de la CPU."
+
+      # RAM del VPS menor al 10% disponible
+      - alert: VpsLowMemory
+        expr: |
+          (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 < 10
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "🔴 Poca memoria disponible en el VPS HOMA"
+          description: "Menos del 10% de la RAM está disponible en el VPS."
+
+      # Disco del VPS más del 85% lleno
+      - alert: VpsHighDiskUsage
+        expr: |
+          (node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_free_bytes{mountpoint="/"})
+          / node_filesystem_size_bytes{mountpoint="/"}
+          * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "⚠️ Disco del VPS HOMA casi lleno"
+          description: "El disco principal del VPS está usando más del 85% de su capacidad."

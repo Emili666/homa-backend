@@ -1,0 +1,127 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.2'
+	id 'io.spring.dependency-management' version '1.1.7'
+
+	// 🧪 --- Plugins de pruebas y calidad ---
+    id 'jacoco' // Generar reportes de cobertura
+    id "org.sonarqube" version "4.4.1.3373" // Análisis de SonarQube
+}
+
+group = 'poo.uniquindio.edu.co'
+version = '0.0.1-SNAPSHOT'
+description = 'Proyecto HOMA - Backend Spring Boot'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+// Configurar el compilador para usar -parameters
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs += ['-parameters']
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+	all {
+		exclude group: 'com.google.collections', module: 'google-collections'
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// --- SPRING BOOT BASE ---
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// --- BASE DE DATOS MARIADB ---
+	// Usa 'implementation' en lugar de 'runtimeOnly' para que esté disponible también en tiempo de compilación
+	implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.3'
+
+	// --- LOMBOK ---
+	compileOnly 'org.projectlombok:lombok:1.18.38'
+	annotationProcessor 'org.projectlombok:lombok:1.18.38'
+
+	// --- MAPSTRUCT ---
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
+	// --- JWT (JSON Web Token) ---
+	implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
+
+	// --- ACTUATOR (Health checks) ---
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// --- MICROMETER PROMETHEUS (Métricas para Grafana) ---
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+
+	// --- CORREO ---
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	// --- SWAGGER / OPENAPI ---
+	//implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+
+	// --- CLOUDINARY (gestión de imágenes) ---
+	implementation 'com.cloudinary:cloudinary-http44:1.39.0'
+
+
+	// --- TESTS ---
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Testcontainers for integration tests
+	testImplementation 'org.testcontainers:junit-jupiter:1.19.7'
+	testImplementation 'org.testcontainers:mariadb:1.19.7'
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+
+	// --- MERCADO PAGO ---
+	implementation ('com.mercadopago:sdk-java:2.1.20') {
+		exclude group: 'com.google.collections', module: 'google-collections'
+	}
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport // Generar reportes automáticamente después del test
+}
+
+jacoco {
+    toolVersion = "0.8.10"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir("reports/jacoco/test/html")
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "HOMA"
+        property "sonar.projectName", "Proyecto HOMA - Backend"
+        property "sonar.host.url", System.getenv("SONAR_HOST_URL") ?: "http://localhost:9000"
+        property "sonar.login", System.getenv("SONAR_TOKEN") ?: ""
+        property "sonar.language", "java"
+        property "sonar.sources", "src/main/java"
+        property "sonar.tests", "src/test/java"
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
+    }
+}

@@ -1,0 +1,54 @@
+# ============================================================
+# HOMA Backend — Ejemplo de variables de entorno requeridas
+# Copia este archivo como .env o configura en tu servidor
+# NUNCA subas el archivo real con valores al repositorio
+# ============================================================
+
+# Base de datos
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=homa_db
+DB_USERNAME=homa_user
+DB_PASSWORD=tu_password_seguro
+DB_USE_SSL=false
+DB_REQUIRE_SSL=false
+
+# JPA (usar 'validate' en produccion, 'update' solo en desarrollo)
+JPA_DDL_AUTO=update
+JPA_SHOW_SQL=true
+
+# JWT (minimo 32 caracteres, aleatorio y seguro)
+JWT_SECRET=cambia-esto-por-un-secreto-seguro-de-al-menos-32-chars
+JWT_EXPIRATION=3600000
+
+# Correo SMTP
+MAIL_USERNAME=tu_correo@gmail.com
+MAIL_PASSWORD=tu_app_password_gmail
+
+# URLs
+FRONTEND_BASE_URL=http://localhost:4200
+BACKEND_BASE_URL=http://localhost:8081
+CORS_ALLOWED_ORIGINS=http://localhost:4200
+
+# Mapbox
+MAPBOX_TOKEN=tu_mapbox_token
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=tu_cloud_name
+CLOUDINARY_API_KEY=tu_api_key
+CLOUDINARY_API_SECRET=tu_api_secret
+CLOUDINARY_FOLDER=alojamientos
+
+# Mercado Pago
+MERCADO_PAGO_ACCESS_TOKEN=tu_access_token
+MERCADO_PAGO_PUBLIC_KEY=tu_public_key
+MERCADO_PAGO_BACK_URL_SUCCESS=http://localhost:4200/success
+MERCADO_PAGO_BACK_URL_PENDING=http://localhost:4200/pending
+MERCADO_PAGO_BACK_URL_FAILURE=http://localhost:4200/failure
+
+# Cloudflare Turnstile
+TURNSTILE_SECRET=tu_turnstile_secret
+
+# Administrador inicial (se crea automaticamente al arrancar si no existe)
+ADMIN_EMAIL=admin@tudominio.com
+ADMIN_PASSWORD=ContraseñaSegura123!

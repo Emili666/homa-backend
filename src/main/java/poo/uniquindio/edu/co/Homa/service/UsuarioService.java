@@ -1,0 +1,40 @@
+package poo.uniquindio.edu.co.Homa.service;
+
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+
+import poo.uniquindio.edu.co.Homa.dto.request.ActualizarUsuarioRequest;
+import poo.uniquindio.edu.co.Homa.dto.request.CambiarContrasenaRequest;
+import poo.uniquindio.edu.co.Homa.dto.request.RecuperarContrasenaRequest;
+import poo.uniquindio.edu.co.Homa.dto.request.RestablecerContrasenaRequest;
+import poo.uniquindio.edu.co.Homa.dto.request.UsuarioRegistroRequest;
+import poo.uniquindio.edu.co.Homa.dto.response.UsuarioResponse;
+
+public interface UsuarioService {
+    
+    UsuarioResponse registrar(UsuarioRegistroRequest request);
+    
+    UsuarioResponse obtenerPorId(Long id);
+    
+    UsuarioResponse obtenerPorEmail(String email);
+    
+    UsuarioResponse actualizar(Long id, ActualizarUsuarioRequest request);
+
+    UsuarioResponse actualizarConFoto(Long id, ActualizarUsuarioRequest request, MultipartFile foto);
+
+    void eliminar(Long id);
+    
+    void cambiarContrasena(Long id, CambiarContrasenaRequest request, String emailAutenticado);
+    
+    void solicitarRecuperacionContrasena(RecuperarContrasenaRequest request);
+    
+    void restablecerContrasena(RestablecerContrasenaRequest request);
+    
+    void activarCuenta(String codigo);
+    
+    Page<UsuarioResponse> listarTodos(Pageable pageable);
+    
+    void cambiarEstado(Long id, String estado);
+}

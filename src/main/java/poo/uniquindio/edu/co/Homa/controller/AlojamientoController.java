@@ -1,0 +1,150 @@
+package poo.uniquindio.edu.co.Homa.controller;
+
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import poo.uniquindio.edu.co.Homa.dto.request.AlojamientoRequest;
+import poo.uniquindio.edu.co.Homa.dto.response.AlojamientoResponse;
+import poo.uniquindio.edu.co.Homa.model.enums.EstadoAlojamiento;
+import poo.uniquindio.edu.co.Homa.service.AlojamientoService;
+import poo.uniquindio.edu.co.Homa.service.UsuarioService;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+@Tag(name = "Alojamientos", description = "Endpoints para gestión de alojamientos")
+@RestController
+@RequestMapping("/api/alojamientos")
+@RequiredArgsConstructor
+public class AlojamientoController {
+
+    private final AlojamientoService alojamientoService;
+    private final UsuarioService usuarioService;
+
+    @Operation(summary = "Crear alojamiento", description = "Crea un nuevo alojamiento (solo anfitriones)")
+    @SecurityRequirement(name = "bearerAuth")
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ANFITRION', 'ADMINISTRADOR')")
+    public ResponseEntity<AlojamientoResponse> crear(
+            @Valid @RequestBody AlojamientoRequest request,
+            Authentication authentication) {
+        // Obtener el ID del usuario autenticado
+        String email = authentication.getName();
+        Long anfitrionId = usuarioService.obtenerPorEmail(email).getId();
+        return ResponseEntity.status(HttpStatus.CREATED).body(alojamientoService.crear(request, anfitrionId));
+    }
+
+    @Operation(summary = "Obtener alojamiento por ID", description = "Obtiene los detalles de un alojamiento")
+    @GetMapping("/{id}")
+    public ResponseEntity<AlojamientoResponse> obtenerPorId(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(alojamientoService.obtenerPorId(id));
+    }
+
+    @Operation(summary = "Actualizar alojamiento", description = "Actualiza un alojamiento existente")
+    @SecurityRequirement(name = "bearerAuth")
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ANFITRION', 'ADMINISTRADOR')")
+    public ResponseEntity<AlojamientoResponse> actualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody AlojamientoRequest request,
+            Authentication authentication) {
+        String email = authentication.getName();
+        Long anfitrionId = usuarioService.obtenerPorEmail(email).getId();
+        return ResponseEntity.ok(alojamientoService.actualizar(id, request, anfitrionId));
+    }
+
+    @Operation(summary = "Eliminar alojamiento", description = "Elimina un alojamiento")
+    @SecurityRequirement(name = "bearerAuth")
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ANFITRION', 'ADMINISTRADOR')")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id, Authentication authentication) {
+        String email = authentication.getName();
+        Long anfitrionId = usuarioService.obtenerPorEmail(email).getId();
+        alojamientoService.eliminar(id, anfitrionId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Listar todos los alojamientos", description = "Lista todos los alojamientos activos")
+    @GetMapping
+    public ResponseEntity<Page<AlojamientoResponse>> listarTodos(Pageable pageable) {
+        return ResponseEntity.ok(alojamientoService.listarTodos(pageable));
+    }
+
+    @Operation(summary = "Listar alojamientos propios", description = "Lista los alojamientos del anfitrión autenticado")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping("/mios")
+    @PreAuthorize("hasRole('ANFITRION')")
+    public ResponseEntity<Page<AlojamientoResponse>> listarMisAlojamientos(
+            Pageable pageable,
+            Authentication authentication) {
+        String email = authentication.getName();
+        Long anfitrionId = usuarioService.obtenerPorEmail(email).getId();
+        return ResponseEntity.ok(alojamientoService.listarPorAnfitrion(anfitrionId, pageable));
+    }
+
+    @Operation(summary = "Listar alojamientos por anfitrión", description = "Lista los alojamientos de un anfitrión")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping("/anfitrion/{anfitrionId}")
+    @PreAuthorize("hasAnyRole('ANFITRION', 'HUESPED')")
+    public ResponseEntity<Page<AlojamientoResponse>> listarPorAnfitrion(
+            @PathVariable Long anfitrionId,
+            Pageable pageable) {
+        return ResponseEntity.ok(alojamientoService.listarPorAnfitrion(anfitrionId, pageable));
+    }
+
+    @Operation(summary = "Buscar alojamientos", description = "Busca alojamientos con filtros")
+    @GetMapping("/buscar")
+    public ResponseEntity<Page<AlojamientoResponse>> buscar(
+            @RequestParam(value = "ciudad", required = false) String ciudad,
+            @RequestParam(value = "precioMin", required = false) BigDecimal precioMin,
+            @RequestParam(value = "precioMax", required = false) BigDecimal precioMax,
+            @RequestParam(value = "capacidad", required = false) Integer capacidad,
+            Pageable pageable) {
+        return ResponseEntity.ok(alojamientoService.buscar(ciudad, precioMin, precioMax, capacidad, pageable));
+    }
+
+    @Operation(summary = "Cambiar estado de alojamiento", description = "Cambia el estado de un alojamiento (solo admin)")
+    @SecurityRequirement(name = "bearerAuth")
+    @PatchMapping("/{id}/estado")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<Void> cambiarEstado(
+            @PathVariable Long id,
+            @RequestParam("estado") EstadoAlojamiento estado) {
+        alojamientoService.cambiarEstado(id, estado);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Agregar imágenes", description = "Agrega imágenes a un alojamiento")
+    @SecurityRequirement(name = "bearerAuth")
+    @PostMapping("/{id}/imagenes")
+    @PreAuthorize("hasRole('ANFITRION')")
+    public ResponseEntity<Void> agregarImagenes(
+            @PathVariable Long id,
+            @RequestParam("imagenes") List<MultipartFile> imagenes) {
+        alojamientoService.agregarImagenes(id, imagenes);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Eliminar imagen", description = "Elimina una imagen de un alojamiento")
+    @SecurityRequirement(name = "bearerAuth")
+    @DeleteMapping("/{alojamientoId}/imagenes/{imagenId}")
+    @PreAuthorize("hasRole('ANFITRION')")
+    public ResponseEntity<Void> eliminarImagen(
+            @PathVariable("alojamientoId") Long alojamientoId,
+            @PathVariable("imagenId") Long imagenId) {
+        alojamientoService.eliminarImagen(alojamientoId, imagenId);
+        return ResponseEntity.noContent().build();
+    }
+}
